@@ -1,0 +1,7 @@
+McHead 		首页头部
+
+McHead2		其他页面头部
+
+McFoot		底部
+
+Countdown	倒计时

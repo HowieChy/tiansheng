@@ -1,0 +1,562 @@
+<template>
+<div id="app">
+	<!--公用头部组件-->
+	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+		<div class="m-search" slot='u-search'>
+			<input type="text" value="" placeholder="牛肉">
+			<i class="el-icon-search"></i>
+		</div>
+	</McHead>
+
+	<div class="g-content">
+		<!--面包屑-->
+		<div class="m-crumb">
+			<a href="home.html">首页</a><em>	&gt;</em><span>{{title}}</span>
+		</div>
+		<div class="m-describe clearfix">
+			<!--商品放大镜-->
+			<div class="m-glass clearfix">
+
+				<ul>
+					<li v-for="(item,index) in imgSrc">
+						<img class="cloudzoom-gallery" :src="item"   :data-cloudzoom="'useZoom:\'.cloudzoom\',image:\''+item+'\',zoomImage:\''+item+'\''"/>
+					</li>
+					<!--<li>
+						<img class="cloudzoom-gallery" src="http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png" data-cloudzoom="useZoom:'.cloudzoom',image:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png',zoomImage:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png'"/>
+					</li>
+					<li>
+						<img class="cloudzoom-gallery" src="http://www.jq22.com/demo/jQueryJpg201708110048/images/a1.png" data-cloudzoom="useZoom:'.cloudzoom',image:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a1.png',zoomImage:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a1.png'"/>
+					</li>
+					<li>
+						<img class="cloudzoom-gallery" src="http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png" data-cloudzoom="useZoom:'.cloudzoom',image:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png',zoomImage:'http://www.jq22.com/demo/jQueryJpg201708110048/images/a2.png'"/>
+					</li>-->
+				</ul>
+				<div class="jqueryzoom">
+					<img id="img" class="cloudzoom" :src="imgSrc[0]"  :data-cloudzoom="'zoomSizeMode:\'image\', startMagnification:2,zoomImage:\''+imgSrc[0]+'\',zoomImage:\''+imgSrc[0]+'\''"/>
+				</div>
+
+                <p class="u-share">分享至： <span><img src="./assets/images/qq.png" alt=""></span><span><img src="./assets/images/wx.png" alt=""></span></p>
+			</div>
+
+			<div class="m-right">
+				<h1>{{title}}</h1>
+				<h2><span><em>￥</em>{{newPrice,''| currency}}</span> <ins>{{oldPrice| currency}}</ins></h2>
+				<h3 class="j-size">
+					<p>规格：<em>1斤</em></p>
+					<ul class="clearfix">
+						<li class="f-active">1斤</li><li>2斤</li><li>3斤</li><li>4斤</li>
+					</ul>
+				</h3>
+				<h3>
+					<p>库存：{{stock}}</p>
+					<div>
+						<!--计数-->
+						<el-input-number size="small" v-model="numer" :min="1" :max="stock"></el-input-number>
+					</div>
+					<button  @click="addShop" :num="numer" :price="newPrice" :id="id">加入购物车</button>
+					<h4>配送描述:尊敬的客户:您9:00-19:00的订单，于次日上午10:00前送达，19:00—次日9:00的订单，于次日16:00前送达（预售商品除外）</h4>
+				</h3>
+			</div>
+		</div>
+	</div>
+
+    <div class="g-fixed j-fixed">
+      <div class="m-margin">
+        <a class="f-active" href="#a">商品详情</a>
+        <em>|</em>
+        <a href="#b">服务保障</a>
+      </div>
+    </div>
+
+  <!--浮动-->
+  <div class="g-fixed g-fixed2">
+    <div class="m-margin">
+      <a class="f-active" href="#a">商品详情</a>
+      <em>|</em>
+      <a href="#b">服务保障</a>
+      <button  @click="addShop" :num="numer" :price="newPrice" :id="id">加入购物车</button>
+    </div>
+  </div>
+
+  <div class="m-text">
+    <h1 id="a">商品详情</h1>
+    <div class="m-first">
+      <img src="./assets/images/pic.png" alt="">
+    </div>
+    <h1 id="b">服务保障</h1>
+    <div class="m-last">
+      <img src="./assets/images/pic.png" alt="">
+    </div>
+  </div>
+
+
+	<!--公用底部组件-->
+	<McFoot></McFoot>
+</div>
+</template>
+
+<script>
+
+import Lib from 'assets/js/Lib';
+/*头部组件*/
+import McHead from 'components/McHead2';
+/*底部组件*/
+import McFoot from 'components/McFoot';
+/*倒计时组件*/
+import countDown from 'components/Countdown';
+
+
+import $ from 'jquery'
+
+import imagezoom from './assets/cloudzoom.js'
+
+export default {
+  data() {
+    return {
+        title:'',
+        newPrice:'',
+        oldPrice:'',
+        numer:'',
+        stock:null,
+        id:"",
+        imgSrc:'',
+        //购物车列表
+        carItems:[{
+            price:'300.00',
+			num:1,
+			id:'1'
+		},
+            {
+                price:'300.00',
+                num:1,
+                id:'2'
+            }],
+
+        allPrice:'600.00',//商品总价
+		allNum:2,//商品总数
+
+        //倒计时
+        cutTime:'1506596400'
+    }
+  },
+    components: {
+        McHead,McFoot,countDown
+    },
+  //实例初始化最之前，无法获取到data里的数据
+  beforeCreate(){
+  	
+  	
+  },  
+  //在挂载开始之前被调用
+  beforeMount(){
+  	
+  
+  }, 
+  //已成功挂载，相当ready()
+  mounted(){
+      var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
+      console.log(prodId)
+      //获取商品详情信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/detail',{
+          params:{
+              prodPk:prodId
+		  }
+	  })
+          .then(res=>{
+              this.id=res.data.data.prod.prodPk;
+              this.title=res.data.data.prod.nm;
+              this.oldPrice=res.data.data.prod.markAmt;
+              this.newPrice=res.data.data.prod.membAmt;
+              this.stock=res.data.data.prod.stock;
+              this.number=res.data.data.prod.number;
+              this.imgSrc=res.data.data.prod.imgUrl.split(',');
+              CloudZoom.quickStart();
+          }).catch(err=>{
+          console.log(err);
+      });
+	  //放大镜
+
+
+      //悬浮定位
+      $(document).scroll(function () {
+          if($(document).scrollTop()>=($('.j-fixed').offset().top+$('.j-fixed').outerHeight())){
+              $('.g-fixed2').addClass('f-active')
+          }else{
+              $('.g-fixed2').removeClass('f-active')
+          }
+      })
+      $('.g-fixed2 a').on("click",function () {
+          $('.g-fixed2 a').removeClass('f-active');
+          $(this).addClass('f-active')
+      });
+      $(document).scroll(function () {
+          if($(document).scrollTop()>($('#b').offset().top)-300){
+
+              $('.g-fixed2 a').removeClass('f-active');
+              $('.g-fixed2 a:last').addClass('f-active');
+          }else{
+              $('.g-fixed2 a').removeClass('f-active');
+              $('.g-fixed2 a:first').addClass('f-active');
+          }
+      })
+      
+      //选择规格
+      $('.j-size li').on('click',function () {
+          $('.j-size li').removeClass('f-active');
+          $(this).addClass('f-active');
+          $('.j-size em').text($(this).text())
+      })
+
+  },
+  //相关操作事件
+  methods: {
+      getShop(msg){
+          this.allNum=msg.number  //获取删除商品后的商品数量
+          this.allPrice=msg.price //获取删除商品后的价格
+      },
+      getTime(msg){
+          this.cutTime=0
+      },
+
+
+
+	  //开始倒计时
+      callback(){
+		console.log('结束')
+      },
+	  //购买商品
+      addShop(e){
+	      if( $(e.currentTarget).attr('rel')=='1'){
+	          alert('库存为0,不能继续购买');
+	          return false
+		  }
+          this.store=this.store-this.numer;
+          if(this.store<0){
+              this.store=0;
+              $(e.currentTarget).attr('rel','1')
+		  }
+			if(!this.carItems.length){
+                console.log('第一次添加')
+                this.carItems.push({
+                    price:$(e.currentTarget).attr('price'),
+                    num:$(e.currentTarget).attr('num'),
+                    id:$(e.currentTarget).attr('id')
+                });
+
+                this.cutTime=(parseInt(new Date().getTime()/1000)+1802).toString();
+
+                this.allNum=0;
+                this.allPrice=0;
+                this.carItems.map(function (item) {
+                    this.allNum=this.allNum+parseInt(item.num);
+                    this.allPrice+=item.price*item.num
+                }.bind(this))
+				return false
+            }
+		  for(var i=0;i<this.carItems.length;i++){
+
+              if($(e.currentTarget).attr('id')==this.carItems[i].id){
+                  console.log('已重复添加')
+                  this.carItems[i].num=parseInt(this.carItems[i].num)+parseInt($(e.currentTarget).attr('num'));
+
+
+                  this.allNum=0;
+                  this.allPrice=0;
+                  this.carItems.map(function (item) {
+                      this.allNum=this.allNum+parseInt(item.num);
+                      this.allPrice+=item.price*item.num
+                  }.bind(this))
+                  return false
+              };
+              if(i==this.carItems.length-1){
+                  console.log('新添加')
+				  this.carItems.push({
+					  price:$(e.currentTarget).attr('price'),
+					  num:$(e.currentTarget).attr('num'),
+					  id:$(e.currentTarget).attr('id')
+              		}
+          		);
+
+                  this.allNum=0;
+                  this.allPrice=0;
+                  this.carItems.map(function (item) {
+                      this.allNum=this.allNum+parseInt(item.num);
+                      this.allPrice+=item.price*item.num
+                  }.bind(this))
+                  return false
+			  }
+		  }
+
+	  },
+
+
+      
+  }
+}
+</script>
+
+<style lang="less">
+	body{
+		background: #fff!important;
+	}
+	.g-content{
+		width: 1200px;
+		margin: 0 auto;
+	}
+	.m-crumb{
+		margin: 20px 0;
+		a{
+			color: #999;
+		}
+		em{
+			color: #999;
+			margin:  0 6px 0 4px;
+		}
+	}
+
+/*放大镜*/
+	.cloudzoom-lens {
+		border: 3px solid #888;
+		width: 100px;
+		height: 100px;
+		box-shadow: -0px -0px 10px rgba(0,0,0,0.40);
+		cursor: crosshair;
+		background: #fff;
+		z-index: 10;
+	}
+
+	.cloudzoom-zoom {
+		border: 1px solid #888;
+		width: 500px;
+		height: 200px;
+		box-shadow: -0px -0px 10px rgba(0,0,0,0.40);
+		img{
+			z-index: 999;
+		}
+	}
+
+	.cloudzoom-zoom-inside {
+		border: none;
+		box-shadow: none;
+	}
+
+	.cloudzoom-caption {
+		display: none;
+		text-align: left;
+		background-color: #000;
+		color: #fff;
+		font-weight: bold;
+		padding: 10px;
+		font-family: sans-serif;
+		font-size: 11px;
+	}
+
+	.jqueryzoom {
+		position: relative;
+		padding: 0;
+		border: solid 1px #eaeaea;
+		width: 470px;
+		height: 470px;
+		border: 1px solid #ddd;
+		overflow: hidden;
+		display: inline-block;
+	}
+
+	.jqueryzoom img {
+		width: 470px;
+		height: 470px;
+	}
+	.m-glass{
+		float: left;
+
+        .u-share{
+          margin:  20px 0 0 100px;
+          span{
+            width: 34px;
+            height: 34px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+            cursor: pointer;
+          }
+        }
+		ul{
+			float: left;
+			margin-right: 30px;
+			img{
+				width: 69px;
+				height: 69px;
+				border: 1px solid #ddd;
+			}
+			.cloudzoom-gallery-active{
+				border: 1px solid #30b947;
+			}
+		}
+
+	}
+
+	.m-right{
+		float: right;
+		width: 560px;
+        margin-top: 10px;
+		h1{
+			font-size: 26px;
+			font-weight: bold;
+			padding-bottom: 30px;
+			border-bottom:1px solid #ddd ;
+		}
+		h2{
+			padding: 30px 0;
+			border-bottom: 1px solid #ddd;
+			span{
+				font-size: 24px;
+				color: #fe3000;
+				margin-right: 20px;
+			}
+			em{
+				font-size: 14px;
+			}
+			ins{
+				color: #999;
+			}
+		}
+		h3{
+			padding: 30px 0;
+			border-bottom: 1px solid #ddd;
+			p{
+				margin-bottom: 20px;
+			}
+			li{
+				padding: 12px;
+				border: 1px solid #ddd;
+				margin-right: 30px;
+				float: left;
+				cursor: pointer;
+			}
+			.f-active{
+				border-color: #30b947;
+				color: #30b947;
+			}
+			.el-input-number{
+				margin-left: 20px;
+			}
+            .el-input-number .el-input{
+              margin-left: 20px;
+            }
+			.el-input-number .el-input__inner{
+				padding: 0;
+				width: 130px;
+				text-align: center;
+				height: 40px;
+                border: none;
+			}
+            .el-icon-minus:before{
+              content: '';
+            }
+            .el-icon-plus:before{
+              content: '';
+            }
+			.el-input-number__decrease{
+                width: 40px;
+                height: 40px;
+				border: none;
+				left: -20px;
+                z-index: auto;
+				background: url("./assets/images/s1.png") no-repeat;
+			&.is-disabled{
+				 background: url("./assets/images/s3.png") no-repeat;
+			 }
+			}
+			.el-input-number__increase{
+              z-index: auto;
+                width: 40px;
+                height: 40px;
+				border: none;
+				right: -60px;
+				background: url("./assets/images/s2.png") no-repeat;
+			&.is-disabled{
+				 background: url("./assets/images/s4.png") no-repeat;
+			 }
+			}
+			button{
+				width: 260px;
+				height: 50px;
+				background: #fe3000;
+				font-size: 16px;
+				border: none;
+				color: #fff;
+				margin: 20px 0;
+                cursor: pointer;
+			}
+
+		}
+		h4{
+			color: #fe3000;
+			line-height: 24px;
+		}
+		h3:last-of-type{
+			border: none;
+		}
+	}
+    .g-fixed{
+      padding: 20px 0;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      .m-margin{
+        width: 1200px;
+        margin:  0 auto;
+        color: #999;
+        cursor: pointer;
+      }
+      em{
+        margin: 0 30px;
+        font-size: 12px;
+      }
+      a{
+        color: #999;
+      }
+      .f-active{
+        color:#fe3000 ;
+      }
+
+    }
+    .g-fixed2{
+      width: 100%;
+      position: relative;
+      display: none;
+      button{
+        width: 260px;
+        height: 50px;
+        background: #fe3000;
+        font-size: 16px;
+        border: none;
+        color: #fff;
+        position: absolute;
+        right: 0;
+        top: 4px;
+        cursor: pointer;
+      }
+      &.f-active{
+        background: #fff;
+        z-index: 999;
+        position:fixed ;
+        top: 0;
+        left: 0;
+        display: block;
+       }
+    }
+
+    .m-text{
+      width: 1200px;
+      margin: 0 auto;
+      img{
+        width: 100%;
+        margin: 20px 0 ;
+      }
+      h1{
+        font-size: 20px;
+        margin: 40px 0 10px 0;
+      }
+    }
+
+</style>

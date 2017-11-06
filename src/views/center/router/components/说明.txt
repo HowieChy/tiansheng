@@ -1,0 +1,9 @@
+address 收货地址
+index   个人中心
+log	余额日志
+order   我的订单
+orderDetail  订单详情
+regiment	我的团
+regimentList	团员订单流水
+memberInfo 	我的推荐-订单流水
+integral	积分日志

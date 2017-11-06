@@ -1,0 +1,6 @@
+home/home   		商城首页
+home/detail 		商品详情
+home/register 		注册
+
+shopping/car		购物车
+

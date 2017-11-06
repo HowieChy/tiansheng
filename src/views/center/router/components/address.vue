@@ -1,0 +1,420 @@
+<template>
+	<div class="g-detail">
+		<div class="m-address">
+			<!--收货地址-->
+			<h2>收货地址</h2>
+			<ul class="clearfix">
+				<li v-for="(item,index) in addressOption" :class="{'f-active':iScur==index}" @click="tab(item,index)">
+					<h1><span>{{item.name}}</span> <em v-if="item.through">审核通过可使用</em> <em v-if="!item.through">正在审核</em></h1>
+					<p>{{item.phone}}</p>
+					<p>{{item.address}}</p>
+					<h3><span @click="hideAddress(item,index)">隐藏</span></h3>
+				</li>
+				<li class="u-add" @click="jAdd">
+					<img src="../assets/images/add.png" alt="">
+				</li>
+			</ul>
+		</div>
+
+
+		<!--修改收货地址-->
+		<el-dialog title="修改收货地址" :visible.sync="dialogVisible" custom-class="g-dialog">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="收货人:" prop="name">
+					<el-input v-model="ruleForm.name" style="width: 160px;"></el-input>
+				</el-form-item>
+
+				<el-form-item  label="所在地区:"  prop="address">
+					<el-cascader    placeholder="请选择地区"
+									:options="options"
+									v-model="selectedOptions"
+									@change="handleChange"
+					></el-cascader>
+				</el-form-item>
+
+				<el-form-item label="详细地址:" prop="address2">
+					<el-input v-model="ruleForm.address2" style="width: 560px;"></el-input>
+					<el-tooltip class="item" effect="dark" content="请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区" placement="right">
+						<span style="margin-left: 20px;color: #ff3002;cursor: pointer">配送说明</span>
+					</el-tooltip>
+				</el-form-item>
+
+				<el-form-item label="手机号码:" prop="phone">
+					<el-input v-model="ruleForm.phone" style="width: 400px;"></el-input>
+				</el-form-item>
+
+				<el-form-item label="地址类型:" prop="type">
+					<el-radio-group v-model="radio" fill="#30b947">
+						<el-radio-button label="家庭地址" ></el-radio-button>
+						<el-radio-button label="公司地址"></el-radio-button>
+					</el-radio-group>
+				</el-form-item>
+
+				<ul class="m-tip">
+					<li><span>提示：</span>1.正在审核和审核通过的地址不能修改，删除，只可以隐藏</li>
+					<li><span></span>2.提交审核中状态的地址可以修改</li>
+					<li><span></span>3.新增地址需要审核通过才可以使用</li>
+				</ul>
+
+				<el-form-item class="g-button">
+					<el-button  @click="submitForm('ruleForm')">保存</el-button>
+					<el-button>取消</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+
+	</div>
+</template>
+
+<script>
+
+import Lib from 'assets/js/Lib';
+
+/*倒计时组件*/
+import countDown from 'components/Countdown';
+
+export default {
+  data() {
+      var validateAddress=(rule, value, callback)=> {
+          if(!value){
+              callback(new Error('请选择地区'));
+          }else {
+              callback();
+          }
+      }
+
+    return {
+		num:0, //账号类别
+		text:"收货地址",
+
+        iScur:0,
+
+        //收货地址
+        addressOption:[{
+            name:'陈豪云',
+            phone:'1524512',
+            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
+            through:true,
+            type:'家庭地址',
+        },{
+            name:'豪云',
+            phone:'1524512',
+            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
+            through:false,
+            type:'公司地址',
+        },{
+            name:'陈云',
+            phone:'1524512',
+            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
+            through:true,
+            type:'公司地址'
+        }],
+        ruleForm: {
+            name: '',//活动名称
+            address:'',//详细地址
+            phone:'',//手机号码
+        },
+        options: [],
+        selectedOptions: ['','',''],//默认地址
+        radio:'公司地址',
+        rules: {
+            name: [
+                { required: true, message: '请输入收货人姓名', trigger: 'blur' },
+            ],
+            address: [
+                { validator:validateAddress, trigger: 'blur' ,required: true,},
+            ],
+            address2: [
+                { required: true, message: '请输入详细地址', trigger: 'blur' },
+            ],
+            phone: [
+                { required: true, message: '请输入手机号码', trigger: 'blur' },
+            ],
+        },
+
+        dialogVisible:false, 	//	弹窗
+    }
+  },
+
+  //实例初始化最之前，无法获取到data里的数据
+    beforeCreate(){
+        document.title = '收货地址';
+    },
+
+    created:function(){
+        this.$emit('child-type',this.num);
+        this.$emit('child-text',this.text)
+    },
+
+    //相关操作事件
+    methods: {
+
+        tab(item,index){
+            if(item.through){
+                this.iScur=index;
+            }
+
+            console.log(item,index)
+        },
+
+
+        //地址弹窗
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    console.log(valid);
+                    var This=this;
+					var str1,str2,str3;
+                    this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9000')
+                        .then(res=>{
+                            console.log(res.data);
+                            res.data.map(function (e,i) {
+                                if(e.cd==This.ruleForm.address[0]){
+                                    str1=e.nmCn;
+								}
+                                e.childSysCatDtozList.map(function (ev,j) {
+                                    if(ev.cd==This.ruleForm.address[1]){
+                                        str2=ev.nmCn;
+                                    }
+                                    ev.childSysCatDtozList.map(function (evv) {
+                                        if(evv.cd==This.ruleForm.address[2]){
+                                            str3=evv.nmCn;
+                                        }
+                                    })
+                                })
+
+                            })
+                            //console.log(str1,str2,str3)
+                            this.addressOption.push({
+                                name:this.ruleForm.name,
+                                phone:this.ruleForm.phone,
+                                address:str1+' '+str2+' '+str3+' '+this.ruleForm.address2,
+                                through:false,
+                                type:this.ruleForm.radio,
+                            });
+                            this.dialogVisible=false;
+                        }).catch(err=>{
+                        console.log(err);
+                    });
+
+
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+
+        //隐藏收货地址
+        hideAddress(item,index){
+
+        },
+        //选择地区
+        handleChange(value){
+            console.log(value)
+            this.ruleForm.address=value
+        },
+
+        //倒计时
+        callback(){
+            console.log('结束1')
+        },
+
+		//新增地址
+		jAdd(){
+            this.dialogVisible=true;
+		}
+
+    },
+
+  //在挂载开始之前被调用
+  beforeMount(){
+  	
+  
+  },
+
+  //已成功挂载，相当ready()
+  mounted(){
+      var This=this;
+		//console.log(this.$route.query);
+      this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9000')
+          .then(res=>{
+              console.log(res.data);
+              var result={};
+              res.data.map(function (e) {
+                  result={
+                      value:e.cd,
+                      label:e.nmCn,
+                      children:[]
+                  };
+                  e.childSysCatDtozList.map(function (ev,j) {
+                      result.children.push({
+                          value:ev.cd,
+                          label:ev.nmCn,
+                          children:[],
+                      });
+                      ev.childSysCatDtozList.map(function (evv) {
+                          result.children[j].children.push({
+                              value:evv.cd,
+                              label:evv.nmCn,
+                          })
+                      })
+                  })
+                  //console.log(result)
+                  This.options.push(result);
+              })
+
+          }).catch(err=>{
+              console.log(err);
+          });
+
+
+  },
+
+   computed:{
+
+  },
+
+}
+</script>
+
+<style lang="less">
+
+
+	.g-detail{
+		width: 880px;
+		float: right;
+		background: #fff;
+		margin-bottom: 150px;
+		padding: 40px 50px;
+		.m-crumb{
+			font-size: 20px;
+			margin: 0 0 50px 0;
+			color: #666;
+		}
+	}
+
+	/*订单地址*/
+	.m-address{
+		h2{
+			margin: 0 0 20px 0 ;
+		}
+		li{
+			border: 1px solid #ddd;
+			float: left;
+			padding: 20px;
+			width: 200px;
+			margin-right: 60px;
+			height: 120px;
+			position: relative;
+			margin-bottom:50px ;
+			cursor:pointer;
+		h1{
+			margin-bottom: 20px;
+		span{
+			font-size: 16px;
+		}
+		em{
+			float: right;
+		}
+		}
+		p{
+			line-height: 24px;
+		}
+		h3{
+			span{
+				float: right;
+				display: none;
+			}
+		}
+	}
+		.f-active{
+			border-color: #30b947;
+			h3{
+				span{
+					display: block;
+					color: #30b947;
+				}
+			}
+		}
+		li:nth-of-type(3n){
+			margin-right: 0;
+		}
+		.u-add{
+
+			img{
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%,-50%);
+			}
+		}
+	}
+
+	.el-dialog__header{
+		background: #efefef;
+		font-size: 16px;
+		padding: 20px!important;
+	}
+	.el-form-item{
+		margin-bottom: 35px!important;
+	}
+	.el-form-item__label{
+		text-align: left!important;
+		padding: 0!important;
+		line-height: 50px!important;
+	}
+	.el-input__inner{
+		height: 50px!important;
+		border-radius: 0!important;
+	}
+	.g-dialog{
+		width: 960px!important;
+	.el-cascader__label{
+		line-height: 50px;
+	}
+	.el-cascader{
+		width: 250px;
+	}
+	.el-radio-button{
+		margin-right: 30px;
+	}
+	.el-radio-button__inner{
+		border-left:1px solid #bfcbd9;
+		border-radius: 0!important;
+		width: 160px;
+		height: 50px;
+		padding: 0;
+		line-height: 50px;
+	}
+
+	}
+	.el-tooltip__popper{
+		width: 160px;
+	}
+	.g-button{
+		button{
+			width: 240px;
+			height: 50px;
+			border-radius: 6px;
+			font-size: 18px;
+		}
+		button:first-child{
+			background: #30b947;
+			color: #fff;
+
+		}
+
+	}
+	.m-tip{
+		margin: 20px 0 60px 0;
+		li{
+			padding-bottom: 10px;
+		}
+		span{
+			position: relative;
+			display: inline-block;
+			width:50px;
+		}
+	}
+</style>

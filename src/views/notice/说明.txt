@@ -1,0 +1,7 @@
+active 商场广告
+
+detail  公告详情
+
+list  	公告列表
+
+packge	预定专区/宅配套餐
