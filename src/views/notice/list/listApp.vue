@@ -1,7 +1,8 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<!--<McHead   @child-cutTime="getTime"    :cutTime="cutTime">-->
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -15,14 +16,14 @@
 		</div>
 		<div class="g-notice">
 			<ul class="m-notice">
-				<li v-for="(item,index) in items"><a :href="'detail.html?id'+item.newsPk"><p>{{item.nm}}</p><span>{{item.releTm}}</span></a></li>
+				<li v-for="(item,index) in items"><a :href="'detail.html?id='+item.newsPk"><p>{{item.nm}}</p><span>{{item.releTm}}</span></a></li>
 			</ul>
 
 
 			<div class="block">
 				<el-pagination
 								@current-change="handleCurrentChange"
-								:page-size="1"
+								:page-size="currentPage"
 								layout="prev, pager, next, jumper"
 								:total="total">
 				</el-pagination>
@@ -46,8 +47,7 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
+
 
 
 export default {
@@ -55,29 +55,12 @@ export default {
     return {
 		items:[],
         total:null,
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
         currentPage:1,
 
-		//倒计时
-		cutTime:'1504256400'
     }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -91,26 +74,26 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-      //this.axios.get('/api/mall/bss/news/page',{
-          this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
+
+
+	  this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
           params:{
               pageNo:'',
               pageSize:'',
           }
       })
           .then(res=>{
-              console.log(2222)
               this.total=res.data.data.items.length;
           }).catch(err=>{
           console.log(err);
       });
 
       //日志列表
-     // this.axios.get('/api/mall/bss/news/page',{
+
       this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
           params:{
               pageNo:1,
-              pageSize:1,
+              pageSize:this.currentPage,
           }
 	  })
           .then(res=>{
@@ -126,17 +109,9 @@ export default {
   //相关操作事件
   methods: {
 
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
 
       handleCurrentChange(val) {
-          //this.axios.get('/api/mall/bss/news/page',{
-              this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
+		  this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
               params:{
                   pageNo:val,
                   pageSize:1,
@@ -147,11 +122,6 @@ export default {
               }).catch(err=>{
               console.log(err);
           });
-      },
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
       },
 
   }

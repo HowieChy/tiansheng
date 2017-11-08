@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead >
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -15,32 +15,29 @@
 		</div>
 		<div class="g-notice">
 			<div class="m-tab">
-				<el-radio-group v-model="radio">
+				<el-radio-group v-model="radio" @change="tab">
 					<el-radio-button label="最新活动"></el-radio-button>
 					<el-radio-button label="往期活动"></el-radio-button>
 				</el-radio-group>
 			</div>
 			<ul class="m-notice">
-				<li><a href=""><p>天胜XXXXXXX</p><span>2017-02-26 16:12:20</span></a></li>
-				<li><a href=""><p>天胜XXXXXXX</p><span>2017-02-26 16:12:20</span></a></li>
-				<li><a href=""><p>天胜XXXXXXX</p><span>2017-02-26 16:12:20</span></a></li>
+				<li v-for="(item,index) in items"><a :href="'detail.html?activeId='+item.farmActivePk"><p>{{item.nm}}</p><span>{{item.releTm}}</span></a></li>
 			</ul>
 
 
 			<div class="block">
 				<el-pagination
 								@current-change="handleCurrentChange"
-								:page-size="100"
+								:page-size="1"
+								:current-page="pageNum"
 								layout="prev, pager, next, jumper"
-								:total="1000">
+								:total="total">
 				</el-pagination>
 			</div>
 		</div>
 
 
 	</div>
-
-
 
 
 
@@ -57,37 +54,23 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
+
 
 
 export default {
   data() {
     return {
         radio: '最新活动',
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
 
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
+		type:true,
+        total:0,
+        pageNum:1,
+        items:[],
 
-        currentPage:1,
-
-		//倒计时
-		cutTime:'1504256400'
     }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -98,36 +81,67 @@ export default {
   beforeMount(){
   	
   
-  }, 
+  },
+
   //已成功挂载，相当ready()
   mounted(){
 
-
-      
-
+      //默认列表
+	  this.getTotal(this.type);
+      this.getList(1,this.type)
 
   },
   //相关操作事件
   methods: {
+      tab(){
+		  if(this.radio=='往期活动'){
+			  this.getList(1,false)
+			  this.total=3;
+			  this.pageNum=1;
+			  this.type=false;
+		  }else{
+			  this.getList(1,true)
+			  this.getTotal(true);
+			  this.pageNum=1;
+			  this.type=true;
+		  }
+	  },
+      //获取总页数
+	  getTotal(tab){
+          this.axios.get(Lib.C.url_mc+'/mall/bss/farm/page',{
+              params:{
+                  pageNo:'',
+                  pageSize:'',
+                  statu:tab,
+              }
+          })
+              .then(res=>{
+                  this.total=res.data.data.items.length;
+              }).catch(err=>{
+              console.log(err);
+          });
+	  },
+	  //获取列表数据
+      getList(num,tab){
+          this.axios.get(Lib.C.url_mc+'/mall/bss/farm/page',{
+              params:{
+                  pageNo:num,
+                  pageSize:1,
+                  statu:tab,
+              }
+          })
+              .then(res=>{
+                  //console.log(res.data.data.items);
+                  this.items=res.data.data.items;
+              }).catch(err=>{
+              console.log(err);
+          });
+	  },
 
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
-
-      handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-      },
+	  //分页获取列表数据
       handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
-      },
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
+          this.pageNum=val;
+          this.getList(val,this.type)
       },
 
   }

@@ -1,5 +1,5 @@
 
-<script src="../card/card.js"></script>
+
 <template>
 <div id="app">
 	<!--公用头部组件-->
@@ -325,32 +325,20 @@ import aImg from './assets/images/shop.png'
 export default {
   data() {
     return {
-        a:1,
-		//左侧导航
-        siledItem:[],
-        //轮播图
-        slide:[],
-		//模块
-        shopItem:[],
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:1
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:2
-            }],
+        login:false, //登录状态
+        userId:'',//用户ID
 
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-		userId:'',//用户ID
-		door:false,
+        siledItem:[],//左侧导航
+        slide:[],    //轮播图
+        shopItem:[],//模块
+        carItems:[],   //购物车列表
 
-		//倒计时
-		cutTime:'1506596400'
+        allPrice:0,//商品总价
+		allNum:0,//商品总数
+
+		door:false, //模块是否展示
+
+		cutTime:'1510140980' //倒计时
     }
   },
     components: {
@@ -401,10 +389,28 @@ export default {
       this.axios.get(Lib.C.url_mc+'/mall/bss/prod/list')
 
           .then(res=>{
-              console.log(res.data)
              // console.log(res.data)
               this.shopItem=res.data.data;
               this.door=true;
+          }).catch(err=>{
+          console.log(err);
+      });
+
+
+
+      //获取购物车
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+          params:{
+              ipPk:this.userId,
+          }
+	  })
+          .then(res=>{
+              this.carItems=res.data.data;
+              this.carItems.map(function (item) {
+                  this.allNum=this.carItems.length;
+                  this.allPrice+=item.membAmt*item.qty;
+                  console.log(this.allNum,this.allPrice)
+              }.bind(this));
           }).catch(err=>{
           console.log(err);
       });
@@ -418,7 +424,7 @@ export default {
           this.allPrice=msg.price //获取删除商品后的价格
 	  },
       getTime(msg){
-          this.cutTime=0
+          this.cutTime='0'
       },
 
 	  //获取删除的ID,数量
@@ -431,7 +437,7 @@ export default {
               this.shopItem[i].prodRos.forEach(function (elem,index) {
                  // console.log(elem,index);
                   if(msg[0]==elem.prodPk){
-                      elem.spec+=msg[1];
+                      elem.stock+=msg[1];
                   }
               })
           }
@@ -470,16 +476,73 @@ export default {
               .then(res=>{
                   console.log(res.data);
                   if(res.data.status==200){
-                      this.$alert(res.data.msg, '提示', {
-                          confirmButtonText: '确定',
-                          callback: action => {
 
-                          }
-                      });
+//                      this.$alert('加入购物车成功', '提示', {
+//                          confirmButtonText: '确定',
+//                          callback: action => {
+//
+//                          }
+//                      });
+
+                      //添加商品
+                      function add(e) {
+                          e.carItems.push({
+                              imgUrl:item.imgUrl,
+                              prodNm:item.nm,
+                              membAmt:item.membAmt,
+                              qty:item.number,
+                              prodPk:item.prodPk
+                          });
+                      };
+                      //计算价格
+                      function sum(e) {
+                          e.allNum=0;
+                          e.allPrice=0;
+                          e.carItems.map(function (item) {
+                              e.allNum=e.carItems.length;//商品总数
+                              e.allPrice+=item.membAmt*item.qty//商品价格
+                          })
+                      }
+                      if(this.carItems.length){
+                          add(this);
+                          var hash={};
+                          var newItems=[];
+                          this.carItems.map(function (e,i) {
+                              if(!hash[e.prodPk]){
+                                  newItems.push(e);
+                                  hash[e.prodPk]=e;
+                              }else{
+                                  hash[e.prodPk].qty+=e.qty
+                              }
+                          })
+                          this.carItems=newItems;
+                          sum(this);
+                      }else{
+                          console.log('第一次添加')
+                          add(this)
+                          sum(this)
+                      }
+
+
+                      //库存
+                      for(var i=0;i<this.shopItem.length;i++){
+                          this.shopItem[i].prodRos.forEach(function (elem,index) {
+                              if(item.prodPk==elem.prodPk){
+
+                                  elem.stock-=item.number;
+                              }
+                          })
+                      }
+
+                      item.number=1;
+                      if(item.stock<0){
+                          item.stock=0;
+                          return false;
+                      }
 
                   }
                   if(res.data.status==400){
-                      this.$alert(res.data.msg, '提示', {
+                      this.$alert('加入购物车失败', '提示', {
                           confirmButtonText: '确定',
                           callback: action => {
 
@@ -490,114 +553,7 @@ export default {
               console.log(err);
           });
 
-//          $.ajax({
-//              type: 'POST',
-//              url: '/api/mall/bss/cart/add',
-//              data: {
-//                  ipPk:this.userId,
-//                  prodPk:item.prodPk,
-//                  prodNum:item.number
-//			  },
-//              success: function (res) {
-//				  console.log(1,res)
-//              },
-//              error: function(res){
-//                  console.log(2,res)
-//              }
-//          });
 
-//          $.ajax({
-//              type: 'POST',
-//              url: Lib.C.url_mc+'/mall/bss/prod/addProdBH',
-//              data: {
-//                  ipPk:18,
-//                  prodPk:22,
-//              },
-//              datatype:'json',
-//              success: function (res) {
-//                  console.log(res)
-//              },
-//              error: function(res){
-//                  console.log(2,res)
-//              }
-//          });
-
-		 // console.log(item,index);
-		  //添加商品
-		  function add(e) {
-              e.carItems.push({
-                  price:item.membAmt,
-                  num:item.number,
-                  id:item.prodPk
-              });
-          };
-          //计算价格
-		function sum(e) {
-            e.allNum=0;
-            e.allPrice=0;
-            e.carItems.map(function (item) {
-                e.allNum=e.carItems.length;//商品总数
-                e.allPrice+=item.membAmt*item.markAmt//商品价格
-			})
-        }
-		  if(this.carItems.length){
-              add(this);
-              var hash={};
-              var newItems=[];
-              this.carItems.map(function (e,i) {
-				  if(!hash[e.id]){
-				      newItems.push(e);
-				      hash[e.id]=e;
-				  }else{
-				      hash[e.id].num+=e.num
-				  }
-              })
-			  this.carItems=newItems;
-              sum(this);
-//		      var This=this;
-//			  var copyItems=this.carItems;
-//              console.log(this.carItems.length)
-//              copyItems.forEach(function (elem,i) {
-//				  //console.log(elem,i);
-//				  if(elem.id==item.id){
-//				      elem.num+=item.numer;
-//                      console.log('重复添加')
-//					  This.door=false;
-//                      sum(This);
-//				  }
-//
-//				  if(i==This.carItems.length-1){
-//				      if(This.door){
-//                          add(This);
-//                          sum(This);
-//                          console.log('新增')
-//					  }
-//                      This.door=true;
-//				  };
-//
-//              });
-		  }else{
-              console.log('第一次添加')
-              add(this)
-              sum(this)
-		  }
-
-
-		  //库存
-		  for(var i=0;i<this.shopItem.length;i++){
-              this.shopItem[i].prodRos.forEach(function (elem,index) {
-				  if(item.prodPk==elem.prodPk){
-
-                      elem.spec-=item.number;
-				  }
-              })
-		  }
-
-          item.number=1;
-          if(item.stock<0){
-              item.stock=0;
-              return false;
-          }
 	  }
 
   }

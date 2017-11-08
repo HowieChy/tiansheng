@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -11,25 +11,22 @@
 	<div class="g-content">
 		<!--面包屑-->
 		<div class="m-crumb">
-			<a href="home.html">首页</a><em>	&gt;</em><span>商城公告</span><em>	&gt;</em><span>公告详情</span>
+			<a href="home.html">首页</a><em>	&gt;</em><span><a :href="aHref.src">{{aHref.title}}</a></span><em>	&gt;</em><span>{{aHref.title2}}</span>
 		</div>
 		<div class="g-detail">
 			<div class="top">
-				<h2>天胜农牧配送调整公告</h2>
-				<h3>2017-02-25 16:12:33</h3>
+				<h2>{{items.nm}}</h2>
+				<h3>{{items.releTm}}</h3>
 			</div>
 			<div class="bottom">
-				<p>
-					当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作。然而在大多数情况下，你应该避免在此期间更改状态。如果要相应状态改变，通常最好使用计算属性或 watcher 取而代之。当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作。然而在大多数情况下，你应该避免在此期间更改状态。如果要相应状态改变，通常最好使用计算属性或 watcher 取而代之。
+				<p v-html="items.cont">
+
 				</p>
 			</div>
 		</div>
 
 
 	</div>
-
-
-
 
 
 
@@ -45,38 +42,22 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
+
 
 
 
 export default {
   data() {
     return {
-
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
-        currentPage:1,
-
-		//倒计时
-		cutTime:'1504256400'
+       items:[],
+		aHref:{
+            src:'',
+			title:''
+		}
     }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -91,32 +72,61 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 
+      var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
+	  if(prodId){
+          console.log(prodId)
+          this.axios.get(Lib.C.url_mc+'/mall/bss/news/details',{
+              params:{
+                  newsPk:prodId
+              }
+          })
+              .then(res=>{
+                  console.log(res.data.data.newsVo);
+                  this.items=res.data.data.newsVo;
+                  this.aHref={
+                      title:'农场日志',
+                      title2:'公告详情',
+					  src:'list.html'
+				  }
+				  document.title='公告详情'
+              }).catch(err=>{
+              console.log(err);
+          });
+	  }
 
-      
 
+
+      var activId= Lib.M.getUrlQuery('activeId',Lib.C.url_host);
+	  if(activId){
+          console.log(activId)
+          this.axios.get(Lib.C.url_mc+'/mall/bss/farm/details',{
+              params:{
+                  farmActivePk:activId
+              }
+          })
+              .then(res=>{
+                  console.log(res.data.data.farmActiveVo);
+                  this.items=res.data.data.farmActiveVo;
+                  this.aHref={
+                      title:'农场活动',
+					  title2:'活动详情',
+                      src:'active.html'
+                  }
+                  document.title='活动详情'
+              }).catch(err=>{
+              console.log(err);
+          });
+	  }
 
   },
   //相关操作事件
   methods: {
-
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
 
       handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
-      },
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
       },
 
   }
@@ -159,6 +169,9 @@ export default {
 			padding: 40px 20px;
 			color: #666;
 			line-height: 30px;
+		}
+		img{
+			width: 100%;
 		}
 	}
 

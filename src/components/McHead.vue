@@ -9,13 +9,13 @@
             欢迎登录天胜农牧，请 <a href="login.html">登录</a> <a href="register.html">注册</a>
           </div>
           <div class="m-lev" v-if="login"  @mouseenter="jLev1" @mouseleave="jLev2">
-            <p :class="{'f-active':lev}"><span>您好！ 151****8717 <i class="el-icon-arrow-down"></i></span></p>
+            <p :class="{'f-active':lev}"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></p>
             <div class="u-lev" v-show="lev">
-              <h2>151****8717<em @click="exit">退出</em></h2>
-              <ul>
+              <h2>{{phone}}<em @click="exit">退出</em></h2>
+              <ul class="clearfix">
                 <li>
                   <h3>级别</h3>
-                  <h4>普通会员</h4>
+                  <h4>{{personInfo.memRankNmCn}}普通会员</h4>
                   <strong></strong>
                 </li>
                 <li>
@@ -33,14 +33,14 @@
 
           <!--选择地区-->
           <div  class="m-address"  @mouseenter="jAddress1" @mouseleave="jAddress2">
-            <h2 :class="{'f-active':address}">基地：<span>宁波</span>
+            <h2 :class="{'f-active':address}">基地：<span>{{postion}}</span>
               <!--<svg class="icon" aria-hidden="true">-->
                 <!--<use xlink:href="#icon-moreunfold"></use>-->
               <!--</svg>-->
               <i class="el-icon-arrow-down"></i>
             </h2>
             <div v-show="address">
-              宁波
+              <span @click="set(item)" v-for="(item,index) in addressItem" style="margin-right: 20px" :rel="item.nmCn">{{item.desc}}</span>
             </div>
           </div>
 
@@ -52,13 +52,13 @@
                 <ul>
                   <li class="clearfix" v-for="(item,index) in lists">
                     <a href="">
-                      <img src="../assets/images/sg.png" alt="">
+                      <img :src="item.imgUrl" alt="">
                       <div class="middle">
-                        <p> 菠萝   <span>￥{{item.price}} <em><ins>X</ins>{{item.num}}</em></span></p>
-                        <p>1斤装</p>
+                        <p> {{item.prodNm}}   <span>￥{{item.membAmt}} <em><ins>X</ins>{{item.qty}}</em></span></p>
+                        <p></p>
                       </div>
                     </a>
-                    <button @click="del(item,index)">删除</button>
+                    <button :rel="item.cartPk" @click="del(item,index)">删除</button>
                   </li>
                 </ul>
               </div>
@@ -82,7 +82,7 @@
             <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
               <a  href="javascript:;">掌上天胜</a>
               <div  v-show="code">
-                <img src="../assets/images/code.png" alt="">
+                <img :src="codeSrc" alt="">
                 <p>关注微信公众号</p>
               </div>
             </li>
@@ -128,15 +128,27 @@
     import countDown from 'components/Countdown';
 
     export default {
-        name: 'g-head',
+
         data () {
             return {
                 login:false, //登录状态
                 lev:false,
                 address:false,
                 cart:false,
-                code:false
+                code:false,
+                personInfo:[],//个人信息
+                codeSrc:'',//二维码
+                addressItem:[],//地址定位
+                postion:'宁波',
             }
+        },
+        computed:{
+            //手机号加星号
+          phone(){
+              if(this.personInfo.mob){
+                  return this.personInfo.mob.slice(0,2)+'******'+this.personInfo.mob.slice(8,11)
+              }
+          }
         },
         methods:{
             //登出
@@ -145,38 +157,61 @@
                 location.reload()
             },
             //等级事件
-            jLev1(e){
+            jLev1(){
                 this.lev=true;
             },
-            jLev2(e){
+            jLev2(){
                 this.lev=false;
             },
             //地区选择事件
-            jAddress1(e){
+            jAddress1(){
                 this.address=true;
             },
-            jAddress2(e){
+            jAddress2(){
+                this.address=false;
+            },
+            set(e){
+                console.log(e);
+                this.postion=e.nmCn;
                 this.address=false;
             },
             //二维码
-            jCode1(e){
+            jCode1(){
                 this.code=true;
             },
-            jCode2(e){
+            jCode2(){
                 this.code=false;
             },
             //购物车
-            jCart1(e){
+            jCart1(){
                 this.cart=true;
             },
-            jCart2(e){
+            jCart2(){
                 this.cart=false;
             },
 
             //购物车删除
             del(item,index){
+                //删除商品
+                this.axios.get(Lib.C.url_mc+'/mall/bss/cart/del',{
+                    params:{
+                        ipPk:this.userId,
+                        prodPk:item.prodPk
+                    }
+                })
+                    .then(res=>{
+                        this.carItems=res.data.data;
+                        this.carItems.map(function (item) {
+                            this.allNum=this.carItems.length;
+                            this.allPrice+=item.membAmt*item.qty;
+                            //console.log(this.allNum,this.allPrice)
+                        }.bind(this));
+
+                    }).catch(err=>{
+                    console.log(err);
+                });
                 //console.log(this.lists);
-                var delArr=[item.id,item.num];//获取删除商品的ID，数量
+                var delArr=[item.prodPk,item.qty];//获取删除商品的ID，数量
                 this.lists.splice(index,1);   //删除商品
                 this.$emit('child-shop',{
                     number:0,
@@ -188,7 +223,7 @@
                 this.lists.map(function (item) {
                     str=this.lists.length;
                     //str+=parseInt(item.num)
-                    str2+=item.price*item.num;
+                    str2+=item.membAmt*item.qty;
                     this.$emit('child-shop',{
                         number:str,
                         price:str2
@@ -217,8 +252,39 @@
             }
         },
         mounted(){
+            //获取定位信息
+            this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/listByPrntCd',{
+                params:{
+                    prntCd:9014,
+                }
+            })
+                .then(res=>{
+                    this.addressItem=res.data.data.items;
+                }).catch(err=>{
+                console.log(err);
+            });
+            //二维码
+            this.codeSrc='http://192.168.1.160:8083/mall/bss/ip/QRCode?url=https://www.baidu.com/'
+
+            //获取uerId
+            if(Lib.M.store.get('userInfo')){
+                this.userId=Lib.M.store.get('userInfo').ipPk;
+               // console.log(this.userId)
+            }
             if(Lib.M.store.get('login')){
                 this.login=true;
+                //获取个人信息
+                this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+                    params:{
+                        ipPk:this.userId,
+                    }
+                })
+                    .then(res=>{
+                       // console.log(res.data)
+                        this.personInfo=res.data.data;
+                    }).catch(err=>{
+                    console.log(err);
+                });
             }
             //悬浮
             function throttle(method, context) {
@@ -317,10 +383,13 @@
             float: right;
             cursor: pointer;
           }
+          ul{
+            display: flex;
+          }
           li{
             float: left;
             text-align: center;
-            padding:  0 25px;
+            flex: 1;
             position: relative;
             strong{
               position: absolute;
@@ -333,7 +402,7 @@
           }
           li:nth-child(2){
             strong{
-              left: 143px;
+              left: 133px;
               top: 50px;
             }
           }

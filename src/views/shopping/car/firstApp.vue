@@ -1,4 +1,4 @@
-<script src="../../../../build/utils.js"></script>
+
 <template>
 <div id="app">
 
