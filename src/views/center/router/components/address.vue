@@ -4,14 +4,26 @@
 			<!--收货地址-->
 			<h2>收货地址</h2>
 			<ul class="clearfix">
-				<li v-for="(item,index) in addressOption" :class="{'f-active':iScur==index}" @click="tab(item,index)">
-					<h1><span>{{item.name}}</span> <em v-if="item.through">审核通过可使用</em> <em v-if="!item.through">正在审核</em></h1>
-					<p>{{item.phone}}</p>
-					<p>{{item.address}}</p>
-					<h3><span @click="hideAddress(item,index)">隐藏</span></h3>
+				<li v-for="(item,index) in addressOption" :class="{'f-active':iScur2==index}" @click="tab2(item,index)">
+					<h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
+					<p>{{item.mob}}</p>
+					<p>{{item.fullAddr}}</p>
+					<h3><span @click="showAddress(item,index)">隐藏</span></h3>
 				</li>
 				<li class="u-add" @click="jAdd">
 					<img src="../assets/images/add.png" alt="">
+				</li>
+			</ul>
+		</div>
+
+		<div class="m-address">
+			<h3 @click="toggle">隐藏的收货地址 <i :class="[hide?'el-icon-arrow-down':'el-icon-arrow-up']"></i></h3>
+			<ul class="clearfix" v-if="!hide">
+				<li v-for="(item,index) in addressHide" :class="{'f-active':iScur2==index}" @click="tab2(item,index)">
+					<h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
+					<p>{{item.mob}}</p>
+					<p>{{item.fullAddr}}</p>
+					<h3><span @click="hideAddress(item,index)">显示</span></h3>
 				</li>
 			</ul>
 		</div>
@@ -75,6 +87,14 @@ import countDown from 'components/Countdown';
 
 export default {
   data() {
+      var validatePhone=(rule, value, callback)=> {
+          var re=/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+          if(!value||!re.test(value)){
+              callback(new Error('请输入正确手机号码'));
+          }else {
+              callback();
+          }
+      }
       var validateAddress=(rule, value, callback)=> {
           if(!value){
               callback(new Error('请选择地区'));
@@ -88,27 +108,15 @@ export default {
 		text:"收货地址",
 
         iScur:0,
+        iScur2:0,
 
+        hide:true,
         //收货地址
-        addressOption:[{
-            name:'陈豪云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:true,
-            type:'家庭地址',
-        },{
-            name:'豪云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:false,
-            type:'公司地址',
-        },{
-            name:'陈云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:true,
-            type:'公司地址'
-        }],
+        addressOption:[],
+
+        //隐藏的收货地址
+        addressHide:[],
+
         ruleForm: {
             name: '',//活动名称
             address:'',//详细地址
@@ -118,6 +126,7 @@ export default {
         selectedOptions: ['','',''],//默认地址
         radio:'公司地址',
         rules: {
+
             name: [
                 { required: true, message: '请输入收货人姓名', trigger: 'blur' },
             ],
@@ -128,7 +137,7 @@ export default {
                 { required: true, message: '请输入详细地址', trigger: 'blur' },
             ],
             phone: [
-                { required: true, message: '请输入手机号码', trigger: 'blur' },
+                { validator: validatePhone, trigger: 'blur' }
             ],
         },
 
@@ -148,15 +157,24 @@ export default {
 
     //相关操作事件
     methods: {
-
+        toggle(){
+          this.hide=!this.hide
+		},
         tab(item,index){
             if(item.through){
                 this.iScur=index;
             }
 
-            console.log(item,index)
+            //console.log(item,index)
         },
 
+        tab2(item,index){
+            if(item.through){
+                this.iScur2=index;
+            }
+
+            //console.log(item,index)
+        },
 
         //地址弹窗
         submitForm(formName) {
@@ -206,13 +224,17 @@ export default {
         },
 
         //隐藏收货地址
+        showAddress(item,index){
+
+        },
+        //隐藏收货地址
         hideAddress(item,index){
 
         },
         //选择地区
         handleChange(value){
             console.log(value)
-            this.ruleForm.address=value
+            this.rules.address=value
         },
 
         //倒计时
@@ -223,6 +245,25 @@ export default {
 		//新增地址
 		jAdd(){
             this.dialogVisible=true;
+		},
+
+		//获取地址
+		getAddress(num){
+            this.axios.get(Lib.C.url_mc+'/mall/bss/addr/addrList',{
+                params:{
+                    ipPk:this.userId,
+                    statCd:num
+                }
+            })
+                .then(res=>{
+                    if(num=='1120.10'){
+                        this.addressOption=res.data.data.items;
+					}else{
+                        console.log(res.data.data.items)
+					}
+                }).catch(err=>{
+                console.log(err);
+            });
 		}
 
     },
@@ -235,11 +276,13 @@ export default {
 
   //已成功挂载，相当ready()
   mounted(){
+
+      //地区
       var This=this;
 		//console.log(this.$route.query);
       this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9000')
           .then(res=>{
-              console.log(res.data);
+              //console.log(res.data);
               var result={};
               res.data.map(function (e) {
                   result={
@@ -269,11 +312,17 @@ export default {
           });
 
 
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+
+      this.getAddress('1120.10')
+      this.getAddress('')
+
   },
 
-   computed:{
 
-  },
 
 }
 </script>
@@ -298,6 +347,10 @@ export default {
 	.m-address{
 		h2{
 			margin: 0 0 20px 0 ;
+		}
+		h3{
+			margin: 0 0 20px 0 ;
+			cursor: pointer;
 		}
 		li{
 			border: 1px solid #ddd;

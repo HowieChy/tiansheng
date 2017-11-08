@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead @child-id="getId"  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -41,14 +41,17 @@
 			<div class="m-right">
 				<h1>{{title}}</h1>
 				<h2><span><em>￥</em>{{newPrice,''| currency}}</span> <ins>{{oldPrice| currency}}</ins></h2>
-				<h3 class="j-size">
+
+				<!--<h3 class="j-size">
 					<p>规格：<em>1斤</em></p>
 					<ul class="clearfix">
 						<li class="f-active">1斤</li><li>2斤</li><li>3斤</li><li>4斤</li>
 					</ul>
-				</h3>
+				</h3>-->
 				<h3>
+
 					<p>库存：{{stock}}</p>
+					<p style="height: 70px;"></p>
 					<div>
 						<!--计数-->
 						<el-input-number size="small" v-model="numer" :min="1" :max="stock"></el-input-number>
@@ -99,7 +102,7 @@
 
 import Lib from 'assets/js/Lib';
 /*头部组件*/
-import McHead from 'components/McHead2';
+import McHead from 'components/McHead3';
 /*底部组件*/
 import McFoot from 'components/McFoot';
 /*倒计时组件*/
@@ -113,6 +116,14 @@ import imagezoom from './assets/cloudzoom.js'
 export default {
   data() {
     return {
+        userId:'',
+
+        carItems:[],   //购物车列表
+        allPrice:0,//商品总价
+        allNum:0,//商品总数
+
+        cutTime:'1510140980' ,//倒计时
+
         title:'',
         newPrice:'',
         oldPrice:'',
@@ -120,23 +131,6 @@ export default {
         stock:null,
         id:"",
         imgSrc:'',
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
-        //倒计时
-        cutTime:'1506596400'
     }
   },
     components: {
@@ -154,6 +148,12 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
+
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+
       var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
       console.log(prodId)
       //获取商品详情信息
@@ -174,7 +174,23 @@ export default {
           }).catch(err=>{
           console.log(err);
       });
-	  //放大镜
+
+
+      //获取购物车
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              this.carItems=res.data.data;
+              this.carItems.map(function (item) {
+                  this.allNum=this.carItems.length;
+                  this.allPrice+=item.membAmt*item.qty;
+              }.bind(this));
+          }).catch(err=>{
+          console.log(err);
+      });
 
 
       //悬浮定位
@@ -200,12 +216,12 @@ export default {
           }
       })
       
-      //选择规格
-      $('.j-size li').on('click',function () {
-          $('.j-size li').removeClass('f-active');
-          $(this).addClass('f-active');
-          $('.j-size em').text($(this).text())
-      })
+//      //选择规格
+//      $('.j-size li').on('click',function () {
+//          $('.j-size li').removeClass('f-active');
+//          $(this).addClass('f-active');
+//          $('.j-size em').text($(this).text())
+//      })
 
   },
   //相关操作事件
@@ -215,79 +231,168 @@ export default {
           this.allPrice=msg.price //获取删除商品后的价格
       },
       getTime(msg){
-          this.cutTime=0
+          this.cutTime='0'
       },
 
-
+      //获取删除的ID,数量
+      getId(msg){
+          console.log(msg[0],msg[1])
+          //库存
+		  if(msg[0]==this.id){
+		      this.stock+=msg[1]
+		  }
+      },
 
 	  //开始倒计时
       callback(){
 		console.log('结束')
       },
-	  //购买商品
-      addShop(e){
-	      if( $(e.currentTarget).attr('rel')=='1'){
-	          alert('库存为0,不能继续购买');
-	          return false
-		  }
-          this.store=this.store-this.numer;
-          if(this.store<0){
-              this.store=0;
-              $(e.currentTarget).attr('rel','1')
-		  }
-			if(!this.carItems.length){
-                console.log('第一次添加')
-                this.carItems.push({
-                    price:$(e.currentTarget).attr('price'),
-                    num:$(e.currentTarget).attr('num'),
-                    id:$(e.currentTarget).attr('id')
-                });
+      //购买商品
+      addShop(item,index){
+          var Qs = require('qs');
+          //this.axios.post('/api/mall/bss/cart/add', Qs.stringify({
+          this.axios.post(Lib.C.url_mc+'/mall/bss/cart/add', Qs.stringify({
+              ipPk:this.userId,
+              prodPk:this.id,
+              prodNum:this.number
+          }),{
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              }
+          })
+              .then(res=>{
+                  console.log(res.data);
+                  if(res.data.status==200){
 
-                this.cutTime=(parseInt(new Date().getTime()/1000)+1802).toString();
+                      //添加商品
+                      function add(e) {
+                          var img=e.imgSrc[0];
+                          e.carItems.push({
+							  imgUrl:img,
+                              prodNm:e.title,
+                              membAmt:e.newPrice,
+                              qty:e.number,
+                              prodPk:e.id
+                          });
+                      };
+                      //计算价格
+                      function sum(e) {
+                          e.allNum=0;
+                          e.allPrice=0;
+                          e.carItems.map(function (item) {
+                              e.allNum=e.carItems.length;//商品总数
+                              e.allPrice+=item.membAmt*item.qty//商品价格
+                          })
+                      }
+                      if(this.carItems.length){
+                          add(this);
+                          var hash={};
+                          var newItems=[];
+                          this.carItems.map(function (e,i) {
+                              if(!hash[e.prodPk]){
+                                  newItems.push(e);
+                                  hash[e.prodPk]=e;
+                              }else{
+                                  hash[e.prodPk].qty+=e.qty
+                              }
+                          })
+                          this.carItems=newItems;
+                          sum(this);
+                      }else{
+                          console.log('第一次添加')
+                          add(this)
+                          sum(this)
+                      }
 
-                this.allNum=0;
-                this.allPrice=0;
-                this.carItems.map(function (item) {
-                    this.allNum=this.allNum+parseInt(item.num);
-                    this.allPrice+=item.price*item.num
-                }.bind(this))
-				return false
-            }
-		  for(var i=0;i<this.carItems.length;i++){
 
-              if($(e.currentTarget).attr('id')==this.carItems[i].id){
-                  console.log('已重复添加')
-                  this.carItems[i].num=parseInt(this.carItems[i].num)+parseInt($(e.currentTarget).attr('num'));
+                      //库存
+					  this.stock-=this.number;
+
+                      this.number=1;
+                      if(this.stock<0){
+                          this.stock=0;
+                          return false;
+                      }
+
+                  }
+                  if(res.data.status==400){
+                      this.$alert('加入购物车失败', '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
+                  }
+              }).catch(err=>{
+              console.log(err);
+          });
 
 
-                  this.allNum=0;
-                  this.allPrice=0;
-                  this.carItems.map(function (item) {
-                      this.allNum=this.allNum+parseInt(item.num);
-                      this.allPrice+=item.price*item.num
-                  }.bind(this))
-                  return false
-              };
-              if(i==this.carItems.length-1){
-                  console.log('新添加')
-				  this.carItems.push({
-					  price:$(e.currentTarget).attr('price'),
-					  num:$(e.currentTarget).attr('num'),
-					  id:$(e.currentTarget).attr('id')
-              		}
-          		);
-
-                  this.allNum=0;
-                  this.allPrice=0;
-                  this.carItems.map(function (item) {
-                      this.allNum=this.allNum+parseInt(item.num);
-                      this.allPrice+=item.price*item.num
-                  }.bind(this))
-                  return false
-			  }
-		  }
-
-	  },
+      }
+//	  //购买商品
+//      addShop(e){
+//	      if( $(e.currentTarget).attr('rel')=='1'){
+//	          alert('库存为0,不能继续购买');
+//	          return false
+//		  }
+//          this.store=this.store-this.numer;
+//          if(this.store<0){
+//              this.store=0;
+//              $(e.currentTarget).attr('rel','1')
+//		  }
+//			if(!this.carItems.length){
+//                console.log('第一次添加')
+//                this.carItems.push({
+//                    price:$(e.currentTarget).attr('price'),
+//                    num:$(e.currentTarget).attr('num'),
+//                    id:$(e.currentTarget).attr('id')
+//                });
+//
+//                this.cutTime=(parseInt(new Date().getTime()/1000)+1802).toString();
+//
+//                this.allNum=0;
+//                this.allPrice=0;
+//                this.carItems.map(function (item) {
+//                    this.allNum=this.allNum+parseInt(item.num);
+//                    this.allPrice+=item.price*item.num
+//                }.bind(this))
+//				return false
+//            }
+//		  for(var i=0;i<this.carItems.length;i++){
+//
+//              if($(e.currentTarget).attr('id')==this.carItems[i].id){
+//                  console.log('已重复添加')
+//                  this.carItems[i].num=parseInt(this.carItems[i].num)+parseInt($(e.currentTarget).attr('num'));
+//
+//
+//                  this.allNum=0;
+//                  this.allPrice=0;
+//                  this.carItems.map(function (item) {
+//                      this.allNum=this.allNum+parseInt(item.num);
+//                      this.allPrice+=item.price*item.num
+//                  }.bind(this))
+//                  return false
+//              };
+//              if(i==this.carItems.length-1){
+//                  console.log('新添加')
+//				  this.carItems.push({
+//					  price:$(e.currentTarget).attr('price'),
+//					  num:$(e.currentTarget).attr('num'),
+//					  id:$(e.currentTarget).attr('id')
+//              		}
+//          		);
+//
+//                  this.allNum=0;
+//                  this.allPrice=0;
+//                  this.carItems.map(function (item) {
+//                      this.allNum=this.allNum+parseInt(item.num);
+//                      this.allPrice+=item.price*item.num
+//                  }.bind(this))
+//                  return false
+//			  }
+//		  }
+//
+//	  }
 
 
       
