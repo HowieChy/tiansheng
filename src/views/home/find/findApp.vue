@@ -15,7 +15,7 @@
 
 			<el-form-item  prop="yzm">
 				<el-input  style="width: 226px"  v-model="ruleForm.yzm" placeholder="请输入验证码" type="text"></el-input>
-				<span class="m-button m-button2"  @click="">{{ruleForm.tyzm}}</span>
+				<span class="m-button m-button2"  @click="jTyzm">{{ruleForm.tyzm}}</span>
 			</el-form-item>
 
 			<el-form-item  prop="yzm2">
@@ -27,18 +27,10 @@
 				<el-input type="password" v-model="ruleForm.pass" auto-complete="off" placeholder="请输入密码" ></el-input>
 			</el-form-item>
 
-			<el-form-item  prop="checkPass">
-				<el-input type="password" v-model="ruleForm.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
-			</el-form-item>
-
-
-
-
-
 			<el-form-item>
 				<el-button style="background:#30b947 " type="primary" @click="submitForm('ruleForm')">确认</el-button>
 			</el-form-item>
-			<h5><a href="">返回登录</a></h5>
+			<h5><a href="login.html">返回登录</a></h5>
 		</el-form>
 	</div>
 
@@ -68,15 +60,7 @@ export default {
               callback();
           }
       };
-      var validatePass2 = (rule, value, callback) => {
-          if (value === '') {
-              callback(new Error('请再次输入密码'));
-          } else if (value !== this.ruleForm.pass) {
-              callback(new Error('两次输入密码不一致!'));
-          } else {
-              callback();
-          }
-      };
+
 
       var validateYzm=(rule, value, callback)=> {
 			if(value!=this.ruleForm.tyzm){
@@ -86,39 +70,13 @@ export default {
             }
 	  }
     return {
-        options: [{
-            value: 'zhejiang',
-            label: '浙江',
-            children: [{
-                value: 'hangzhou',
-                label: '杭州',
-                children: [{
-                    value: 'xihu',
-                    label: '西湖区'
-                }, {
-                    value: 'binjiang',
-                    label: '滨江区'
-                }]
-            }, {
-                value: 'ningbo',
-                label: '宁波',
-                children: [{
-                    value: 'zhenhai',
-                    label: '镇海区'
-                }, {
-                    value: 'jiangbei',
-                    label: '江北区'
-                }]
-            }]
-        }],
-        selectedOptions: ['zhejiang','ningbo','jiangbei'],
+
         ruleForm: {
             phone: '',
             yzm:'',
-			tyzm:'123',//图形验证码
+            tyzm:'获取验证码',//图形验证码
             yzm2:'',
             pass: '',
-            checkPass: '',
         },
         rules: {
             phone: [
@@ -131,11 +89,9 @@ export default {
                 { required: true, message: '请输入验证码', trigger: 'blur' },
             ],
             pass: [
-                { validator: validatePass, trigger: 'blur' }
+                { required: true, message: '请输入修改后的密码', trigger: 'blur' },
             ],
-            checkPass: [
-                { validator: validatePass2, trigger: 'blur' }
-            ]
+
     	}
  	 }
   },
@@ -158,16 +114,63 @@ export default {
   },
   //相关操作事件
   methods: {
-      //选择地区
-      handleChange(value){
-          console.log(value);
-	  },
+      //图形验证码
+      jTyzm(){
+          if(!this.ruleForm.phone){
+              this.$alert('请先输入手机号码！', '提示', {
+                  confirmButtonText: '确定',
+              });
+          }else{
+              this.axios.get(Lib.C.url_mc+'/mall/bss/sms/sendPicVerifyCode',{
+                  params:{
+                      mob:this.ruleForm.phone
+                  }
+              })
+                  .then(res=>{
+                      this.ruleForm.tyzm=res.data.data.code;
+                  }).catch(err=>{
+                  console.log(err);
+              });
+          }
+      },
 
       //验证提交
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                  //alert('submit!');
+                  var Qs = require('Qs');
+                  this.axios.post(Lib.C.url_mc + '/mall/sys/acct/resetPwd', Qs.stringify({
+                      mob: this.ruleForm.phone,
+                      verifyCode: this.ruleForm.yzm2,//手机验证码
+                      pwd: this.ruleForm.pass,
+                  }), {
+                      headers: {
+                          'Content-Type': 'application/x-www-form-urlencoded',
+                      }
+                  })
+                      .then(res => {
+                          console.log(res.data);
+                          if (res.data.status == 200) {
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                                  callback: action => {
+                                      window.location.href = Lib.C.url_href + 'login.html';
+                                  }
+                              });
+
+                          }
+                          if (res.data.status == 400) {
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                                  callback: action => {
+                                      // window.location.href=Lib.C.url_href+'login.html';
+                                  }
+                              });
+                              //window.location.href=Lib.C.url_href+'login.html';
+                          }
+                      }).catch(err => {
+                      console.log(err);
+                  });
                   console.log(this.ruleForm)
               } else {
                   console.log('error submit!!');
@@ -175,9 +178,10 @@ export default {
               }
           });
       },
-	  yzm(){
+      yzm(){
           var count =60;
           var curCount;
+          var This=this;
           function sendMessage() {
 
               curCount = count;
@@ -186,7 +190,7 @@ export default {
               $(".m-sendm").attr("disabled", "true");
               $(".m-sendm").addClass('disabled');
               $(".m-sendm").html("重新获取  " + "(" +curCount+ ")");
-			  var  InterValObj = window.setInterval(function () {
+              var  InterValObj = window.setInterval(function () {
                   if (curCount == 0) {
                       window.clearInterval(InterValObj);//停止计时器
                       $(".m-sendm").removeClass('disabled');
@@ -201,20 +205,25 @@ export default {
                   }
               }, 1000); //启动计时器，1秒执行一次
               //向后台发送处理数据
-              $.ajax({
-                  type: "POST", //用POST方式传输
-                  dataType: "", //数据格式:JSON
-                  url: '', //目标地址
-                  data: "",
-                  error: function (XMLHttpRequest, textStatus, errorThrown) { },
-                  success: function (msg){
-
-                  }
-              });
-
+              if(!This.ruleForm.phone){
+                  This.$alert('请先输入手机号码！', '提示', {
+                      confirmButtonText: '确定',
+                  });
+              }else{
+                  This.axios.get(Lib.C.url_mc+'/mall/bss/sms/sendSmsVerifyCode',{
+                      params:{
+                          mob:This.ruleForm.phone
+                      }
+                  })
+                      .then(res=>{
+                          console.log(res.data)
+                      }).catch(err=>{
+                      console.log(This.ruleForm.phone);
+                  });
+              }
           }
           sendMessage()
-	  }
+      }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead @child-number="get"   @child-price="get2"  @child-cutTime="get3" :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -14,7 +14,7 @@
 
 		<ul class="m-info">
 			<li><ins>用户名：</ins>XXX</li>
-			<li><ins>密码：</ins>*********** <a href="">更改</a></li>
+			<li><ins>密码：</ins>*********** <a href="retrieval.html">更改</a></li>
 			<li><ins>真实姓名：</ins>
 				<div><input type="text"></div>
 			</li>
@@ -43,10 +43,8 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
 
-import McCenter from 'components/McCenter';
+
 
 
 

@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead @child-number="get"   @child-price="get2"  @child-cutTime="get3" :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -11,7 +11,7 @@
 	<div class="g-content">
 		<div class="g-content">
 
-			<a class="u-back" href="">返回 &gt;</a>
+			<a class="u-back" href="information.html">返回 &gt;</a>
 
 			<ul class="m-info">
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
@@ -50,10 +50,6 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
-
-import $ from 'jquery'
 
 export default {
   data() {
@@ -77,32 +73,9 @@ export default {
           }
       };
 
-      var validateYzm=(rule, value, callback)=> {
-			if(value!=this.ruleForm.tyzm){
-                callback(new Error('请输入正确图形验证码'));
-			}else {
-                callback();
-            }
-	  }
+
     return {
 
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-            num:1,
-            id:'1'
-        },
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-        allNum:2,//商品总数
-
-        //倒计时
-        cutTime:'1504256400',
 
         ruleForm: {
             oldPass: '',
@@ -125,7 +98,7 @@ export default {
  	 }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -139,31 +112,38 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+      }
   },
   //相关操作事件
   methods: {
-      get(msg){
-          this.allNum=msg
-      },
-      get2(msg){
-          this.allPrice=msg
-      },
-      get3(msg){
-          this.cutTime='0'
-      },
 
-
-      //开始倒计时
-      callback(){
-          console.log('结束')
-      },
 
       //验证提交
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                  alert('submit!');
+
+                  var Qs = require('qs');
+                  this.axios.post(Lib.C.url_mc + '/mall/sys/acct/modifyPwd', Qs.stringify({
+                      ipPk:this.userId,
+                      oldPwd:this.ruleForm.oldPass,
+                      newPwd:this.ruleForm.pass
+                  }))
+                      .then(res=>{
+                          if(res.data.status==200){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                              });
+                          }else if(res.data.status==400){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                              });
+						  }
+                      }).catch(err=>{
+                      console.log(err);
+                  });
               } else {
                   console.log('error submit!!');
                   return false;

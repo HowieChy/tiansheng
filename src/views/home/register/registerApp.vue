@@ -69,7 +69,7 @@
 			<el-form-item>
 				<el-button style="background:#30b947 " type="primary" @click="submitForm('ruleForm')">立即注册</el-button>
 			</el-form-item>
-			<h5><a href="">已注册？立即登录</a></h5>
+			<h5><a href="login.html">已注册？立即登录</a></h5>
 		</el-form>
 	</div>
 
@@ -273,7 +273,7 @@ export default {
           this.$refs[formName].validate((valid) => {
               if (valid) {
 
-                  var qs = require('qs');
+                  var Qs = require('Qs');
                   this.axios.post(Lib.C.url_mc + '/mall/sys/acct/addForPc', qs.stringify({
                       mob: this.ruleForm.phone,
                       picVerifyCode: this.ruleForm.yzm,//图片验证码
