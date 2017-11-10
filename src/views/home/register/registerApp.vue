@@ -272,69 +272,47 @@ export default {
 
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                  //alert('submit!');
-				/*  $.ajax({
-					  url:Lib.C.url_mc+'/mall/sys/acct/add',
-					  type:'POST',
-					  dataType:'JSON',
-					  data:{
-                          mob:this.ruleForm.phone,
-                          picVerifyCode:this.ruleForm.yzm,//图片验证码
-                          smsVerifyCode:this.ruleForm.yzm2,//手机验证码
-                          pwd:this.ruleForm.pass,
-                          confirmPwd:this.ruleForm.checkPass,
-                          recoCode:this.ruleForm.tjm,//推荐码
-                          receNm:this.ruleForm.name,//推荐人姓名
-                          receMob:this.ruleForm.phone2,
-                          receProvCd:this.ruleForm.receProvCd,
-                          receCityCd:this.ruleForm.receCityCd,
-                          receDistCd:this.ruleForm.receDistCd,
-                          fullAddr:this.ruleForm.address2,
-					  },
-					  success:function (data) {
-						  console.log(data)
-                      }
-				  })*/
+
                   var qs = require('qs');
-                  this.axios.post(Lib.C.url_mc+'/mall/sys/acct/addForPc', qs.stringify({
-                          mob:this.ruleForm.phone,
-                          picVerifyCode:this.ruleForm.yzm,//图片验证码
-                          smsVerifyCode:this.ruleForm.yzm2,//手机验证码
-                          pwd:this.ruleForm.pass,
-                          confirmPwd:this.ruleForm.checkPass,
-                          recoCode:this.ruleForm.tjm,//推荐码
-                          receNm:this.ruleForm.name,//推荐人姓名
-                          receMob:this.ruleForm.phone2,
-                          receProvCd:this.ruleForm.receProvCd,
-                          receCityCd:this.ruleForm.receCityCd,
-                          receDistCd:this.ruleForm.receDistCd,
-                          fullAddr:this.ruleForm.address2,
-                  }),{
+                  this.axios.post(Lib.C.url_mc + '/mall/sys/acct/addForPc', qs.stringify({
+                      mob: this.ruleForm.phone,
+                      picVerifyCode: this.ruleForm.yzm,//图片验证码
+                      smsVerifyCode: this.ruleForm.yzm2,//手机验证码
+                      pwd: this.ruleForm.pass,
+                      confirmPwd: this.ruleForm.checkPass,
+                      recoCode: this.ruleForm.tjm,//推荐码
+                      receNm: this.ruleForm.name,//推荐人姓名
+                      receMob: this.ruleForm.phone2,
+                      receProvCd: this.ruleForm.receProvCd,
+                      receCityCd: this.ruleForm.receCityCd,
+                      receDistCd: this.ruleForm.receDistCd,
+                      fullAddr: this.ruleForm.address2,
+                  }), {
                       headers: {
                           'Content-Type': 'application/x-www-form-urlencoded',
                       }
-				  })
-                      .then(res=>{
+                  })
+                      .then(res => {
                           console.log(res.data);
-                          if(res.data.status==200){
+                          if (res.data.status == 200) {
                               this.$alert(res.data.msg, '提示', {
                                   confirmButtonText: '确定',
                                   callback: action => {
-                                      window.location.href=Lib.C.url_href+'login.html';
+                                      window.location.href = Lib.C.url_href + 'login.html';
                                   }
                               });
 
-						  }
-                          if(res.data.status==400){
+                          }
+                          if (res.data.status == 400) {
                               this.$alert(res.data.msg, '提示', {
                                   confirmButtonText: '确定',
                                   callback: action => {
-                                     // window.location.href=Lib.C.url_href+'login.html';
+                                      // window.location.href=Lib.C.url_href+'login.html';
                                   }
                               });
                               //window.location.href=Lib.C.url_href+'login.html';
-						  }
-                      }).catch(err=>{
+                          }
+                      }).catch(err => {
                       console.log(err);
                   });
               } else {

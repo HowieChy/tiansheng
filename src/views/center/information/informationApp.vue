@@ -53,30 +53,11 @@ import McCenter from 'components/McCenter';
 export default {
   data() {
     return {
-
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
         radio: '1',
-
-      		//倒计时
-		cutTime:'1504256400'
-    }
+	}
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot,
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -91,29 +72,41 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+      }
+      //获取个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+		  .then(res=>{
+			  console.log(res.data.data.items)
+			  this.shopItem=res.data.data.items;
+		  }).catch(err=>{
+			  console.log(err);
+	  	});
 
-      
+      //修改个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/editUser',{
+          params:{
+              ipPk:this.userId,
+              realNm:4
+          }
+      })
+          .then(res=>{
+              console.log(res.data.data.items)
+              this.shopItem=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      	});
 
 
   },
   //相关操作事件
   methods: {
 
-      get(msg){
-          this.allNum=msg
-      },
-      get2(msg){
-          this.allPrice=msg
-      },
-      get3(msg){
-          this.cutTime='0'
-      },
-
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
-      },
 
   }
 }

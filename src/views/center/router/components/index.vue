@@ -7,17 +7,34 @@
 				<span :class="{'vip':icon==1,'tuan':icon==2}"></span>
 			</div>
 			<div class="middle">
-				<h2>135068464123</h2>
+				<h2>{{info.nmCn}}</h2>
 				<h3>您好~</h3>
 				<!--<router-link :to="/"></router-link>-->
-				<a href="">修改个人信息 &gt;</a>
+				<a href="./information.html">修改个人信息 &gt;</a>
 				<p class="u-share">分享至： <span><img src="../assets/images/qq.png" alt=""></span><span><img src="../assets/images/wx.png" alt=""></span></p>
 			</div>
-			<div class="info">
-				<p>会员级别：VIP用户 <span>会员类别：个人用户</span></p>
-				<p>VIP到期时间：2017.9.30 23:00 <span>账户余额：￥20.00</span></p>
-				<p>我的积分：20（价值￥2.00）<span>消费总额：￥30000</span></p>
-				<p>推荐码：aaa123456</p>
+
+			<!--VIP用户-->
+			<div class="info" v-if="info.catCd=='3090.100'">
+				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
+				<p>VIP到期时间：{{info.expirationDate}}<span>账户余额：{{info.balaAmt|currency}}</span></p>
+				<p>我的积分：{{info.pointQty*100}}（价值{{info.pointQty |currency}}）<span>消费总额：{{info.cumConsum|currency }}</span></p>
+				<p>推荐码：{{info.referralCode }}</p>
+			</div>
+
+			<!--团员-->
+			<div class="info" v-if="info.catCd=='3090.110'">
+				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
+				<p>身份：团员 <span>账户余额：{{info.balaAmt|currency}}</span></p>
+				<p>消费总额：{{info.cumConsum|currency }}<span>累计优惠：￥0.00</span></p>
+				<p>推荐码：{{info.referralCode }}</p>
+			</div>
+
+			<!--团长-->
+			<div class="info" v-if="info.catCd=='3090.120'">
+				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
+				<p>身份：团长 <span>团员人数：{{info.memberNum }}人</span></p>
+				<p>我的积分：{{info.pointQty*100}}（价值{{info.pointQty |currency}}）<span>推荐码：{{info.referralCode }}</span></p>
 			</div>
 		</div>
 
@@ -26,11 +43,11 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem">
-					<a href=""><img :src="item.aImg" alt=""></a>
-					<p>{{item.title}}</p>
-					<p>库存:{{item.store}}</p>
-					<p>会员价：<em>￥{{item.newPrice}}</em></p>
-					<p>市场价：￥{{item.oldPrice}}</p>
+					<a :href="'../home/detail.html?id='+item.prodPk"><img :src="item.prodImg" alt=""></a>
+					<p>{{item.prodNm}}</p>
+					<p>库存:{{item.stock}}</p>
+					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
+					<p>市场价：{{item.markAmt| currency}}</p>
 				</li>
 			</ul>
 		</div>
@@ -51,44 +68,24 @@ export default {
     return {
         num:0, //账号类别
         text:"个人中心",
-		icon:1, //0为无标识  1为VIP标识  2为团标识
-
-        //商品列表
-        shopItem:[{
-            title:"四川凯特芒果",
-            store:10,
-            newPrice:'300.00',
-            oldPrice:'400.00',
-            id:'1',
-            numer: 1,
-            aImg:aImg,
+		icon:1, //0为团员  1为VIP标识  2为团长标识
+		info:{
+            nmCn:null,// 用户名
+            mob :null,
+            headPic :null,//头像
+            memRankNmCn :null, // 会员级别
+            memKindNmCn :null,// 会员类别
+            catNmCn :null,// 用户身份 300.120团长   3090.110团员  3090.100会员
+            memberNum:null, //团员数量
+            memberCos :null, //团员消费总额
+            balaAmt  :null, //账户余额
+            cumConsum  :null, //累计消费
+            pointQty  :null, //积分余额
+            pointRule  :null, //积分兑换规则
+            expirationDate:null,//会员到期时间
         },
-            {
-                title:"四川凯特芒果",
-                store:5,
-                newPrice:'200.50',
-                oldPrice:'300.00',
-                id:'5',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:2,
-                newPrice:'700.00',
-                id:'2',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            }],
+        //商品列表
+        shopItem:[],
 
     }
   },
@@ -102,27 +99,63 @@ export default {
 
 
   },
-	created:function(){
-		this.$emit('child-type',this.num);
-		this.$emit('child-text',this.text)
-	},
+
   //已成功挂载，相当ready()
   mounted(){
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+      }
+      //获取个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              console.log(res.data.data)
+			  switch (res.data.data.catCd){
+                  case '3090.100': //VIP
+					  this.num=0;
+                      this.icon=1;
+                      break;
+                  case '3090.110':
+                      this.num=2;//团员
+                      this.icon=0;
+                      break;
+                  case '3090.120': //团长
+                      this.num=1;
+                      this.icon=2;
+                      break;
+			  }
+			  console.log(this.icon)
+              this.info=res.data.data;
+
+			  //this.num=0;
+              this.$emit('child-type',this.num);
+              this.$emit('child-text',this.text)
+          }).catch(err=>{
+          console.log(err);
+      });
 
 
+      //获取最近游览
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/prodBHList',{
+          params:{
+              ipPk:this.userId,
+              count:4
+          }
+      })
+          .then(res=>{
+              console.log(res.data.data.items)
+              this.shopItem=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
   },
   //相关操作事件
   methods: {
 
-      get(msg){
-          this.allNum=msg
-      },
-      get2(msg){
-          this.allPrice=msg
-      },
-      get3(msg){
-          this.cutTime='0'
-      },
+
   }
 }
 </script>
@@ -186,6 +219,7 @@ export default {
 				margin-bottom: 20px;
 				span{
 					float: right;
+					width: 140px;
 				}
 			}
 		}

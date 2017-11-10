@@ -285,7 +285,7 @@
                 allPrice:0,//商品总价
                 allNum:0,//商品总数
 
-                cutTime:'1510140980'
+                cutTime:'1510394310'
             }
         },
         computed:{

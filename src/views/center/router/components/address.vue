@@ -4,11 +4,11 @@
 			<!--收货地址-->
 			<h2>收货地址</h2>
 			<ul class="clearfix">
-				<li v-for="(item,index) in addressOption" :class="{'f-active':iScur2==index}" @click="tab2(item,index)">
+				<li v-for="(item,index) in addressOption" :class="{'f-active':iScur==index}" @click="tab(item,index)">
 					<h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
 					<p>{{item.mob}}</p>
 					<p>{{item.fullAddr}}</p>
-					<h3><span @click="showAddress(item,index)">隐藏</span></h3>
+					<h3><span @click="hideAddress(item,index)">隐藏</span></h3>
 				</li>
 				<li class="u-add" @click="jAdd">
 					<img src="../assets/images/add.png" alt="">
@@ -23,7 +23,7 @@
 					<h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
 					<p>{{item.mob}}</p>
 					<p>{{item.fullAddr}}</p>
-					<h3><span @click="hideAddress(item,index)">显示</span></h3>
+					<h3><span @click="showAddress(item,index)">显示</span></h3>
 				</li>
 			</ul>
 		</div>
@@ -56,9 +56,9 @@
 				</el-form-item>
 
 				<el-form-item label="地址类型:" prop="type">
-					<el-radio-group v-model="radio" fill="#30b947">
+					<el-radio-group v-model="radio" fill="#30b947"  @change="changeId">
 						<el-radio-button label="家庭地址" ></el-radio-button>
-						<el-radio-button label="公司地址"></el-radio-button>
+						<el-radio-button label="公司地址"  ></el-radio-button>
 					</el-radio-group>
 				</el-form-item>
 
@@ -124,7 +124,8 @@ export default {
         },
         options: [],
         selectedOptions: ['','',''],//默认地址
-        radio:'公司地址',
+        radio:'家庭地址',
+		radioId:null,
         rules: {
 
             name: [
@@ -150,10 +151,6 @@ export default {
         document.title = '收货地址';
     },
 
-    created:function(){
-        this.$emit('child-type',this.num);
-        this.$emit('child-text',this.text)
-    },
 
     //相关操作事件
     methods: {
@@ -161,7 +158,7 @@ export default {
           this.hide=!this.hide
 		},
         tab(item,index){
-            if(item.through){
+            if(item.auditStatNmCn!='待审核'){
                 this.iScur=index;
             }
 
@@ -169,13 +166,18 @@ export default {
         },
 
         tab2(item,index){
-            if(item.through){
-                this.iScur2=index;
-            }
+            this.iScur2=index;
 
             //console.log(item,index)
         },
 
+        changeId(value){
+          if(value=='家庭地址'){
+              this.radioId=9090.100
+		  }else{
+              this.radioId=9090.110
+			}
+		},
         //地址弹窗
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -183,34 +185,67 @@ export default {
                     console.log(valid);
                     var This=this;
 					var str1,str2,str3;
+					var provCd,cityCd,distCd;
                     this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9000')
                         .then(res=>{
-                            console.log(res.data);
+                            console.log(res.data,This.ruleForm.address);
                             res.data.map(function (e,i) {
                                 if(e.cd==This.ruleForm.address[0]){
                                     str1=e.nmCn;
+                                    provCd=e.cd;
 								}
                                 e.childSysCatDtozList.map(function (ev,j) {
                                     if(ev.cd==This.ruleForm.address[1]){
                                         str2=ev.nmCn;
+                                        cityCd=ev.cd
                                     }
                                     ev.childSysCatDtozList.map(function (evv) {
                                         if(evv.cd==This.ruleForm.address[2]){
                                             str3=evv.nmCn;
+                                            distCd=evv.cd
                                         }
                                     })
                                 })
 
                             })
-                            //console.log(str1,str2,str3)
-                            this.addressOption.push({
-                                name:this.ruleForm.name,
-                                phone:this.ruleForm.phone,
-                                address:str1+' '+str2+' '+str3+' '+this.ruleForm.address2,
-                                through:false,
-                                type:this.ruleForm.radio,
+
+							//新增收货地址
+                            var Qs = require('qs');
+                            this.axios.post(Lib.C.url_mc + '/mall/bss/addr/addAddr', Qs.stringify({
+                                ipPk:this.userId,
+                                rcvr:this.ruleForm.name,
+                                mob:this.ruleForm.phone,
+                                provCd:provCd,
+								cityCd:cityCd,
+								distCd:distCd,
+								addr:this.ruleForm.address2,
+                                catCd: this.radioId
+                            }))
+                                .then(res => {
+                                    console.log(res.data);
+                                    if (res.data.status == 200) {
+                                        this.addressOption.push({
+                                            rcvr:this.ruleForm.name,
+                                            mob:this.ruleForm.phone,
+                                            fullAddr:str1+' '+str2+' '+str3+' '+this.ruleForm.address2,
+                                            auditStatNmCn:"待审核",
+                                            type:this.ruleForm.radio,
+                                        });
+                                        this.dialogVisible=false;
+                                    }
+                                    if (res.data.status == 400) {
+                                        this.$alert('新增地址失败', '提示', {
+                                            confirmButtonText: '确定',
+                                            callback: action => {
+
+                                            }
+                                        });
+                                    }
+                                }).catch(err => {
+                                console.log(err);
                             });
-                            this.dialogVisible=false;
+
+
                         }).catch(err=>{
                         console.log(err);
                     });
@@ -223,18 +258,40 @@ export default {
             });
         },
 
-        //隐藏收货地址
+        //显示收货地址
         showAddress(item,index){
-
+            var Qs = require('qs');
+            this.axios.post(Lib.C.url_mc + '/mall/bss/addr/editAddr', Qs.stringify({
+                ipPk:this.userId,
+                addrPk:item.addrPk,
+                isShow:true
+            }))
+                .then(res=>{
+                    this.getAddress('1120.10')
+                    this.getAddress('1120.80')
+                }).catch(err=>{
+                console.log(err);
+            });
         },
         //隐藏收货地址
         hideAddress(item,index){
-
+            var Qs = require('qs');
+            this.axios.post(Lib.C.url_mc + '/mall/bss/addr/editAddr', Qs.stringify({
+                ipPk:this.userId,
+                addrPk:item.addrPk,
+                isShow:false
+            }))
+                .then(res=>{
+                    this.getAddress('1120.10')
+                    this.getAddress('1120.80')
+                }).catch(err=>{
+                console.log(err);
+            });
         },
         //选择地区
         handleChange(value){
             console.log(value)
-            this.rules.address=value
+            this.ruleForm.address=value
         },
 
         //倒计时
@@ -259,6 +316,8 @@ export default {
                     if(num=='1120.10'){
                         this.addressOption=res.data.data.items;
 					}else{
+                        this.addressHide=res.data.data.items;
+
                         console.log(res.data.data.items)
 					}
                 }).catch(err=>{
@@ -318,7 +377,35 @@ export default {
       }
 
       this.getAddress('1120.10')
-      this.getAddress('')
+      this.getAddress('1120.80')
+
+
+
+      //获取个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              switch (res.data.data.catCd){
+                  case '3090.100': //VIP
+                      this.num=0;
+                      break;
+                  case '3090.110':
+                      this.num=2;//团员
+                      break;
+                  case '3090.120': //团长
+                      this.num=1;
+                      break;
+              }
+              console.log(this.icon)
+
+              this.$emit('child-type',this.num);
+              this.$emit('child-text',this.text)
+          }).catch(err=>{
+          console.log(err);
+      });
 
   },
 

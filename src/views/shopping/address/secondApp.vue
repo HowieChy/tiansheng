@@ -19,14 +19,20 @@
           <h2>收货地址</h2>
           <ul class="clearfix">
             <li v-for="(item,index) in addressOption" :class="{'f-active':iScur==index}" @click="tab(item,index)">
-              <h1><span>{{item.name}}</span> <em v-if="item.through">审核通过可使用</em> <em v-if="!item.through">正在审核</em></h1>
-              <p>{{item.phone}}</p>
-              <p>{{item.address}}</p>
-              <!--<h3><span>修改</span></h3>-->
+              <h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
+              <p>{{item.mob}}</p>
+              <p>{{item.fullAddr}}</p>
+              <!--<h3><span @click="hideAddress(item,index)">隐藏</span></h3>-->
             </li>
-            <li class="u-add">
-              <img src="./assets/images/add.png" alt="">
-            </li>
+            <!--<li v-for="(item,index) in addressOption" :class="{'f-active':iScur==index}" @click="tab(item,index)">-->
+              <!--<h1><span>{{item.name}}</span> <em v-if="item.through">审核通过可使用</em> <em v-if="!item.through">正在审核</em></h1>-->
+              <!--<p>{{item.phone}}</p>-->
+              <!--<p>{{item.address}}</p>-->
+              <!--&lt;!&ndash;<h3><span>修改</span></h3>&ndash;&gt;-->
+            <!--</li>-->
+            <!--<li class="u-add">-->
+              <!--<img src="./assets/images/add.png" alt="">-->
+            <!--</li>-->
           </ul>
         </div>
 
@@ -85,51 +91,6 @@
 	<!--公用底部组件-->
 	<McFoot></McFoot>
 
-    <!--修改收货地址-->
-    <el-dialog title="修改收货地址" :visible.sync="dialogVisible" custom-class="g-dialog">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="收货人:" prop="name">
-          <el-input v-model="ruleForm.name" style="width: 160px;"></el-input>
-        </el-form-item>
-
-        <el-form-item  label="所在地区:"  prop="address">
-          <el-cascader    placeholder="请选择地区"
-                          :options="options"
-                          v-model="selectedOptions"
-                          @change="handleChange"
-          ></el-cascader>
-        </el-form-item>
-
-        <el-form-item label="详细地址:" prop="address2">
-          <el-input v-model="ruleForm.address2" style="width: 560px;"></el-input>
-          <el-tooltip class="item" effect="dark" content="请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区请选择地区" placement="right">
-            <span style="margin-left: 20px;color: #ff3002;cursor: pointer">配送说明</span>
-          </el-tooltip>
-        </el-form-item>
-
-        <el-form-item label="手机号码:" prop="phone">
-          <el-input v-model="ruleForm.phone" style="width: 400px;"></el-input>
-        </el-form-item>
-
-        <el-form-item label="地址类型:" prop="type">
-          <el-radio-group v-model="radio" fill="#30b947">
-            <el-radio-button label="家庭地址" ></el-radio-button>
-            <el-radio-button label="公司地址"></el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-
-        <ul class="m-tip">
-          <li><span>提示：</span>1.正在审核和审核通过的地址不能修改，删除，只可以隐藏</li>
-          <li><span></span>2.提交审核中状态的地址可以修改</li>
-          <li><span></span>3.新增地址需要审核通过才可以使用</li>
-        </ul>
-
-        <el-form-item class="g-button">
-          <el-button  @click="submitForm('ruleForm')">保存</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
 
 </div>
 </template>
@@ -161,25 +122,7 @@ export default {
         },
         value: '',
         //收货地址
-        addressOption:[{
-            name:'陈豪云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:true,
-            type:'家庭地址',
-        },{
-            name:'豪云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:false,
-            type:'公司地址',
-        },{
-            name:'陈云',
-            phone:'1524512',
-            address:'浙江省 宁波市 镇海区 九龙湖XXXX93号',
-            through:true,
-            type:'公司地址'
-        }],
+        addressOption:[],
 
         //购物车列表
         cars:[{
@@ -243,7 +186,7 @@ export default {
             ],
         },
 
-        dialogVisible:false,
+        //dialogVisible:false,
         cutTime:'1504796400',//倒计时
 
 	}
@@ -263,16 +206,13 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-
-
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+      this.getAddress('1120.10')
   },
-  computed:{
 
-  },
-
-  watch:{
-
-  },
   //相关操作事件
   methods: {
       tab(item,index){
@@ -317,6 +257,27 @@ export default {
       handleChange(value){
           this.ruleForm.address=value
       },
+
+      //获取地址
+      getAddress(num){
+          this.axios.get(Lib.C.url_mc+'/mall/bss/addr/addrList',{
+              params:{
+                  ipPk:this.userId,
+                  statCd:num
+              }
+          })
+              .then(res=>{
+                  if(num=='1120.10'){
+                      console.log(res.data.data.items)
+                      this.addressOption=res.data.data.items;
+                  }else{
+                      this.addressHide=res.data.data.items;
+                      console.log(res.data.data.items)
+                  }
+              }).catch(err=>{
+              console.log(err);
+          });
+      }
   }
 }
 </script>
@@ -355,6 +316,7 @@ export default {
           margin-right: 30px;
           height: 120px;
           position: relative;
+          margin-bottom: 30px;
           cursor:pointer;
         h1{
           margin-bottom: 20px;

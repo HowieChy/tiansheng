@@ -66,7 +66,7 @@
 		<!--商品-->
 		<ul class="m-shop clearfix">
 			<li v-for="(item,index) in shopItem[0].prodRos">
-				<a :href="'detail.html?id='+item.prodPk"><img v-view="item.imgUrl" alt=""></a>
+				<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 				<p>{{item.nm}}</p>
 				<p>库存:{{item.stock}}</p>
 				<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -97,7 +97,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[1].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -126,7 +126,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[2].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -153,7 +153,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[3].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -180,7 +180,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[4].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -207,7 +207,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[5].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -234,7 +234,7 @@
 			<!--商品-->
 			<ul class="m-shop clearfix">
 				<li v-for="(item,index) in shopItem[6].prodRos">
-					<a href=""><img v-view="item.imgUrl" alt=""></a>
+					<a :href="'detail.html?id='+item.prodPk" @click="look(item)"><img v-view="item.imgUrl" alt=""></a>
 					<p>{{item.nm}}</p>
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
@@ -338,7 +338,7 @@ export default {
 
 		door:false, //模块是否展示
 
-		cutTime:'1510140980' //倒计时
+		cutTime:'1510394310' //倒计时
     }
   },
     components: {
@@ -361,12 +361,6 @@ export default {
             console.log(this.userId)
 		}
 
-      //获取用户ID
-
-//	  if((Math.round(new Date().getTime()/1000))>(Math.round(new Date(Lib.M.store.get('user').e).getTime()/1000))){
-//          Lib.M.store.remove('user');
-//      };
-//      console.log(Lib.C.appname)
 	  //左侧导航
       this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9040')
           .then(res=>{
@@ -459,7 +453,20 @@ export default {
 		console.log('结束')
       },
 
+	  //新增游览记录
+      look(item){
+          var Qs = require('qs');
+          this.axios.post(Lib.C.url_mc+'/mall/bss/prod/addProdBH', Qs.stringify({
+              ipPk:this.userId,
+              prodPk:item.prodPk
+          }))
+              .then(res=>{
+                  console.log(res.data)
+              }).catch(err=>{
+              console.log(err);
+          });
 
+	  },
       //购买商品
       addShop(item,index){
           var Qs = require('qs');

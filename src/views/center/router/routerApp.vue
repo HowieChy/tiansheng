@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead   @child-shop="getShop"    @child-cutTime="getTime"    :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -36,8 +36,6 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
 
 import McCenter from 'components/McCenter2';
 
@@ -47,29 +45,11 @@ export default {
   data() {
     return {
 		num:'', //账号类别
-		text:"",
-		icon:1, //0为无标识  1为VIP标识  2为团标识
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
-		//倒计时
-		cutTime:'1504256400'
+		text:'',
     }
   },
     components: {
-        McHead,McFoot,countDown,McCenter
+        McHead,McFoot,McCenter
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -90,13 +70,6 @@ export default {
   //相关操作事件
   methods: {
 
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
 
       getType(msg){
         this.num=msg;
