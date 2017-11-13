@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead >
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -9,7 +9,8 @@
 	</McHead>
 
 	<div class="g-content">
-			<img src="https://pro.modao.cc/uploads3/images/1169/11692305/raw_1502176230.jpeg" alt="">
+		<div v-html="content"></div>
+		<!--img src="https://pro.modao.cc/uploads3/images/1169/11692305/raw_1502176230.jpeg" alt="">-->
 	</div>
 
 
@@ -29,38 +30,18 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
+
 
 
 
 export default {
   data() {
     return {
-
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
-
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
-        currentPage:1,
-
-		//倒计时
-		cutTime:'1504256400'
+        content:''
     }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -75,7 +56,13 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 
-
+      this.axios.get(Lib.C.url_mc+'/mall/bss/news/DeliveryPackage')
+          .then(res=>{
+              console.log(res.data.data.cont);
+              this.content=res.data.data.cont;
+          }).catch(err=>{
+          console.log(err);
+      });
 
   },
 
@@ -83,20 +70,6 @@ export default {
   //相关操作事件
   methods: {
 
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
-
-
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
-      },
 
   }
 }

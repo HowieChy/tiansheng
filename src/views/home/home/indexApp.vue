@@ -31,16 +31,16 @@
 				</ul>
 			</div>
 			<div class="m-nav">
-				<a href="">VIP专区</a>
-				<a href="">预售专区</a>
-				<a href="">免耕专区</a>
-				<a href="">闪送专区</a>
-				<a href="">私人订制</a>
-				<a href="">卡卷专区</a>
+				<a href="#A">VIP专区</a>
+				<a href="B">预售专区</a>
+				<a href="C">免耕专区</a>
+				<a href="D">闪送专区</a>
+				<a href="E">私人订制</a>
+				<a href="card.html">卡卷专区</a>
 				<a href="">增值服务</a>
 				<a href="">科普体现</a>
-				<a href="">农场日志</a>
-				<a href="">产品大全</a>
+				<a href="../notice/list.html">农场日志</a>
+				<a href="supermaket.html">产品大全</a>
 			</div>
 		</div>
 	</div>
@@ -91,7 +91,7 @@
 
 		<!--VIP专区-->
 
-		<div class="g-shops" v-if="door">
+		<div class="g-shops" v-if="door" id="A">
 			<h2 v-if="shopItem[1].prodRos.length">VIP专区</h2>
 			<!--商品-->
 			<ul class="m-shop clearfix">
@@ -120,7 +120,7 @@
 
 
 		<!--预售专区-->
-		<div class="g-shops" v-if="door">
+		<div class="g-shops" v-if="door" id="B">
 			<h2 v-if="shopItem[2].prodRos.length" class="u-new3">预售专区</h2>
 			<!--商品-->
 			<ul class="m-shop clearfix">
@@ -174,7 +174,7 @@
 		</div>
 
 		<!--免耕专区-->
-		<div class="g-shops" v-if="door">
+		<div class="g-shops" v-if="door" id="C">
 			<h2 v-if="shopItem[4].prodRos.length" class="u-new4">免耕专区</h2>
 			<!--商品-->
 			<ul class="m-shop clearfix">
@@ -228,7 +228,7 @@
 		</div>
 
 		<!--闪送专区-->
-		<div class="g-shops"  v-if="door">
+		<div class="g-shops"  v-if="door" id="D">
 			<h2 v-if="shopItem[6].prodRos.length" class="u-new6">闪送专区</h2>
 			<!--商品-->
 			<ul class="m-shop clearfix">
@@ -337,7 +337,7 @@ export default {
 
 		door:false, //模块是否展示
 
-		cutTime:'1510394310' //倒计时
+		cutTime:'1510635396' //倒计时
     }
   },
     components: {

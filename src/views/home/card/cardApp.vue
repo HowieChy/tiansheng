@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead @child-number="get"   @child-price="get2"  @child-cutTime="get3" :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -19,9 +19,9 @@
 
 		<div class="m-info" v-if="tabs[0]">
 			<ul class="clearfix">
-				<li v-for="(item,index) in type"  :class="{'f-active':iScur==index}" @click="iScur=index">{{item}}</li>
+				<li v-for="(item,index) in type"  :class="{'f-active':iScur==index}" @click="iScur=index">充{{item.rechAmt}}送{{item.giftAmt}}</li>
 			</ul>
-			<h3><button>立即充值</button></h3>
+			<h3><button @click="pay">立即充值</button></h3>
 			<h4>充值页面详情</h4>
 			<p>用户充值分为实体卡充值和在线购买虚拟卡充值</p>
 			<p>详情请拨打服务热线4008610177</p>
@@ -107,7 +107,7 @@ export default {
 
         tab:['优惠充值','充值卡','电子卷'],
 		tabs:[true,false,false],
-		type:['充500送8','充500送8','充500送8','充500送8','充500送8','充500送8','充500送8','充500送8'],
+		type:[],
 		iScur:0,
 
         ruleForm: {
@@ -148,24 +148,29 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+
+      //充值方案
+      this.axios.get(Lib.C.url_mc+'/mall/bss/walletRule/list')
+          .then(res=>{
+              // console.log(res.data.data)
+              this.type=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
 
 
-      
+
+
 
 
   },
   //相关操作事件
   methods: {
 
-      get(msg){
-          this.allNum=msg
-      },
-      get2(msg){
-          this.allPrice=msg
-      },
-      get3(msg){
-          this.cutTime='0'
-      },
 
       jTab(val){
 		  var index=this.tab.indexOf(val);
@@ -177,11 +182,51 @@ export default {
           console.log(this.tabs)
 	  },
 
+	  pay(){
+          console.log(this.type[this.iScur].ruleWalletRechPk)
+          this.axios.get(Lib.C.url_mc+'/mall/bss/walletRule/rech',{
+              params:{
+                  ipPk:this.userId,
+                  rwrPk:this.type[this.iScur].ruleWalletRechPk
+			  }
+		  })
+              .then(res=>{
+                  // console.log(res.data.data)
+                  //this.type=res.data.data.items;
+              }).catch(err=>{
+              console.log(err);
+          });
+
+
+      },
+
       //验证提交
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                  alert('submit!');
+                  //电子卷
+                  var Qs = require('qs');
+                  this.axios.post(Lib.C.url_mc + '/mall/bss/card/ex', Qs.stringify({
+                      ipPk:this.userId,
+                      cardNumber:this.ruleForm.name,
+                      cardPwd:this.ruleForm.pass,
+                  }))
+                      .then(res=>{
+                          if(res.data.status==200){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                              });
+                          }else if(res.data.status==400){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                                  callback: action => {
+
+                                  }
+                              });
+                          }
+                      }).catch(err=>{
+                      console.log(err);
+                  });
               } else {
                   console.log('error submit!!');
                   return false;
@@ -192,7 +237,28 @@ export default {
       submitForm2(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                  alert('submit!');
+                  //电子卷
+                  var Qs = require('qs');
+                  this.axios.post(Lib.C.url_mc + '/mall/bss/ordCoup/ex', Qs.stringify({
+                      ipPk:this.userId,
+                      coupNumber:this.ruleForm2.num
+                  }))
+                      .then(res=>{
+                          if(res.data.status==200){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                              });
+                          }else if(res.data.status==400){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                                  callback: action => {
+
+                                  }
+                              });
+                          }
+                      }).catch(err=>{
+                      console.log(err);
+                  });
               } else {
                   console.log('error submit!!');
                   return false;

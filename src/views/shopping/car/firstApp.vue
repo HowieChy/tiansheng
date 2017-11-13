@@ -19,9 +19,9 @@
           <tr><th><el-checkbox v-model="checked">全选</el-checkbox></th><th>商品名称</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th></tr>
           <tr v-for="(item,index) in cars">
             <td><el-checkbox v-model="item.isCheck"></el-checkbox></td>
-            <td><img src="" alt=""><em>{{item.title}}</em></td>
+            <td><img :src="item.aPic" alt=""><em>{{item.title}}</em></td>
             <td><span>{{ item.price | currency }}</span></td>
-            <td> <el-input-number v-model="item.num1" :min="1" ></el-input-number></td>
+            <td> <el-input-number @change="changeNum(item)"   v-model="item.num1" :min="1" :max="item.stock"></el-input-number></td>
             <td><span>{{ item.price*item.num1 | currency }}</span></td>
             <td><i class="el-icon-close" @click="del(item)"></i></td>
           </tr>
@@ -42,11 +42,11 @@
         <!--商品-->
         <ul class="m-shop clearfix">
           <li v-for="(item,index) in shopItem">
-            <a href=""><img :src="item.aImg" alt=""></a>
-            <p>{{item.title}}</p>
-            <p>库存:{{item.store}}</p>
-            <p>会员价：<em>￥{{item.newPrice}}</em></p>
-            <p>市场价：￥{{item.oldPrice}}</p>
+            <a :href="'../home/detail.html?id='+item.prodPk"><img :src="item.prodImg" alt=""></a>
+            <p>{{item.prodNm}}</p>
+            <p>库存:{{item.stock}}</p>
+            <p>会员价：<em>{{item.membAmt| currency}}</em></p>
+            <p>市场价：{{item.markAmt| currency}}</p>
           </li>
         </ul>
       </div>
@@ -79,77 +79,18 @@ export default {
 
     return {
         //购物车列表
-        cars:[{
-            isCheck:false,
-            aSrc:'',
-            aPic:'',
-            title:'芒果',
-            price:300.30,
-            price2:300,
-            num1:1
-        },{
-            isCheck:false,
-            aSrc:'',
-            aPic:'',
-            title:'芒果',
-            price:200,
-            price2:200,
-            num1:1,
-        }],
+        cars:[],
         checked:false, //是否全选
-        carList:2,    //商品总数
+        carList:0,    //商品总数
         carCheck:0,   //已选择数量
         carPrice:0,   //合计价格
         carNum:0,     //积分
 
         //倒计时
-        cutTime:'1504796400',
+        cutTime:'1510635396',
 
         //商品列表
-        shopItem:[{
-            title:"四川凯特芒果",
-            store:10,
-            newPrice:'300.00',
-            oldPrice:'400.00',
-            id:'1',
-            numer: 1,
-            aImg:aImg,
-        },
-            {
-                title:"四川凯特芒果",
-                store:5,
-                newPrice:'200.50',
-                oldPrice:'300.00',
-                id:'5',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:2,
-                newPrice:'700.00',
-                id:'2',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            }],
+        shopItem:[],
 	}
   },
     components: {
@@ -167,26 +108,57 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-      this.axios.get('http://106.14.161.15:8082/mall/bss/sms/sendPicVerifyCode?mob=15867843983',{
-//          params: {
-//              username:'',
-//          }
+
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+      }
+
+
+      //获取购物车
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+          params:{
+              ipPk:this.userId,
+          }
       })
           .then(res=>{
-              console.log(res.data)
+              //console.log(res.data.data)
+              var data=[];
+              res.data.data.forEach(function (elem,i) {
+                  data.push({
+                      isCheck:false,
+                      id:elem.prodPk,
+                      aPic:elem.imgUrl,
+                      title:elem.prodNm,
+                      price:elem.membAmt,
+                      num1:elem.qty,
+                      stock:elem.stock,
+                      cartPk:elem.cartPk
+                  })
+              })
+              this.cars=data;
+              this.carList=this.cars.length;
           }).catch(err=>{
           console.log(err);
       });
 
 
-//      console.log( Lib.M.getUrlQuery('mediaid',Lib.C.url_host))
-//      Lib.M.store.set('username', '123');
-//      console.log(Lib.M.store.get('username'))
+      //获取最近游览
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/prodBHList',{
+          params:{
+              ipPk:this.userId,
+              count:5
+          }
+      })
+          .then(res=>{
+              //console.log(res.data.data.items)
+              this.shopItem=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
+
 
   },
-  computed:{
 
-  },
 /*  filters:{
       //过滤价格
       formatMoney:function (value) {
@@ -194,6 +166,7 @@ export default {
       }
   },*/
   watch:{
+
       //全选
       checked:function (val,oldval) {
           if(val==true){
@@ -220,7 +193,6 @@ export default {
       //总价计算
       cars: {
           handler: function (newVal) {
-             // onsole.log(newVal);
               var _this = this;
               this.carPrice = 0;
               this.carCheck=0;
@@ -240,8 +212,31 @@ export default {
 
       //删除商品
       del(item){
-          this.cars.splice(this.cars.indexOf(item),1);
-          this.carList=this.cars.length;
+
+          this.axios.get(Lib.C.url_mc+'/mall/bss/cart/del',{
+              params:{
+                  ipPk:this.userId,
+                  prodPk:item.id
+              }
+          })
+              .then(res=>{
+                  this.cars.splice(this.cars.indexOf(item),1);   //删除商品
+                  var str=0;
+                  var str2=0;
+                  this.carList.map(function (item) {
+                      str=this.carList.length;
+                      str2+=item.price*item.num1;
+                      this.carPrice=str2;
+                      this.carList=str;
+                  }.bind(this));
+
+                  if(!this.carList.length){
+                      console.log('清空了');
+                      this.cutTime='0';
+                  }
+              }).catch(err=>{
+              console.log(err);
+          });
       },
 
       //倒计时
@@ -250,6 +245,47 @@ export default {
       },
 
 
+      //修改购物车
+      changeNum(item){
+          var This=this;
+          var oldVal=item.num1;
+          setTimeout(function () {
+              var newVal=item.num1;
+              var Qs = require('qs');
+              const loading = This.$loading({
+                  lock: true,
+                  text: '修改数量中，请稍等',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0,0,0,0.7)'
+              });
+              This.axios.post(Lib.C.url_mc + '/mall/bss/cart/edit', Qs.stringify({
+                  cartPk:item.cartPk,
+                  num:newVal-oldVal
+              }))
+                  .then(res => {
+                      console.log(res.data);
+                      if (res.data.status == 200) {
+                          loading.close();
+                          This.$alert('修改成功', '提示', {
+                              confirmButtonText: '确定',
+                              callback: action => {
+
+                              }
+                          });
+                      }
+                      if (res.data.status == 400) {
+                          This.$alert(res.data.msg, '提示', {
+                              confirmButtonText: '确定',
+                              callback: action => {
+
+                              }
+                          });
+                      }
+                  }).catch(err => {
+                  console.log(err);
+              });
+          })
+      },
   }
 }
 </script>
@@ -257,6 +293,9 @@ export default {
 <style lang="less">
 	body{
       background: #f5f5f5;
+    }
+    .el-loading-mask{
+      background-color: rgba(0,0,0,0.7)!important;
     }
     .g-content{
       width: 1200px;

@@ -102,6 +102,9 @@ export default {
 
   //已成功挂载，相当ready()
   mounted(){
+
+    
+
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
       }
@@ -130,7 +133,7 @@ export default {
 			  console.log(this.icon)
               this.info=res.data.data;
 
-			  //this.num=0;
+			 // this.num=0;
               this.$emit('child-type',this.num);
               this.$emit('child-text',this.text)
           }).catch(err=>{
