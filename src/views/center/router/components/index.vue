@@ -1,6 +1,15 @@
 <template>
 
 	<div class="g-right">
+
+		<el-popover
+						ref="popover"
+						placement="right"
+						width="300"
+						trigger="hover">
+			<img :src="code" alt="">
+		</el-popover>
+
 		<div class="top clearfix">
 			<div class="img">
 				<img src="../assets/images/p1.png" alt="">
@@ -11,7 +20,10 @@
 				<h3>您好~</h3>
 				<!--<router-link :to="/"></router-link>-->
 				<a href="./information.html">修改个人信息 &gt;</a>
-				<p class="u-share">分享至： <span><img src="../assets/images/qq.png" alt=""></span><span><img src="../assets/images/wx.png" alt=""></span></p>
+				<p class="u-share">分享至：
+					<!--<span><img src="../assets/images/qq.png" alt=""></span>-->
+					<span v-popover:popover><img src="../assets/images/wx.png" alt=""></span>
+				</p>
 			</div>
 
 			<!--VIP用户-->
@@ -52,6 +64,10 @@
 			</ul>
 		</div>
 
+
+
+
+
 	</div>
 
 </template>
@@ -60,8 +76,7 @@
 
 import Lib from 'assets/js/Lib';
 
-/*商品图*/
-import aImg from '../assets/images/shop.png'
+
 
 export default {
   data() {
@@ -86,7 +101,7 @@ export default {
         },
         //商品列表
         shopItem:[],
-
+		code:''//二维码
     }
   },
 
@@ -133,6 +148,8 @@ export default {
 			  console.log(this.icon)
               this.info=res.data.data;
 
+              //二维码
+              this.code=Lib.C.url_mc+'/mall/bss/ip/QRCode?url=https://www.baidu.com/?id='+this.info.referralCode;
 			 // this.num=0;
               this.$emit('child-type',this.num);
               this.$emit('child-text',this.text)

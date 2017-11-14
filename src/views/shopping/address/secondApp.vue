@@ -39,7 +39,8 @@
         <div class="m-middle">
           <h3> <em>配送方式</em><strong>自提</strong></h3>
           <h3> <em>运费</em><span v-if="freight">{{freight|currency}}</span><strong v-if="!freight">免费</strong></h3>
-          <h3> <em>收货时间</em>
+          <h3 v-if="false">
+            <em>收货时间</em>
             <el-date-picker
                   v-model="value"
                   type="date"
@@ -62,9 +63,9 @@
           <div class="m-info ">
             <div class="clearfix">
               <div class="left ">
-                <p> <el-checkbox>订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-checkbox></p>
-                <p><el-checkbox>使用积分 <input type="number" v-model.lazy="score" @blur="maxScore"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score/10}}元</el-checkbox></p>
-                <p><el-checkbox>使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
+                <p> <el-checkbox v-model="checked1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-checkbox></p>
+                <p><el-checkbox v-model="checked2">使用积分 <input type="number" v-model.lazy="score" @blur="maxScore"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score/10}}元</el-checkbox></p>
+                <p><el-checkbox v-model="checked3">使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
               </div>
               <div class="right">
                 <p>商品件数： <span>3件</span></p>
@@ -134,57 +135,16 @@ export default {
             price:200,
             num:1,
         }],
+
         freight:20,     //运费
+
+        checked1:false,
+        checked2:false,
+        checked3:false,
+
         integral:23,    //可使用积分
         score:'',       //使用积分
         balance:3,  //余额
-
-        ruleForm: {
-            name: '',//活动名称
-            address:'',//详细地址
-            phone:'',//手机号码
-        },
-        options: [{
-            value: 'zhejiang',
-            label: '浙江',
-            children: [{
-                value: 'hangzhou',
-                label: '杭州',
-                children: [{
-                    value: 'xihu',
-                    label: '西湖区'
-                }, {
-                    value: 'binjiang',
-                    label: '滨江区'
-                }]
-            }, {
-                value: 'ningbo',
-                label: '宁波',
-                children: [{
-                    value: 'zhenhai',
-                    label: '镇海区'
-                }, {
-                    value: 'jiangbei',
-                    label: '江北区'
-                }]
-            }]
-        }],
-        selectedOptions: ['','',''],//默认地址
-        radio:'公司地址',
-        rules: {
-            name: [
-                { required: true, message: '请输入收货人姓名', trigger: 'blur' },
-            ],
-            address: [
-                { required: true, message: '请选择地区', trigger: 'blur' },
-            ],
-            address2: [
-                { required: true, message: '请输入详细地址', trigger: 'blur' },
-            ],
-            phone: [
-                { required: true, message: '请输入手机号码', trigger: 'blur' },
-            ],
-        },
 
         //dialogVisible:false,
         cutTime:'1504796400',//倒计时

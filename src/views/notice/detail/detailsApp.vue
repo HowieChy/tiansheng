@@ -75,14 +75,14 @@ export default {
       var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
 	  if(prodId){
           console.log(prodId)
-          this.axios.get(Lib.C.url_mc+'/mall/bss/news/details',{
+          this.axios.get(Lib.C.url_mc+'/mall/bss/news/FarmLogDt',{
               params:{
                   newsPk:prodId
               }
           })
               .then(res=>{
-                  console.log(res.data.data.newsVo);
-                  this.items=res.data.data.newsVo;
+                  console.log(res.data.data);
+                  this.items=res.data.data;
                   this.aHref={
                       title:'农场日志',
                       title2:'公告详情',
@@ -105,8 +105,8 @@ export default {
               }
           })
               .then(res=>{
-                  console.log(res.data.data.farmActiveVo);
-                  this.items=res.data.data.farmActiveVo;
+                  console.log(res.data.data);
+                  this.items=res.data.data;
                   this.aHref={
                       title:'农场活动',
 					  title2:'活动详情',

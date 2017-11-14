@@ -1,12 +1,12 @@
-webpackJsonp([1],{
+webpackJsonp([7],{
 
-/***/ 162:
+/***/ 163:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(98);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__indexApp__);
 
 
@@ -26,62 +26,105 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_components_Countdown__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_components_Countdown__);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_Countdown__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_Countdown__);
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: 'g-head',
     data: function data() {
         return {
+            login: false,
             lev: false,
             address: false,
             cart: false,
-            code: false
+            code: false,
+            personInfo: [],
+            codeSrc: '',
+            addressItem: [],
+            postion: '宁波'
         };
     },
 
+    computed: {
+        phone: function phone() {
+            if (this.personInfo.mob) {
+                return this.personInfo.mob.slice(0, 2) + '******' + this.personInfo.mob.slice(8, 11);
+            }
+        }
+    },
     methods: {
-        jLev1: function jLev1(e) {
+        exit: function exit() {
+            __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.set('login', false);
+            location.reload();
+        },
+        jLev1: function jLev1() {
             this.lev = true;
         },
-        jLev2: function jLev2(e) {
+        jLev2: function jLev2() {
             this.lev = false;
         },
-        jAddress1: function jAddress1(e) {
+        jAddress1: function jAddress1() {
             this.address = true;
         },
-        jAddress2: function jAddress2(e) {
+        jAddress2: function jAddress2() {
             this.address = false;
         },
-        jCode1: function jCode1(e) {
+        set: function set(e) {
+            console.log(e);
+            this.postion = e.nmCn;
+            this.address = false;
+        },
+        jCode1: function jCode1() {
             this.code = true;
         },
-        jCode2: function jCode2(e) {
+        jCode2: function jCode2() {
             this.code = false;
         },
-        jCart1: function jCart1(e) {
+        jCart1: function jCart1() {
             this.cart = true;
         },
-        jCart2: function jCart2(e) {
+        jCart2: function jCart2() {
             this.cart = false;
         },
         del: function del(item, index) {
-            var delArr = [item.id, item.num];
+            var _this = this;
+
+            this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/del', {
+                params: {
+                    ipPk: this.userId,
+                    prodPk: item.prodPk
+                }
+            }).then(function (res) {
+                _this.carItems = res.data.data;
+                _this.carItems.map(function (item) {
+                    this.allNum = this.carItems.length;
+                    this.allPrice += item.membAmt * item.qty;
+                }.bind(_this));
+            }).catch(function (err) {
+                console.log(err);
+            });
+
+            var delArr = [item.prodPk, item.qty];
             this.lists.splice(index, 1);
-            this.$emit('child-number', 0);
-            this.$emit('child-price', 0);
+            this.$emit('child-shop', {
+                number: 0,
+                price: 0
+            });
             this.$emit('child-id', delArr);
             var str = 0;
             var str2 = 0;
             this.lists.map(function (item) {
                 str = this.lists.length;
 
-                str2 += item.price * item.num;
-                this.$emit('child-number', str);
-                this.$emit('child-price', str2);
+                str2 += item.membAmt * item.qty;
+                this.$emit('child-shop', {
+                    number: str,
+                    price: str2
+                });
             }.bind(this));
 
             if (!this.lists.length) {
@@ -92,14 +135,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         callback: function callback() {
             console.log('倒计时结束');
             this.lists.splice(0);
-            this.$emit('child-number', 0);
-            this.$emit('child-price', 0);
+            this.$emit('child-shop', {
+                number: 0,
+                price: 0
+            });
         },
         jTop: function jTop() {
             $('body').animate({ 'scrollTop': 0 });
         }
     },
     mounted: function mounted() {
+        var _this2 = this;
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/sys/sysCat/listByPrntCd', {
+            params: {
+                prntCd: 9014
+            }
+        }).then(function (res) {
+            _this2.addressItem = res.data.data.items;
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+        this.codeSrc = 'http://192.168.1.160:8083/mall/bss/ip/QRCode?url=https://www.baidu.com/';
+
+        if (__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo')) {
+            this.userId = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo').ipPk;
+        }
+        if (__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('login')) {
+            this.login = true;
+
+            this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/ip/user', {
+                params: {
+                    ipPk: this.userId
+                }
+            }).then(function (res) {
+                _this2.personInfo = res.data.data;
+            }).catch(function (err) {
+                console.log(err);
+            });
+        }
+
         function throttle(method, context) {
             clearTimeout(method.tId);
             method.tId = setTimeout(function () {
@@ -117,31 +193,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     props: ['lists', 'allNum', 'allPrice', 'cutTime'],
     components: {
-        countDown: __WEBPACK_IMPORTED_MODULE_0_components_Countdown___default.a
+        countDown: __WEBPACK_IMPORTED_MODULE_1_components_Countdown___default.a
     }
 });
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
 
-/***/ 198:
+/***/ 196:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(371);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(355);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_McHead__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_components_McFoot__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_components_Countdown__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_viewload__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png__ = __webpack_require__(325);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_jquery__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_viewload__ = __webpack_require__(50);
 
 
 
@@ -155,364 +229,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-__WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue_viewload__["a" /* default */], {
+
+
+__WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue_viewload__["a" /* default */], {
     threshold: -200,
     effectFadeIn: true
 });
 
-
-
-
-
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            slide: [{
-                "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=150362903&di=6ad534cda71f5eb24bc2753fc2dfa3ec&imgtype=jpg&er=1&src=http%3A%2F%2Fimage5.tuku.cn%2Fpic%2Fwallpaper%2Fyouxidongman%2Fqianweishaonvdongmanbizhi%2F011.jpg",
-                "aHref": "",
-                "title": "冰鲜汤排"
-            }, {
-                "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503629603&di=6ad534cda71f5eb24bc2753fc2dfa3ec&imgtype=jpg&er=1&src=http%3A%2F%2Fimage5.tuku.cn%2Fpic%2Fwallpaper%2Fyouxidongman%2Fqianweishaonvdongmanbizhi%2F011.jpg",
-                "aHref": "",
-                "title": "冰鲜汤排"
-            }, {
-                "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503629603&di=6ad534cda71f5eb24bc2753fc2dfa3ec&imgtype=jpg&er=1&src=http%3A%2F%2Fimage5.tuku.cn%2Fpic%2Fwallpaper%2Fyouxidongman%2Fqianweishaonvdongmanbizhi%2F011.jpg",
-                "aHref": "",
-                "title": "冰鲜汤排"
-            }, {
-                "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503629603&di=6ad534cda71f5eb24bc2753fc2dfa3ec&imgtype=jpg&er=1&src=http%3A%2F%2Fimage5.tuku.cn%2Fpic%2Fwallpaper%2Fyouxidongman%2Fqianweishaonvdongmanbizhi%2F011.jpg",
-                "aHref": "",
-                "title": "冰鲜汤排"
-            }, {
-                "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503629603&di=6ad534cda71f5eb24bc2753fc2dfa3ec&imgtype=jpg&er=1&src=http%3A%2F%2Fimage5.tuku.cn%2Fpic%2Fwallpaper%2Fyouxidongman%2Fqianweishaonvdongmanbizhi%2F011.jpg",
-                "aHref": "",
-                "title": "冰鲜汤排"
-            }],
-            shopItem: [[{
-                title: "四川凯特芒果",
-                store: 10,
-                newPrice: '300.00',
-                oldPrice: '400.00',
-                id: 1,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 5,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 2,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 3,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 4,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "四川凯特芒果",
-                store: 10,
-                newPrice: '300.00',
-                oldPrice: '400.00',
-                id: 1,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 15,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 5,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 6,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 7,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 8,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "四川凯特芒果",
-                store: 20,
-                newPrice: '300.00',
-                oldPrice: '400.00',
-                id: 9,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 1,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 11,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 12,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 13,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 2,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 14,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 15,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 17,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "123",
-                store: 5,
-                newPrice: '500.00',
-                oldPrice: '600.00',
-                id: 18,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 19,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 20,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 21,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 22,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "四川凯特芒果",
-                store: 10,
-                newPrice: '300.00',
-                oldPrice: '400.00',
-                id: 23,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 24,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 25,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 27,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 28,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }], [{
-                title: "四川凯特芒果",
-                store: 12,
-                newPrice: '200.00',
-                oldPrice: '300.00',
-                id: 29,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: 31,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                oldPrice: '900.00',
-                id: 32,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 33,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: 36,
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a,
-                time: "1504796400"
-            }]],
+            login: false,
+            userId: '',
 
-            carItems: [{
-                price: '300.00',
-                num: 1,
-                id: 1
-            }, {
-                price: '300.00',
-                num: 1,
-                id: 2
-            }],
+            siledItem: [],
+            slide: [],
+            shopItem: [],
+            carItems: [],
 
-            allPrice: '600.00',
-            allNum: 2,
+            product: [],
+            farm: [],
 
-            door: true,
+            allPrice: 0,
+            allNum: 0,
 
-            cutTime: '1506596400'
-        };
+            door: false,
+
+            cutTime: '1510635396' };
     },
 
     components: {
@@ -521,17 +264,74 @@ __WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue
     beforeCreate: function beforeCreate() {},
     beforeMount: function beforeMount() {},
     mounted: function mounted() {
-        console.log(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.appname);
+        var _this = this;
+
+        if (__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo')) {
+            this.userId = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo').ipPk;
+            console.log(this.userId);
+        }
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/sys/sysCat/tree?methCd=9040').then(function (res) {
+            _this.siledItem = res.data;
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/ad/list?statCd=2210.170').then(function (res) {
+            _this.slide = res.data.data.items;
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/list').then(function (res) {
+            _this.shopItem = res.data.data;
+            _this.door = true;
+            var id = window.location.toString().split('#')[1];
+            _this.$nextTick(function () {
+                if (id) {
+                    var t = __WEBPACK_IMPORTED_MODULE_4_jquery___default()('#' + id).offset().top;
+                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()(window).scrollTop(t);
+                }
+            });
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/cartList', {
+            params: {
+                ipPk: this.userId
+            }
+        }).then(function (res) {
+            _this.carItems = res.data.data;
+            _this.carItems.map(function (item) {
+                this.allNum = this.carItems.length;
+                this.allPrice += item.membAmt * item.qty;
+                console.log(this.allNum, this.allPrice);
+            }.bind(_this));
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/ad/list?statCd=2210.180').then(function (res) {
+            _this.product = res.data.data.items;
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/ad/list?statCd=2210.190').then(function (res) {
+            _this.farm = res.data.data.items;
+        }).catch(function (err) {
+            console.log(err);
+        });
     },
 
     methods: {
-        get: function get(msg) {
-            this.allNum = msg;
+        getShop: function getShop(msg) {
+            this.allNum = msg.number;
+            this.allPrice = msg.price;
         },
-        get2: function get2(msg) {
-            this.allPrice = msg;
-        },
-        get3: function get3(msg) {
+        getTime: function getTime(msg) {
             this.cutTime = '0';
         },
         getId: function getId(msg) {
@@ -539,87 +339,129 @@ __WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue
             var This = this;
 
             for (var i = 0; i < this.shopItem.length; i++) {
-                this.shopItem[i].forEach(function (elem, index) {
-                    if (msg[0] == elem.id) {
-                        elem.store += msg[1];
+                this.shopItem[i].prodRos.forEach(function (elem, index) {
+                    if (msg[0] == elem.prodPk) {
+                        elem.stock += msg[1];
                     }
                 });
             }
         },
         jNav1: function jNav1(e) {
-            __WEBPACK_IMPORTED_MODULE_7_jquery___default()('.m-float').hide();
-            __WEBPACK_IMPORTED_MODULE_7_jquery___default()(e.currentTarget).find('.m-float').show();
+            __WEBPACK_IMPORTED_MODULE_4_jquery___default()('.m-float').hide();
+            __WEBPACK_IMPORTED_MODULE_4_jquery___default()(e.currentTarget).find('.m-float').show();
         },
         jNav2: function jNav2(e) {
-            __WEBPACK_IMPORTED_MODULE_7_jquery___default()('.m-float').hide();
+            __WEBPACK_IMPORTED_MODULE_4_jquery___default()('.m-float').hide();
         },
         callback: function callback() {
             console.log('结束');
         },
+        look: function look(item) {
+            var Qs = __webpack_require__(9);
+            this.axios.post(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/addProdBH', Qs.stringify({
+                ipPk: this.userId,
+                prodPk: item.prodPk
+            })).then(function (res) {
+                console.log(res.data);
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
         addShop: function addShop(item, index) {
-            function add(e) {
-                e.carItems.push({
-                    price: item.newPrice,
-                    num: item.numer,
-                    id: item.id
-                });
-            }
+            var _this2 = this;
 
-            function sum(e) {
-                e.allNum = 0;
-                e.allPrice = 0;
-                e.carItems.map(function (item) {
-                    e.allNum = e.carItems.length;
-                    e.allPrice += item.price * item.num;
-                });
-            }
-            if (this.carItems.length) {
-                add(this);
-                var hash = {};
-                var newItems = [];
-                this.carItems.map(function (e, i) {
-                    if (!hash[e.id]) {
-                        newItems.push(e);
-                        hash[e.id] = e;
+            var Qs = __webpack_require__(9);
+
+            this.axios.post(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/add', Qs.stringify({
+                ipPk: this.userId,
+                prodPk: item.prodPk,
+                prodNum: item.number
+            }), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function (res) {
+                console.log(res.data);
+                if (res.data.status == 200) {
+                    var add = function add(e) {
+                        e.carItems.push({
+                            imgUrl: item.imgUrl,
+                            prodNm: item.nm,
+                            membAmt: item.membAmt,
+                            qty: item.number,
+                            prodPk: item.prodPk
+                        });
+                    };
+
+                    var sum = function sum(e) {
+                        e.allNum = 0;
+                        e.allPrice = 0;
+                        e.carItems.map(function (item) {
+                            e.allNum = e.carItems.length;
+                            e.allPrice += item.membAmt * item.qty;
+                        });
+                    };
+
+                    ;
+
+                    if (_this2.carItems.length) {
+                        add(_this2);
+                        var hash = {};
+                        var newItems = [];
+                        _this2.carItems.map(function (e, i) {
+                            if (!hash[e.prodPk]) {
+                                newItems.push(e);
+                                hash[e.prodPk] = e;
+                            } else {
+                                hash[e.prodPk].qty += e.qty;
+                            }
+                        });
+                        _this2.carItems = newItems;
+                        sum(_this2);
                     } else {
-                        hash[e.id].num += e.num;
+                        console.log('第一次添加');
+                        add(_this2);
+                        sum(_this2);
                     }
-                });
-                this.carItems = newItems;
-                sum(this);
-            } else {
-                console.log('第一次添加');
-                add(this);
-                sum(this);
-            }
 
-            for (var i = 0; i < this.shopItem.length; i++) {
-                this.shopItem[i].forEach(function (elem, index) {
-                    if (item.id == elem.id) {
-                        elem.store -= item.numer;
+                    for (var i = 0; i < _this2.shopItem.length; i++) {
+                        _this2.shopItem[i].prodRos.forEach(function (elem, index) {
+                            if (item.prodPk == elem.prodPk) {
+
+                                elem.stock -= item.number;
+                            }
+                        });
                     }
-                });
-            }
 
-            item.numer = 1;
-            if (item.store < 0) {
-                item.store = 0;
-                return false;
-            }
+                    item.number = 1;
+                    if (item.stock < 0) {
+                        item.stock = 0;
+                        return false;
+                    }
+                }
+                if (res.data.status == 400) {
+                    _this2.$alert('加入购物车失败', '提示', {
+                        confirmButtonText: '确定',
+                        callback: function callback(action) {}
+                    });
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
         }
     }
 });
 
 /***/ }),
 
-/***/ 263:
+/***/ 257:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 267:
+/***/ 274:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -627,34 +469,613 @@ __WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue
 /***/ }),
 
 /***/ 322:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "static/img/jc1.png";
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    attrs: {
+      "id": "app"
+    }
+  }, [_c('McHead', {
+    attrs: {
+      "lists": _vm.carItems,
+      "allPrice": _vm.allPrice,
+      "allNum": _vm.allNum,
+      "cutTime": _vm.cutTime
+    },
+    on: {
+      "child-shop": _vm.getShop,
+      "child-id": _vm.getId,
+      "child-cutTime": _vm.getTime
+    }
+  }, [_c('div', {
+    staticClass: "m-search",
+    slot: "u-search"
+  }, [_c('input', {
+    attrs: {
+      "type": "text",
+      "value": "",
+      "placeholder": "牛肉"
+    }
+  }), _vm._v(" "), _c('i', {
+    staticClass: "el-icon-search"
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "g-nav"
+  }, [_c('div', {
+    staticClass: "content"
+  }, [_c('div', {
+    staticClass: "m-all"
+  }, [_c('ul', [_vm._m(0), _vm._v(" "), _vm._l((_vm.siledItem), function(item, index) {
+    return _c('li', {
+      on: {
+        "mouseenter": _vm.jNav1,
+        "mouseleave": _vm.jNav2
+      }
+    }, [_c('p', [_c('span', [_vm._v(_vm._s(item.nmCn))])]), _vm._v(" "), _c('div', {
+      staticClass: "m-float"
+    }, _vm._l((item.childSysCatDtozList), function(val, index) {
+      return _c('div', {
+        staticClass: "item"
+      }, [_c('h2', [_vm._v(_vm._s(val.nmCn) + " "), _c('i', {
+        staticClass: "el-icon-arrow-right"
+      })]), _vm._v(" "), _vm._l((val.childSysCatDtozList), function(atem, index) {
+        return _c('a', {
+          attrs: {
+            "href": '../home/supermaket.html?id=' + atem.cd
+          }
+        }, [_vm._v(_vm._s(atem.nmCn))])
+      })], 2)
+    }))])
+  })], 2)]), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c('div', {
+    staticClass: "g-Carousel"
+  }, [_c('el-carousel', {
+    attrs: {
+      "trigger": "click",
+      "interval": 5000
+    }
+  }, _vm._l((_vm.slide), function(item, index) {
+    return _c('el-carousel-item', {
+      key: index,
+      attrs: {
+        "label": item.cd
+      }
+    }, [_c('a', {
+      attrs: {
+        "href": item.hrefUrl
+      }
+    }, [_c('img', {
+      attrs: {
+        "src": item.srcUrl,
+        "alt": ""
+      }
+    })])])
+  }))], 1), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-listed"
+  }, [(_vm.shopItem[0].prodRos.length) ? _c('h2', [_vm._v("上市货")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[0].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "g-content"
+  }, [(_vm.door) ? _c('div', {
+    staticClass: "g-shops",
+    attrs: {
+      "id": "A"
+    }
+  }, [(_vm.shopItem[1].prodRos.length) ? _c('h2', [_vm._v("VIP专区")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[1].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-shops",
+    attrs: {
+      "id": "B"
+    }
+  }, [(_vm.shopItem[2].prodRos.length) ? _c('h2', {
+    staticClass: "u-new3"
+  }, [_vm._v("预售专区")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[2].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-shops"
+  }, [(_vm.shopItem[3].prodRos.length) ? _c('h2', {
+    staticClass: "u-new2"
+  }, [_vm._v("今日上架")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[3].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-shops",
+    attrs: {
+      "id": "C"
+    }
+  }, [(_vm.shopItem[4].prodRos.length) ? _c('h2', {
+    staticClass: "u-new4"
+  }, [_vm._v("免耕专区")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[4].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-shops"
+  }, [(_vm.shopItem[5].prodRos.length) ? _c('h2', {
+    staticClass: "u-new5"
+  }, [_vm._v("天胜丽制")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[5].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
+    staticClass: "g-shops",
+    attrs: {
+      "id": "D"
+    }
+  }, [(_vm.shopItem[6].prodRos.length) ? _c('h2', {
+    staticClass: "u-new6"
+  }, [_vm._v("闪送专区")]) : _vm._e(), _vm._v(" "), _c('ul', {
+    staticClass: "m-shop clearfix"
+  }, _vm._l((_vm.shopItem[6].prodRos), function(item, index) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": 'detail.html?id=' + item.prodPk
+      },
+      on: {
+        "click": function($event) {
+          _vm.look(item)
+        }
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+      attrs: {
+        "size": "small",
+        "min": 1,
+        "max": Number(item.stock)
+      },
+      model: {
+        value: (item.number),
+        callback: function($$v) {
+          item.number = $$v
+        },
+        expression: "item.number"
+      }
+    }), _vm._v(" "), _c('ins', {
+      attrs: {
+        "id": item.prodPk,
+        "num": item.number,
+        "price": item.membAmt
+      },
+      on: {
+        "click": function($event) {
+          _vm.addShop(item, index)
+        }
+      }
+    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+      staticClass: "u-button"
+    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
+      staticClass: "u-button u-time"
+    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
+      attrs: {
+        "endTime": item.time,
+        "callback": _vm.callback,
+        "endText": "0S"
+      }
+    })], 1)]) : _vm._e()])
+  }))]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "g-items"
+  }, [_c('h2', {
+    staticClass: "u-jc"
+  }, [_vm._v("产品检测")]), _vm._v(" "), _vm._l((_vm.product), function(item) {
+    return [_c('a', {
+      attrs: {
+        "href": item.hrefUrl
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.srcUrl),
+        expression: "item.srcUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })])]
+  })], 2), _vm._v(" "), _c('div', {
+    staticClass: "g-items"
+  }, [_c('h2', [_vm._v("农场风采")]), _vm._v(" "), _vm._l((_vm.farm), function(item) {
+    return [_c('a', {
+      attrs: {
+        "href": item.hrefUrl
+      }
+    }, [_c('img', {
+      directives: [{
+        name: "view",
+        rawName: "v-view",
+        value: (item.srcUrl),
+        expression: "item.srcUrl"
+      }],
+      attrs: {
+        "alt": ""
+      }
+    })])]
+  })], 2)]), _vm._v(" "), _c('McFoot')], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('li', [_c('p', [_vm._v("全部分类")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "m-nav"
+  }, [_c('a', {
+    attrs: {
+      "href": "#A"
+    }
+  }, [_vm._v("VIP专区")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "#B"
+    }
+  }, [_vm._v("预售专区")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "#C"
+    }
+  }, [_vm._v("免耕专区")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "#D"
+    }
+  }, [_vm._v("闪送专区")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "../notice/packge.html"
+    }
+  }, [_vm._v("私人订制")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "card.html"
+    }
+  }, [_vm._v("卡卷专区")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": ""
+    }
+  }, [_vm._v("增值服务")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": ""
+    }
+  }, [_vm._v("科普体验")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "../notice/list.html"
+    }
+  }, [_vm._v("农场日志")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "supermaket.html"
+    }
+  }, [_vm._v("产品大全")])])
+}]}
 
 /***/ }),
 
-/***/ 323:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/jc2.png";
-
-/***/ }),
-
-/***/ 324:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/jc3.png";
-
-/***/ }),
-
-/***/ 325:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/shop.png";
-
-/***/ }),
-
-/***/ 340:
+/***/ 339:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -664,7 +1085,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "m-top clearfix"
   }, [_c('div', {
     staticClass: "m-content"
-  }, [_c('div', {
+  }, [(!_vm.login) ? _c('div', {
+    staticClass: "m-login"
+  }, [_vm._v("\n          欢迎登录天胜农牧，请 "), _c('a', {
+    attrs: {
+      "href": "login.html"
+    }
+  }, [_vm._v("登录")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "register.html"
+    }
+  }, [_vm._v("注册")])]) : _vm._e(), _vm._v(" "), (_vm.login) ? _c('div', {
     staticClass: "m-lev",
     on: {
       "mouseenter": _vm.jLev1,
@@ -674,7 +1105,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       'f-active': _vm.lev
     }
-  }, [_vm._m(0)]), _vm._v(" "), _c('div', {
+  }, [_c('span', [_vm._v("您好！" + _vm._s(_vm.phone) + " "), _c('i', {
+    staticClass: "el-icon-arrow-down"
+  })])]), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -682,7 +1115,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "lev"
     }],
     staticClass: "u-lev"
-  }, [_vm._m(1), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c('div', {
+  }, [_c('h2', [_vm._v(_vm._s(_vm.phone)), _c('em', {
+    on: {
+      "click": _vm.exit
+    }
+  }, [_vm._v("退出")])]), _vm._v(" "), _c('ul', {
+    staticClass: "clearfix"
+  }, [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.memRankNmCn) + "普通会员")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _vm._m(0), _vm._v(" "), _vm._m(1)])])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "m-address",
     on: {
       "mouseenter": _vm.jAddress1,
@@ -692,7 +1131,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       'f-active': _vm.address
     }
-  }, [_vm._v("基地："), _c('span', [_vm._v("宁波")]), _c('i', {
+  }, [_vm._v("基地："), _c('span', [_vm._v(_vm._s(_vm.postion))]), _vm._v(" "), _c('i', {
     staticClass: "el-icon-arrow-down"
   })]), _vm._v(" "), _c('div', {
     directives: [{
@@ -701,7 +1140,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.address),
       expression: "address"
     }]
-  }, [_vm._v("\n            宁波\n          ")])]), _vm._v(" "), _c('div', {
+  }, _vm._l((_vm.addressItem), function(item, index) {
+    return _c('span', {
+      staticStyle: {
+        "margin-right": "20px"
+      },
+      attrs: {
+        "rel": item.nmCn
+      },
+      on: {
+        "click": function($event) {
+          _vm.set(item)
+        }
+      }
+    }, [_vm._v(_vm._s(item.desc))])
+  }))]), _vm._v(" "), _c('div', {
     staticClass: "g-cart",
     on: {
       "mouseenter": _vm.jCart1,
@@ -730,12 +1183,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('img', {
       attrs: {
-        "src": __webpack_require__(73),
+        "src": item.imgUrl,
         "alt": ""
       }
     }), _vm._v(" "), _c('div', {
       staticClass: "middle"
-    }, [_c('p', [_vm._v(" 菠萝   "), _c('span', [_vm._v("￥" + _vm._s(item.price) + " "), _c('em', [_c('ins', [_vm._v("X")]), _vm._v(_vm._s(item.num))])])]), _vm._v(" "), _c('p', [_vm._v("1斤装")])])]), _vm._v(" "), _c('button', {
+    }, [_c('p', [_vm._v(" " + _vm._s(item.prodNm) + "   "), _c('span', [_vm._v("￥" + _vm._s(item.membAmt) + " "), _c('em', [_c('ins', [_vm._v("X")]), _vm._v(_vm._s(item.qty))])])]), _vm._v(" "), _c('p')])]), _vm._v(" "), _c('button', {
+      attrs: {
+        "rel": item.cartPk
+      },
       on: {
         "click": function($event) {
           _vm.del(item, index)
@@ -746,9 +1202,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "bottom clearfix"
   }, [_c('div', {
     staticClass: "left"
-  }, [_c('p', [_vm._v("共 " + _vm._s(_vm.allNum) + " 件商品 ")]), _vm._v(" "), _c('p', [_c('em', [_vm._v("￥")]), _vm._v(_vm._s(_vm._f("currency")(_vm.allPrice, '')))])]), _vm._v(" "), _vm._m(3)])])]), _vm._v(" "), _c('ul', {
+  }, [_c('p', [_vm._v("共 " + _vm._s(_vm.allNum) + " 件商品 ")]), _vm._v(" "), _c('p', [_c('em', [_vm._v("￥")]), _vm._v(_vm._s(_vm._f("currency")(_vm.allPrice, '')))])]), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _c('ul', {
     staticClass: "m-nav"
-  }, [_vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _c('li', {
+  }, [_vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _c('li', {
     staticClass: "m-code",
     class: {
       'f-active': _vm.code
@@ -770,7 +1226,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }]
   }, [_c('img', {
     attrs: {
-      "src": __webpack_require__(18),
+      "src": _vm.codeSrc,
       "alt": ""
     }
   }), _vm._v(" "), _c('p', [_vm._v("关注微信公众号")])])])])])]), _vm._v(" "), _c('div', {
@@ -779,7 +1235,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "m-content"
   }, [_c('img', {
     attrs: {
-      "src": __webpack_require__(19),
+      "src": __webpack_require__(16),
       "alt": ""
     }
   }), _vm._v(" "), _vm._t("u-search"), _vm._v(" "), _c('div', {
@@ -798,13 +1254,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })])])], 2)])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', [_vm._v("您好！ 151****8717 "), _c('i', {
-    staticClass: "el-icon-arrow-down"
-  })])
+  return _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v("45分（4.5元）")]), _vm._v(" "), _c('strong')])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('h2', [_vm._v("151****8717"), _c('em', [_vm._v("退出")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('ul', [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v("普通会员")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v("45分（4.5元）")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v("500.00元")])])])
+  return _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v("500.00元")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "right"
@@ -835,1140 +1287,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 
-/***/ 344:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    attrs: {
-      "id": "app"
-    }
-  }, [_c('McHead', {
-    attrs: {
-      "lists": _vm.carItems,
-      "allPrice": _vm.allPrice,
-      "allNum": _vm.allNum,
-      "cutTime": _vm.cutTime
-    },
-    on: {
-      "child-number": _vm.get,
-      "child-price": _vm.get2,
-      "child-cutTime": _vm.get3,
-      "child-id": _vm.getId
-    }
-  }, [_c('div', {
-    staticClass: "m-search",
-    slot: "u-search"
-  }, [_c('input', {
-    attrs: {
-      "type": "text",
-      "value": "",
-      "placeholder": "牛肉"
-    }
-  }), _vm._v(" "), _c('i', {
-    staticClass: "el-icon-search"
-  })])]), _vm._v(" "), _c('div', {
-    staticClass: "g-nav"
-  }, [_c('div', {
-    staticClass: "content"
-  }, [_c('div', {
-    staticClass: "m-all"
-  }, [_c('ul', [_vm._m(0), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(1), _vm._v(" "), _vm._m(2)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(3), _vm._v(" "), _vm._m(4)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(5), _vm._v(" "), _vm._m(6)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(7), _vm._v(" "), _vm._m(8)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(9), _vm._v(" "), _vm._m(10)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(11), _vm._v(" "), _vm._m(12)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(13), _vm._v(" "), _vm._m(14)]), _vm._v(" "), _c('li', {
-    on: {
-      "mouseenter": _vm.jNav1,
-      "mouseleave": _vm.jNav2
-    }
-  }, [_vm._m(15), _vm._v(" "), _vm._m(16)])])]), _vm._v(" "), _vm._m(17)])]), _vm._v(" "), _c('div', {
-    staticClass: "g-Carousel"
-  }, [_c('el-carousel', {
-    attrs: {
-      "trigger": "click",
-      "interval": 5000
-    }
-  }, _vm._l((_vm.slide), function(item, index) {
-    return _c('el-carousel-item', {
-      key: index,
-      attrs: {
-        "label": item.title
-      }
-    }, [_c('a', {
-      attrs: {
-        "href": item.aHref
-      }
-    }, [_c('img', {
-      attrs: {
-        "src": "http://img2.niutuku.com/desk/1207/1025/ntk124744.jpg",
-        "alt": ""
-      }
-    })])])
-  }))], 1), _vm._v(" "), _c('div', {
-    staticClass: "g-listed"
-  }, [_c('h2', [_vm._v("上市货")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[0]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.newPrice)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.oldPrice)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-content"
-  }, [_c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', [_vm._v("VIP专区")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[1]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.newPrice)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.oldPrice)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', {
-    staticClass: "u-new3"
-  }, [_vm._v("预售专区")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[2]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))]), _vm._v(" "), (index == 0 || index == 3 || index == 4) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', {
-    staticClass: "u-new2"
-  }, [_vm._v("今日上架")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[3]), function(item, index) {
-    return _c('li', {
-      attrs: {
-        "id": "aaa"
-      }
-    }, [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))]), _vm._v(" "), (index == 0 || index == 3 || index == 4) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', {
-    staticClass: "u-new4"
-  }, [_vm._v("免耕专区")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[4]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))]), _vm._v(" "), (index == 0 || index == 3 || index == 4) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', {
-    staticClass: "u-new5"
-  }, [_vm._v("天胜丽制")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[5]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))]), _vm._v(" "), (index == 0 || index == 3 || index == 4) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _c('div', {
-    staticClass: "g-shops"
-  }, [_c('h2', {
-    staticClass: "u-new6"
-  }, [_vm._v("闪送专区")]), _vm._v(" "), _c('ul', {
-    staticClass: "m-shop clearfix"
-  }, _vm._l((_vm.shopItem[6]), function(item, index) {
-    return _c('li', [_c('a', {
-      attrs: {
-        "href": ""
-      }
-    }, [_c('img', {
-      directives: [{
-        name: "view",
-        rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
-      }],
-      attrs: {
-        "alt": ""
-      }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
-      attrs: {
-        "size": "small",
-        "min": 1,
-        "max": item.store
-      },
-      model: {
-        value: (item.numer),
-        callback: function($$v) {
-          item.numer = $$v
-        },
-        expression: "item.numer"
-      }
-    }), _vm._v(" "), _c('ins', {
-      attrs: {
-        "id": item.id,
-        "num": item.numer,
-        "price": item.newPrice
-      },
-      on: {
-        "click": function($event) {
-          _vm.addShop(item, index)
-        }
-      }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
-      staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
-  }))]), _vm._v(" "), _vm._m(18), _vm._v(" "), _vm._m(19)]), _vm._v(" "), _c('McFoot')], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('li', [_c('p', [_vm._v("全部分类")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天生好菜")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天滋美肉")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天天有鱼")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("原生好蛋")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天赐好粮")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("果色天香")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天生丽制")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('span', [_vm._v("天作之盒")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-float"
-  }, [_c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("新西兰柠檬")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])]), _vm._v(" "), _c('div', {
-    staticClass: "item"
-  }, [_c('h2', [_vm._v("蔬菜 "), _c('i', {
-    staticClass: "el-icon-arrow-right"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("青菜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("萝卜")]), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("西瓜")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "m-nav"
-  }, [_c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("VIP专区")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("预售专区")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("免耕专区")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("闪送专区")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("私人订制")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("卡卷专区")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("增值服务")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("科普体现")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("农场日志")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_vm._v("产品大全")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "g-items"
-  }, [_c('h2', {
-    staticClass: "u-jc"
-  }, [_vm._v("产品检测")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(322),
-      "alt": ""
-    }
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(323),
-      "alt": ""
-    }
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(324),
-      "alt": ""
-    }
-  })])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "g-items"
-  }, [_c('h2', [_vm._v("农场风采")]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(45),
-      "alt": ""
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "m-mask"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(45),
-      "alt": ""
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "m-mask"
-  })]), _vm._v(" "), _c('a', {
-    attrs: {
-      "href": ""
-    }
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(45),
-      "alt": ""
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "m-mask"
-  })])])
-}]}
-
-/***/ }),
-
-/***/ 371:
+/***/ 355:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(263)
+__webpack_require__(274)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(177),
   /* template */
-  __webpack_require__(340),
+  __webpack_require__(339),
   /* scopeId */
-  "data-v-13b2dd2e",
+  "data-v-67420d7e",
   /* cssModules */
   null
 )
@@ -1978,14 +1310,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 45:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/pic.png";
-
-/***/ }),
-
-/***/ 46:
+/***/ 50:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2226,18 +1551,18 @@ class VueViewload {
 
 /***/ }),
 
-/***/ 96:
+/***/ 98:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(267)
+__webpack_require__(257)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(198),
+  __webpack_require__(196),
   /* template */
-  __webpack_require__(344),
+  __webpack_require__(322),
   /* scopeId */
   null,
   /* cssModules */
@@ -2249,4 +1574,4 @@ module.exports = Component.exports
 
 /***/ })
 
-},[162]);
+},[163]);

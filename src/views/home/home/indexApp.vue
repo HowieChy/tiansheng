@@ -24,7 +24,7 @@
 						<div class="m-float">
 							<div class="item" v-for="(val,index) in item.childSysCatDtozList">
 								<h2>{{val.nmCn}} <i class="el-icon-arrow-right"></i></h2>
-								<a v-for="(atem,index) in  val.childSysCatDtozList" href="">{{atem.nmCn}}</a>
+								<a v-for="(atem,index) in  val.childSysCatDtozList" :href="'../home/supermaket.html?id='+atem.cd">{{atem.nmCn}}</a>
 							</div>
 						</div>
 					</li>
@@ -32,13 +32,13 @@
 			</div>
 			<div class="m-nav">
 				<a href="#A">VIP专区</a>
-				<a href="B">预售专区</a>
-				<a href="C">免耕专区</a>
-				<a href="D">闪送专区</a>
-				<a href="E">私人订制</a>
+				<a href="#B">预售专区</a>
+				<a href="#C">免耕专区</a>
+				<a href="#D">闪送专区</a>
+				<a href="../notice/packge.html">私人订制</a>
 				<a href="card.html">卡卷专区</a>
 				<a href="">增值服务</a>
-				<a href="">科普体现</a>
+				<a href="">科普体验</a>
 				<a href="../notice/list.html">农场日志</a>
 				<a href="supermaket.html">产品大全</a>
 			</div>
@@ -257,32 +257,40 @@
 		<!--产品检测-->
 		<div class="g-items">
 			<h2 class="u-jc">产品检测</h2>
-			<a href="">
-				<img src="./assets/images/jc1.png" alt="">
-			</a>
-			<a href="">
+			<template v-for="item in product">
+				<a :href="item.hrefUrl">
+					<img  v-view="item.srcUrl" alt="">
+				</a>
+			</template>
+
+			<!--<a href="">
 				<img src="./assets/images/jc2.png" alt="">
 			</a>
 			<a href="">
 				<img src="./assets/images/jc3.png" alt="">
-			</a>
+			</a>-->
 		</div>
 
 		<!--农场风采-->
 		<div class="g-items">
 			<h2>农场风采</h2>
-			<a href="">
-				<img src="./assets/images/pic.png" alt="">
-				<div class="m-mask"></div>
-			</a>
-			<a href="">
-				<img src="./assets/images/pic.png" alt="">
-				<div class="m-mask"></div>
-			</a>
-			<a href="">
-				<img src="./assets/images/pic.png" alt="">
-				<div class="m-mask"></div>
-			</a>
+			<template v-for="item in farm">
+				<a :href="item.hrefUrl">
+					<img  v-view="item.srcUrl" alt="">
+				</a>
+			</template>
+			<!--<a href="">-->
+				<!--<img src="./assets/images/pic.png" alt="">-->
+				<!--<div class="m-mask"></div>-->
+			<!--</a>-->
+			<!--<a href="">-->
+				<!--<img src="./assets/images/pic.png" alt="">-->
+				<!--<div class="m-mask"></div>-->
+			<!--</a>-->
+			<!--<a href="">-->
+				<!--<img src="./assets/images/pic.png" alt="">-->
+				<!--<div class="m-mask"></div>-->
+			<!--</a>-->
 		</div>
 	</div>
 
@@ -317,8 +325,6 @@ Vue.use(VueViewload, {
 //    }
 })
 
-/*商品图*/
-import aImg from './assets/images/shop.png'
 
 
 export default {
@@ -331,6 +337,9 @@ export default {
         slide:[],    //轮播图
         shopItem:[],//模块
         carItems:[],   //购物车列表
+
+        product:[],//产品检测
+		farm:[],//农场风采
 
         allPrice:0,//商品总价
 		allNum:0,//商品总数
@@ -385,6 +394,14 @@ export default {
              // console.log(res.data)
               this.shopItem=res.data.data;
               this.door=true;
+			  var id=window.location.toString().split('#')[1];
+              this.$nextTick(() => {
+			      if(id){
+                      var t = $('#'+id).offset().top;
+                      $(window).scrollTop(t)
+				  }
+			  })
+
           }).catch(err=>{
           console.log(err);
       });
@@ -407,6 +424,25 @@ export default {
           }).catch(err=>{
           console.log(err);
       });
+
+
+      //产品检测
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ad/list?statCd=2210.180')
+          .then(res=>{
+              // console.log(res.data.data)
+              this.product=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
+      //农场风采
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ad/list?statCd=2210.190')
+          .then(res=>{
+              // console.log(res.data.data)
+              this.farm=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
+
   },
 
 
@@ -483,12 +519,12 @@ export default {
                   console.log(res.data);
                   if(res.data.status==200){
 
-//                      this.$alert('加入购物车成功', '提示', {
-//                          confirmButtonText: '确定',
-//                          callback: action => {
-//
-//                          }
-//                      });
+                      this.$alert('加入购物车成功', '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
 
                       //添加商品
                       function add(e) {

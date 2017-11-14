@@ -1,12 +1,35 @@
-webpackJsonp([7],{
+webpackJsonp([8],{
 
-/***/ 165:
+/***/ 101:
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(277)
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(199),
+  /* template */
+  __webpack_require__(342),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ 166:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__supermaketApp_vue__ = __webpack_require__(99);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__supermaketApp_vue__ = __webpack_require__(101);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__supermaketApp_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__supermaketApp_vue__);
 
 
@@ -21,22 +44,18 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
 
 /***/ }),
 
-/***/ 201:
+/***/ 199:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead2__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead2__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_McHead2__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_components_McFoot__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_components_Countdown__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_viewload__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_viewload__ = __webpack_require__(50);
 
 
 
@@ -48,9 +67,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-
-
-__WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue_viewload__["a" /* default */], {
+__WEBPACK_IMPORTED_MODULE_3_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_4_vue_viewload__["a" /* default */], {
     threshold: -200,
     effectFadeIn: true,
     callback: function callback(ele, src) {
@@ -58,212 +75,47 @@ __WEBPACK_IMPORTED_MODULE_4_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_5_vue
     }
 });
 
-
-
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            carItems: [{
-                price: '300.00',
-                num: 1,
-                id: '1'
-            }, {
-                price: '300.00',
-                num: 1,
-                id: '2'
-            }],
-
-            allPrice: '600.00',
-            allNum: 2,
-            cutTime: '1504256400',
-
-            shopItem: [{
-                title: "四川凯特芒果",
-                store: 10,
-                newPrice: '300.00',
-                oldPrice: '400.00',
-                id: '1',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 5,
-                newPrice: '200.50',
-                oldPrice: '300.00',
-                id: '5',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 2,
-                newPrice: '700.00',
-                id: '2',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }, {
-                title: "四川凯特芒果",
-                store: 200,
-                newPrice: '500.05',
-                oldPrice: '600.00',
-                id: '7',
-                numer: 1,
-                aImg: __WEBPACK_IMPORTED_MODULE_6__assets_images_shop_png___default.a
-            }]
+            shopItem: []
         };
     },
 
     components: {
-        McHead: __WEBPACK_IMPORTED_MODULE_1_components_McHead2___default.a, McFoot: __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default.a, countDown: __WEBPACK_IMPORTED_MODULE_3_components_Countdown___default.a
+        McHead: __WEBPACK_IMPORTED_MODULE_1_components_McHead2___default.a, McFoot: __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default.a
     },
     beforeCreate: function beforeCreate() {},
     beforeMount: function beforeMount() {},
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var _this = this;
 
-    methods: {
-        get: function get(msg) {
-            this.allNum = msg;
-        },
-        get2: function get2(msg) {
-            this.allPrice = msg;
-        },
-        get3: function get3(msg) {
-            this.cutTime = '0';
-        },
-        callback: function callback() {
-            console.log('结束');
-        }
-    }
+        var id = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.getUrlQuery('id', __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_host);
+
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/listByCat', {
+            params: {
+                catCd: id
+            }
+        }).then(function (res) {
+            _this.shopItem = res.data.data.items;
+        }).catch(function (err) {
+            console.log(err);
+        });
+    },
+
+    methods: {}
 });
 
 /***/ }),
 
-/***/ 291:
+/***/ 277:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 328:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/shop.png";
-
-/***/ }),
-
-/***/ 368:
+/***/ 342:
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -271,19 +123,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "app"
     }
-  }, [_c('McHead', {
-    attrs: {
-      "lists": _vm.carItems,
-      "allPrice": _vm.allPrice,
-      "allNum": _vm.allNum,
-      "cutTime": _vm.cutTime
-    },
-    on: {
-      "child-number": _vm.get,
-      "child-price": _vm.get2,
-      "child-cutTime": _vm.get3
-    }
-  }, [_c('div', {
+  }, [_c('McHead', [_c('div', {
     staticClass: "m-search",
     slot: "u-search"
   }, [_c('input', {
@@ -301,25 +141,25 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, _vm._l((_vm.shopItem), function(item, index) {
     return _c('li', [_c('a', {
       attrs: {
-        "href": ""
+        "href": '../home/detail.html?id=' + item.prodPk
       }
     }, [_c('img', {
       directives: [{
         name: "view",
         rawName: "v-view",
-        value: (item.aImg),
-        expression: "item.aImg"
+        value: (item.imgUrl),
+        expression: "item.imgUrl"
       }],
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.title))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.store))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v("￥" + _vm._s(item.newPrice))])]), _vm._v(" "), _c('p', [_vm._v("市场价：￥" + _vm._s(item.oldPrice))])])
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.prodNm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))])])
   }))]), _vm._v(" "), _c('McFoot')], 1)
 },staticRenderFns: []}
 
 /***/ }),
 
-/***/ 46:
+/***/ 50:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -558,29 +398,6 @@ class VueViewload {
 });
 
 
-/***/ }),
-
-/***/ 99:
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/* styles */
-__webpack_require__(291)
-
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(201),
-  /* template */
-  __webpack_require__(368),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-
-module.exports = Component.exports
-
-
 /***/ })
 
-},[165]);
+},[166]);

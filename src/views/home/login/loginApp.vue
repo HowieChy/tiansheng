@@ -85,8 +85,6 @@ export default {
           this.checked=true;
           this.ruleForm.name=Lib.M.store.get('user').name;
           this.ruleForm.pass=Lib.M.store.get('user').pass;
-		  // this.ruleForm.name=Lib.M.store.get('user').v.name;
-          //this.ruleForm.pass=Lib.M.store.get('user').v.pass;
 	  }else{
           this.checked=false;
           this.ruleForm.name='';
@@ -106,8 +104,6 @@ export default {
           this.$refs[formName].validate((valid) => {
               if (valid) {
 
-
-
                   this.axios.get(Lib.C.url_mc+'/mall/sys/appDoor/loginForPc',{
                       params:{
                           username:this.ruleForm.name,
@@ -126,7 +122,7 @@ export default {
                               //是否保存账号密码
                               if(this.checked){
                                   Lib.M.store.set('user', {name:this.ruleForm.name,pass:this.ruleForm.pass});
-                                 // Lib.M.store.setExp('user', {name:this.ruleForm.name,pass:this.ruleForm.pass}, 0.2);
+
                                   Lib.M.store.set('check', true);
                               }else{
                                   Lib.M.store.set('check', false);
@@ -135,7 +131,7 @@ export default {
 
 							  	Lib.M.store.set('login', true);
                              	Lib.M.store.set('userInfo', {ipPk:res.data.data.userInfo.ipPk});
-                          		//window.location.href='index.html';
+                          		window.location.href='index.html';
 						  }
                       }).catch(err=>{
                       console.log(err);

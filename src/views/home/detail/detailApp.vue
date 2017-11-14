@@ -8,6 +8,16 @@
 		</div>
 	</McHead>
 
+	<!--微信二维码-->
+	<el-popover
+					ref="popover"
+					placement="right"
+					width="300"
+					trigger="hover">
+		<img :src="code" alt="">
+	</el-popover>
+	<!--微信二维码-->
+
 	<div class="g-content">
 		<!--面包屑-->
 		<div class="m-crumb">
@@ -35,7 +45,7 @@
 					<img id="img" class="cloudzoom" :src="imgSrc[0]"  :data-cloudzoom="'zoomSizeMode:\'image\', startMagnification:2,zoomImage:\''+imgSrc[0]+'\',zoomImage:\''+imgSrc[0]+'\''"/>
 				</div>
 
-                <p class="u-share">分享至： <span><img src="./assets/images/qq.png" alt=""></span><span><img src="./assets/images/wx.png" alt=""></span></p>
+                <p class="u-share">分享至： <span><img src="./assets/images/qq.png" alt=""></span><span v-popover:popover><img src="./assets/images/wx.png" alt=""></span></p>
 			</div>
 
 			<div class="m-right">
@@ -54,9 +64,9 @@
 					<p style="height: 70px;"></p>
 					<div>
 						<!--计数-->
-						<el-input-number size="small" v-model="numer" :min="1" :max="stock"></el-input-number>
+						<el-input-number size="small" v-model="number" :min="1" :max="stock"></el-input-number>
 					</div>
-					<button  @click="addShop" :num="numer" :price="newPrice" :id="id">加入购物车</button>
+					<button  @click="addShop" :num="number" :price="newPrice" :id="id">加入购物车</button>
 					<h4>配送描述:尊敬的客户:您9:00-19:00的订单，于次日上午10:00前送达，19:00—次日9:00的订单，于次日16:00前送达（预售商品除外）</h4>
 				</h3>
 			</div>
@@ -77,7 +87,7 @@
       <a class="f-active" href="#a">商品详情</a>
       <em>|</em>
       <a href="#b">服务保障</a>
-      <button  @click="addShop" :num="numer" :price="newPrice" :id="id">加入购物车</button>
+      <button  @click="addShop" :num="number" :price="newPrice" :id="id">加入购物车</button>
     </div>
   </div>
 
@@ -109,6 +119,7 @@ import McFoot from 'components/McFoot';
 import countDown from 'components/Countdown';
 
 
+
 import $ from 'jquery'
 
 import imagezoom from './assets/cloudzoom.js'
@@ -127,10 +138,11 @@ export default {
         title:'',
         newPrice:'',
         oldPrice:'',
-        numer:'',
+        number:1,
         stock:null,
         id:"",
         imgSrc:'',
+		code:'',//二维码
     }
   },
     components: {
@@ -215,6 +227,29 @@ export default {
               $('.g-fixed2 a:first').addClass('f-active');
           }
       })
+
+      //二维码
+      this.code=Lib.C.url_mc+'/mall/bss/ip/QRCode?url='+Lib.C.url_host;
+
+//      var h={VER:"1.0.0",CDN:"http://pub.idqqimg.com/qconn/widget/loader/"},g={SHARE_QQ:"shareqq.js?t=20121127"};(function(){for(var e,c=/connect\.qq\.com\/widget\/loader\/loader\.js/i,d=document.getElementsByTagName("script"),a=0,f,i=d.length;a<i;a++){f=d[a];if((f.src||"").match(c)){e=f;break}}e=e;c=[];var b;for(d=0;d<e.attributes.length;d++){a=e.attributes[d];a.name!="src"&&a.specified&&c.push([a.name,'"'+a.value+'"'].join("="));if(a.name=="widget"&&a.specified)b=g[a.value]||g.SHARE_QQ}b=
+//          h.CDN+b;c.push("src="+b+"");b=b;if(document.readyState!="complete")document.write("<script "+c.join(" ")+" ><\/script>");else{c=document.createElement("script");c.type="text/javascript";c.src=b;(b=document.getElementsByTagName("head"))&&b[0]&&b[0].appendChild(c)}})()
+//      var p = {
+//          url:location.href, /*获取URL，可加上来自分享到QQ标识，方便统计*/
+//          desc:'', /*分享理由(风格应模拟用户对话),支持多分享语随机展现（使用|分隔）*/
+//          title:'', /*分享标题(可选)*/
+//          summary:'', /*分享摘要(可选)*/
+//          pics:'', /*分享图片(可选)*/
+//          flash: '', /*视频地址(可选)*/
+//          site:'', /*分享来源(可选) 如：QQ分享*/
+//          style:'201',
+//          width:32,
+//          height:32
+//      };
+//      var s = [];
+//      for(var i in p){
+//          s.push(i + '=' + encodeURIComponent(p[i]||''));
+//      }
+//      document.write(['<a class="qcShareQQDiv" href="http://connect.qq.com/widget/shareqq/index.html?',s.join('&'),'" target="_blank">分享到QQ</a>'].join(''));
       
 //      //选择规格
 //      $('.j-size li').on('click',function () {
@@ -263,7 +298,9 @@ export default {
               .then(res=>{
                   console.log(res.data);
                   if(res.data.status==200){
-
+                      this.$alert('加入购物车成功', '提示', {
+                          confirmButtonText: '确定',
+                      });
                       //添加商品
                       function add(e) {
                           var img=e.imgSrc[0];
@@ -314,6 +351,11 @@ export default {
                           return false;
                       }
 
+                  }
+                  if(res.data.status==301){
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                      });
                   }
                   if(res.data.status==400){
                       this.$alert('加入购物车失败', '提示', {

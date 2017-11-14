@@ -184,19 +184,27 @@ export default {
 
 	  pay(){
           console.log(this.type[this.iScur].ruleWalletRechPk)
-          this.axios.get(Lib.C.url_mc+'/mall/bss/walletRule/rech',{
-              params:{
-                  ipPk:this.userId,
-                  rwrPk:this.type[this.iScur].ruleWalletRechPk
-			  }
-		  })
+          var Qs = require('qs');
+          this.axios.post(Lib.C.url_mc + '/mall/bss/walletRule/rech', Qs.stringify({
+              ipPk:this.userId,
+              rwrPk:this.type[this.iScur].ruleWalletRechPk
+          }))
               .then(res=>{
-                  // console.log(res.data.data)
-                  //this.type=res.data.data.items;
+                  if(res.data.status==200){
+                      this.$alert('充值成功', '提示', {
+                          confirmButtonText: '确定',
+                      });
+                  }else if(res.data.status==400){
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
+                  }
               }).catch(err=>{
               console.log(err);
           });
-
 
       },
 

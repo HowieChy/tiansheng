@@ -1,7 +1,7 @@
 <template>
 <div id="app">
 	<!--公用头部组件-->
-	<McHead  @child-shop="getShop"   @child-cutTime="getTime"  :lists="carItems" :allPrice="allPrice" :allNum="allNum"  :cutTime="cutTime">
+	<McHead>
 		<div class="m-search" slot='u-search'>
 			<input type="text" value="" placeholder="牛肉">
 			<i class="el-icon-search"></i>
@@ -12,17 +12,15 @@
 		<!--商品-->
 		<ul class="m-shop clearfix">
 			<li v-for="(item,index) in shopItem">
-				<a href=""><img v-view="item.aImg" alt=""></a>
-				<p>{{item.title}}</p>
-				<p>库存:{{item.store}}</p>
-				<p>会员价：<em>￥{{item.newPrice}}</em></p>
-				<p>市场价：￥{{item.oldPrice}}</p>
+				<a :href="'../home/detail.html?id='+item.prodPk"><img v-view="item.imgUrl" alt=""></a>
+				<p>{{item.prodNm}}</p>
+				<p>库存:{{item.stock}}</p>
+				<p>会员价：<em>{{item.membAmt| currency}}</em></p>
+				<p>市场价：{{item.markAmt| currency}}</p>
 			</li>
 		</ul>
 
 	</div>
-
-
 
 	<!--公用底部组件-->
 	<McFoot></McFoot>
@@ -36,8 +34,7 @@ import Lib from 'assets/js/Lib';
 import McHead from 'components/McHead2';
 /*底部组件*/
 import McFoot from 'components/McFoot';
-/*倒计时组件*/
-import countDown from 'components/Countdown';
+
 
 import Vue from 'vue';
 import VueViewload from 'vue-viewload';
@@ -50,198 +47,21 @@ Vue.use(VueViewload, {
     }
 })
 
-/*商品图*/
-import aImg from './assets/images/shop.png'
+
 
 
 export default {
   data() {
     return {
 
-        //购物车列表
-        carItems:[{
-            price:'300.00',
-			num:1,
-			id:'1'
-		},
-            {
-                price:'300.00',
-                num:1,
-                id:'2'
-            }],
 
-        allPrice:'600.00',//商品总价
-		allNum:2,//商品总数
-
-		//倒计时
-		cutTime:'1504256400',
 
         //商品列表
-        shopItem:[{
-            title:"四川凯特芒果",
-            store:10,
-            newPrice:'300.00',
-            oldPrice:'400.00',
-            id:'1',
-            numer: 1,
-            aImg:aImg,
-        },
-            {
-                title:"四川凯特芒果",
-                store:5,
-                newPrice:'200.50',
-                oldPrice:'300.00',
-                id:'5',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:2,
-                newPrice:'700.00',
-                id:'2',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            },
-            {
-                title:"四川凯特芒果",
-                store:200,
-                newPrice:'500.05',
-                oldPrice:'600.00',
-                id:'7',
-                numer: 1,
-                aImg:aImg,
-            }],
+        shopItem:[],
     }
   },
     components: {
-        McHead,McFoot,countDown
+        McHead,McFoot
     },
   //实例初始化最之前，无法获取到data里的数据
   beforeCreate(){
@@ -255,27 +75,25 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
+      var id= Lib.M.getUrlQuery('id',Lib.C.url_host);
+      //获取全部商品
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/listByCat',{
+          params:{
+              catCd:id
+          }
+      })
+          .then(res=>{
+              this.shopItem=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
 
-
-      
 
 
   },
   //相关操作事件
   methods: {
-      getShop(msg){
-          this.allNum=msg.number  //获取删除商品后的商品数量
-          this.allPrice=msg.price //获取删除商品后的价格
-      },
-      getTime(msg){
-          this.cutTime=0
-      },
 
-
-	  //开始倒计时
-      callback(){
-		console.log('结束')
-      },
 
   }
 }

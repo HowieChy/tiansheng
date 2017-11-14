@@ -6,26 +6,26 @@
         <div class="m-content">
           <!--等级状态-->
           <div class="m-login" v-if="!login">
-            欢迎登录天胜农牧，请 <a href="login.html">登录</a> <a href="register.html">注册</a>
+            欢迎登录天胜农牧，请  <a href="../home/login.html">登录</a> <a href="../home/register.html">注册</a>
           </div>
           <div class="m-lev" v-if="login"  @mouseenter="jLev1" @mouseleave="jLev2">
-            <p :class="{'f-active':lev}"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></p>
+            <p :class="{'f-active':lev}"><a href="../center/router.html#/index"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></a></p>
             <div class="u-lev" v-show="lev">
               <h2>{{phone}}<em @click="exit">退出</em></h2>
               <ul class="clearfix">
                 <li>
                   <h3>级别</h3>
-                  <h4>{{personInfo.memRankNmCn}}普通会员</h4>
+                  <h4>{{personInfo.memRankNmCn}}</h4>
                   <strong></strong>
                 </li>
                 <li>
                   <h3>积分</h3>
-                  <h4>45分（4.5元）</h4>
+                  <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
                   <strong></strong>
                 </li>
                 <li>
                   <h3>余额</h3>
-                  <h4>500.00元</h4>
+                  <h4>{{personInfo.balaAmt|currency('')}}元</h4>
                 </li>
               </ul>
             </div>
@@ -77,7 +77,7 @@
           <!--右侧导航-->
           <ul class="m-nav">
             <li><a href="">商城公告</a></li>
-            <li><a href="">最新活动</a></li>
+            <li><a href="../notice/active.html">最新活动</a></li>
             <li><a href="">我的订单</a></li>
             <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
               <a  href="javascript:;">掌上天胜</a>
@@ -125,116 +125,12 @@
             <li>
               <p>全部分类</p>
             </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天生好菜</span></p>
+            <li  v-for="(item,index) in siledItem" @mouseenter="jNav1" @mouseleave="jNav2">
+              <p><span>{{item.nmCn}}</span></p>
               <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="home.html#aaa">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天滋美肉</span></p>
-              <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天天有鱼</span></p>
-              <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>原生好蛋</span></p>
-              <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天赐好粮</span></p>
-              <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>果色天香</span></p>
-              <div class="m-float">
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天生丽制</span></p>
-              <div class="m-float" >
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-              </div>
-            </li>
-            <li @mouseenter="jNav1" @mouseleave="jNav2">
-              <p><span>天作之盒</span></p>
-              <div class="m-float" >
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a><a href="">新西兰柠檬</a><a href="">青菜</a><a href="">萝卜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
-                </div>
-                <div class="item">
-                  <h2>蔬菜 <i class="el-icon-arrow-right"></i></h2>
-                  <a href="">青菜</a><a href="">萝卜</a><a href="">西瓜</a>
+                <div class="item" v-for="(val,index) in item.childSysCatDtozList">
+                  <h2>{{val.nmCn}} <i class="el-icon-arrow-right"></i></h2>
+                  <a v-for="(atem,index) in  val.childSysCatDtozList" :href="'../home/supermaket.html?id='+atem.cd">{{atem.nmCn}}</a>
                 </div>
               </div>
             </li>
@@ -242,16 +138,16 @@
         </div>
         <div class="m-nav">
           <a @mouseenter="jOpen1" ><p>全部分类</p></a>
-          <a href="">VIP专区</a>
-          <a href="">预售专区</a>
-          <a href="">免耕专区</a>
-          <a href="">闪送专区</a>
-          <a href="">私人订制</a>
-          <a href="">卡卷专区</a>
+          <a href="../home/index.html#A">VIP专区</a>
+          <a href="../home/index.html#B">预售专区</a>
+          <a href="../home/index.html#C">免耕专区</a>
+          <a href="../home/index.html#D">闪送专区</a>
+          <a href="../notice/packge.html">私人订制</a>
+          <a href="../home/card.html">卡卷专区</a>
           <a href="">增值服务</a>
           <a href="">科普体现</a>
-          <a href="">农场日志</a>
-          <a href="">产品大全</a>
+          <a href="../notice/list.html">农场日志</a>
+          <a href="../home/supermaket.html">产品大全</a>
         </div>
       </div>
     </div>
@@ -269,6 +165,7 @@
 
         data () {
             return {
+                siledItem:[],//左侧导航
                 login:false, //登录状态
                 lev:false,
                 address:false,
@@ -409,6 +306,14 @@
             }
         },
         mounted(){
+          //左侧导航
+            this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9040')
+                .then(res=>{
+                    //console.log(res.data)
+                    this.siledItem=res.data;
+                }).catch(err=>{
+                console.log(err);
+            });
             //获取定位信息
             this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/listByPrntCd',{
                 params:{
@@ -485,6 +390,7 @@
        normalize.css 中也包含这行 */
     overflow: hidden;
   }
+
   .m-login{
     display: inline-block;
     margin-right: 20px;
@@ -540,23 +446,23 @@
             float: right;
             cursor: pointer;
           }
-          ul{
-            display: flex;
-          }
-          li{
-            float: left;
-            text-align: center;
-            flex: 1;
-            position: relative;
-            strong{
-              position: absolute;
-              width: 1px;
-              height: 40px;
-              background: #999;
-              left: 110px;
-              top: 50px;
-            }
-          }
+        ul{
+          display: flex;
+        }
+        li{
+          float: left;
+          text-align: center;
+          flex: 1;
+          position: relative;
+        strong{
+          position: absolute;
+          width: 1px;
+          height: 40px;
+          background: #999;
+          left: 110px;
+          top: 50px;
+        }
+        }
           li:nth-child(2){
             strong{
               left: 133px;

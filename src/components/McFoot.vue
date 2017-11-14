@@ -33,7 +33,7 @@
           <h2>帮助中心</h2><a href="">新手指南</a><a href="">支付方式</a><a href="">配送说明</a>
         </li>
         <li>
-          <h2>关于天胜</h2><a href="">了解天胜</a><a href="">加入天胜</a><a href="">联系我们</a><a href="">农场活动</a><a href="">农场餐饮</a>
+          <h2>关于天胜</h2><a href="">了解天胜</a><a href="">加入天胜</a><a href="">联系我们</a><a href="../notice/active.html">农场活动</a><a href="">农场餐饮</a>
         </li>
         <li>
           <h2>会员中心</h2><a href="">会员注册</a><a href="">会员类别</a><a href="">积分说明</a>

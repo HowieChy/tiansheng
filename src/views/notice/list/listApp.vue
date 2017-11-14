@@ -76,7 +76,7 @@ export default {
   mounted(){
 
 
-	  this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
+	  this.axios.get(Lib.C.url_mc+'/mall/bss/news/FarmLogPage',{
           params:{
               pageNo:'',
               pageSize:'',
@@ -90,7 +90,7 @@ export default {
 
       //日志列表
 
-      this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
+      this.axios.get(Lib.C.url_mc+'/mall/bss/news/FarmLogPage',{
           params:{
               pageNo:1,
               pageSize:this.currentPage,
@@ -111,7 +111,7 @@ export default {
 
 
       handleCurrentChange(val) {
-		  this.axios.get(Lib.C.url_mc+'/mall/bss/news/page',{
+		  this.axios.get(Lib.C.url_mc+'/mall/bss/news/FarmLogPage',{
               params:{
                   pageNo:val,
                   pageSize:1,
@@ -171,6 +171,7 @@ export default {
 		}
 	}
 
+	.block{
 	.el-icon-arrow-left:before{
 		content: "<上一页" !important;
 	}
@@ -179,10 +180,10 @@ export default {
 	}
 	.el-pagination{
 		text-align: center;
-		button{
-			margin-right:10px!important;
-			border: 1px solid #ddd!important;
-		}
+	button{
+		margin-right:10px!important;
+		border: 1px solid #ddd!important;
+	}
 	}
 	.el-pager li{
 		margin-right:10px!important;
@@ -193,6 +194,7 @@ export default {
 	}
 	.el-pager li.active{
 		background-color: #30b947!important;
+	}
 	}
 
 </style>

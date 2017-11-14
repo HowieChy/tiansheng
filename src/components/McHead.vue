@@ -9,23 +9,23 @@
             欢迎登录天胜农牧，请 <a href="login.html">登录</a> <a href="register.html">注册</a>
           </div>
           <div class="m-lev" v-if="login"  @mouseenter="jLev1" @mouseleave="jLev2">
-            <p :class="{'f-active':lev}"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></p>
+            <p :class="{'f-active':lev}"><a href="../center/router.html#/index"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></a></p>
             <div class="u-lev" v-show="lev">
               <h2>{{phone}}<em @click="exit">退出</em></h2>
               <ul class="clearfix">
                 <li>
                   <h3>级别</h3>
-                  <h4>{{personInfo.memRankNmCn}}普通会员</h4>
+                  <h4>{{personInfo.memRankNmCn}}</h4>
                   <strong></strong>
                 </li>
                 <li>
                   <h3>积分</h3>
-                  <h4>45分（4.5元）</h4>
+                  <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
                   <strong></strong>
                 </li>
                 <li>
                   <h3>余额</h3>
-                  <h4>500.00元</h4>
+                  <h4>{{personInfo.balaAmt|currency('')}}元</h4>
                 </li>
               </ul>
             </div>
@@ -68,7 +68,7 @@
                   <p><em>￥</em>{{allPrice |currency('')}}</p>
                 </div>
                 <div class="right">
-                  <a href="">去购物车结算</a>
+                  <a href="../shopping/first.html">去购物车结算</a>
                 </div>
               </div>
             </div>
@@ -77,7 +77,7 @@
           <!--右侧导航-->
           <ul class="m-nav">
             <li><a href="">商城公告</a></li>
-            <li><a href="">最新活动</a></li>
+            <li><a href="../notice/active.html">最新活动</a></li>
             <li><a href="">我的订单</a></li>
             <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
               <a  href="javascript:;">掌上天胜</a>
@@ -264,7 +264,7 @@
                 console.log(err);
             });
             //二维码
-            this.codeSrc='http://192.168.1.160:8083/mall/bss/ip/QRCode?url=https://www.baidu.com/'
+            this.codeSrc=Lib.C.url_mc+'/mall/bss/ip/QRCode?url=https://www.baidu.com/';
 
             //获取uerId
             if(Lib.M.store.get('userInfo')){

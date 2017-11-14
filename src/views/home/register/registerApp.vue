@@ -274,7 +274,7 @@ export default {
               if (valid) {
 
                   var Qs = require('Qs');
-                  this.axios.post(Lib.C.url_mc + '/mall/sys/acct/addForPc', qs.stringify({
+                  this.axios.post(Lib.C.url_mc + '/mall/sys/acct/addForPc', Qs.stringify({
                       mob: this.ruleForm.phone,
                       picVerifyCode: this.ruleForm.yzm,//图片验证码
                       smsVerifyCode: this.ruleForm.yzm2,//手机验证码
@@ -295,10 +295,10 @@ export default {
                       .then(res => {
                           console.log(res.data);
                           if (res.data.status == 200) {
-                              this.$alert(res.data.msg, '提示', {
+                              this.$alert('注册成功', '提示', {
                                   confirmButtonText: '确定',
                                   callback: action => {
-                                      window.location.href = Lib.C.url_href + 'login.html';
+                                      window.location.href = 'login.html';
                                   }
                               });
 

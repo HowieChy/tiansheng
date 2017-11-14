@@ -33,7 +33,7 @@
             <a href="">继续购物</a><i>|</i> <p>共<em>{{carList}}</em>件商品，已选择<em>{{carCheck}}</em>件 </p>
           </div>
           <div class="m-right">
-            <p>合计（不含运费）： <strong>{{carPrice|currency}}</strong>元 <span>积分：{{carNum}}分</span><a href="javascript:;">去结算</a></p>
+            <p>合计（不含运费）： <strong>{{carPrice|currency}}</strong>元 <span>积分：{{carNum}}分</span><a href="javascript:;" @click="go">去结算</a></p>
           </div>
       </div>
 
@@ -85,7 +85,7 @@ export default {
         carCheck:0,   //已选择数量
         carPrice:0,   //合计价格
         carNum:0,     //积分
-
+        rule:0,       //积分规则
         //倒计时
         cutTime:'1510635396',
 
@@ -141,6 +141,18 @@ export default {
           console.log(err);
       });
 
+      //获取积分规则
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/asset',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              console.log(res.data.data.rule)
+              this.rule=res.data.data.rule;
+          }).catch(err=>{
+          console.log(err);
+      });
 
       //获取最近游览
       this.axios.get(Lib.C.url_mc+'/mall/bss/prod/prodBHList',{
@@ -186,8 +198,8 @@ export default {
 
       //积分计算
       carPrice:function (val) {
-         // console.log(String(val).length)
-          this.carNum=String(parseInt(val)).slice(-String(parseInt(val)).length,-1)
+          this.carNum=parseInt(val)*this.rule;
+          //this.carNum=String(parseInt(val)).slice(-String(parseInt(val)).length,-1)
       },
 
       //总价计算
@@ -286,6 +298,11 @@ export default {
               });
           })
       },
+
+      //去结算
+      go(){
+          window.location.href='second.html';
+      }
   }
 }
 </script>
