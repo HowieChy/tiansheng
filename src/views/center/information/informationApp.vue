@@ -10,18 +10,18 @@
 
 	<div class="g-content">
 
-		<a class="u-back" href="">返回 &gt;</a>
+		<a class="u-back" href="../center/router.html#/index" >返回 &gt;</a>
 
 		<ul class="m-info">
-			<li><ins>用户名：</ins>XXX</li>
+			<li><ins>用户名：</ins>{{nmCn}}</li>
 			<li><ins>密码：</ins>*********** <a href="retrieval.html">更改</a></li>
 			<li><ins>真实姓名：</ins>
-				<div><input type="text"></div>
+				<div><input type="text" v-model="name"></div>
 			</li>
 			<li><ins>性别：</ins>
 				<div>
-					<el-radio class="radio" v-model="radio" label="1">男</el-radio>
-					<el-radio class="radio" v-model="radio" label="2">女</el-radio>
+					<el-radio class="radio" v-model="radio" label="男">男</el-radio>
+					<el-radio class="radio" v-model="radio" label="女">女</el-radio>
 				</div>
 			</li>
 			<li><ins></ins><button @click="save">保存</button></li>
@@ -51,7 +51,9 @@ import McFoot from 'components/McFoot';
 export default {
   data() {
     return {
-        radio: '1',
+        nmCn:'',
+        radio: '男',
+		name:'',
 	}
   },
     components: {
@@ -80,8 +82,9 @@ export default {
           }
       })
 		  .then(res=>{
-			  console.log(res.data.data.items)
-			  this.shopItem=res.data.data.items;
+			  console.log(res.data.data)
+			  this.nmCn=res.data.data.nmCn;
+			  this.radio=res.data.data.sex;
 		  }).catch(err=>{
 			  console.log(err);
 	  	});
@@ -97,6 +100,8 @@ export default {
             var Qs = require('qs');
             this.axios.post(Lib.C.url_mc + '/mall/bss/addr/addAddr', Qs.stringify({
                 ipPk:this.userId,
+                sex:this.radio,
+                realNm:this.name
             }))
                 .then(res => {
                     console.log(res.data);

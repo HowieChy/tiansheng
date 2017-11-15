@@ -70,7 +70,7 @@
 				<p>库存:{{item.stock}}</p>
 				<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 				<p>市场价：{{item.markAmt| currency}}</p>
-				<div v-if="index==0||index==3||index==4||index==5">
+				<div v-if="item.stock!=0&&index!=2">
 					<!--计数-->
 
 					<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -78,9 +78,9 @@
 					<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 				</div>
 
-				<button  class="u-button" v-if="index==1">已售罄</button>
+				<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-				<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+				<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback2" endText="0S,请刷新"></count-down></em></button>
 
 			</li>
 		</ul>
@@ -101,7 +101,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -109,9 +109,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -130,7 +130,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -138,9 +138,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -157,7 +157,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -165,9 +165,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -184,7 +184,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -192,9 +192,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -211,7 +211,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -219,9 +219,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -238,7 +238,7 @@
 					<p>库存:{{item.stock}}</p>
 					<p>会员价：<em>{{item.membAmt| currency}}</em></p>
 					<p>市场价：{{item.markAmt| currency}}</p>
-					<div v-if="index==0||index==3||index==4||index==5">
+					<div v-if="item.stock!=0">
 						<!--计数-->
 
 						<el-input-number size="small" v-model="item.number" :min="1" :max="Number(item.stock)"></el-input-number>
@@ -246,9 +246,9 @@
 						<ins :id="item.prodPk" @click="addShop(item,index)" :num="item.number" :price="item.membAmt"></ins>
 					</div>
 
-					<button  class="u-button" v-if="index==1">已售罄</button>
+					<button  class="u-button" v-if="item.stock==0">已售罄</button>
 
-					<button  class="u-button u-time" v-if="index==2"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
+					<button  class="u-button u-time" v-if="index==9"><em>离开始还有 <count-down :endTime="item.time" :callback="callback" endText="0S"></count-down></em></button>
 
 				</li>
 			</ul>
@@ -366,7 +366,7 @@ export default {
   mounted(){
       	if(Lib.M.store.get('userInfo')){
             this.userId=Lib.M.store.get('userInfo').ipPk;
-            console.log(this.userId)
+            //console.log(this.userId)
 		}
 
 	  //左侧导航
@@ -420,7 +420,7 @@ export default {
                   this.allNum=this.carItems.length;
                   this.allPrice+=item.membAmt*item.qty;
                   this.cutTime=String(res.data.data[0].effectiveTime/1000);
-                  console.log(this.allNum,this.allPrice)
+                  //console.log(this.allNum,this.allPrice)
               }.bind(this));
           }).catch(err=>{
           console.log(err);
@@ -486,9 +486,11 @@ export default {
 
 	  //开始倒计时
       callback(){
-		console.log('结束')
+		console.log(12)
       },
-
+      callback2(){
+          console.log(123)
+      },
 	  //新增游览记录
       look(item){
           var Qs = require('qs');

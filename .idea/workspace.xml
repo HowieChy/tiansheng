@@ -2,64 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="310c80a7-b724-44f6-b21f-3eeaeec0cd2e" name="默认" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dist/static/img/code.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dist/views/home/home.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/css/vendor.css" afterPath="$PROJECT_DIR$/dist/static/css/vendor.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/css/views/center/router.css" afterPath="$PROJECT_DIR$/dist/static/css/views/center/router.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/css/views/shopping/first.css" afterPath="$PROJECT_DIR$/dist/static/css/views/shopping/first.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/css/views/shopping/pay.css" afterPath="$PROJECT_DIR$/dist/static/css/views/shopping/pay.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/css/views/shopping/second.css" afterPath="$PROJECT_DIR$/dist/static/css/views/shopping/second.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/home/detail/jquery.imagezoom.min.js" afterPath="$PROJECT_DIR$/dist/static/js/home/detail/jquery.imagezoom.min.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/home/detail/thumbelina.js" afterPath="$PROJECT_DIR$/dist/static/js/home/detail/thumbelina.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/home/home/jquery.imagezoom.min.js" afterPath="$PROJECT_DIR$/dist/static/js/home/home/jquery.imagezoom.min.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/vendor.js" afterPath="$PROJECT_DIR$/dist/static/js/vendor.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/center/information.js" afterPath="$PROJECT_DIR$/dist/static/js/views/center/information.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/center/retrieval.js" afterPath="$PROJECT_DIR$/dist/static/js/views/center/retrieval.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/center/router.js" afterPath="$PROJECT_DIR$/dist/static/js/views/center/router.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/card.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/card.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/detail.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/detail.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/find.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/find.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/index.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/login.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/login.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/register.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/register.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/home/supermaket.js" afterPath="$PROJECT_DIR$/dist/static/js/views/home/supermaket.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/notice/active.js" afterPath="$PROJECT_DIR$/dist/static/js/views/notice/active.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/notice/detail.js" afterPath="$PROJECT_DIR$/dist/static/js/views/notice/detail.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/notice/list.js" afterPath="$PROJECT_DIR$/dist/static/js/views/notice/list.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/notice/packge.js" afterPath="$PROJECT_DIR$/dist/static/js/views/notice/packge.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/shopping/first.js" afterPath="$PROJECT_DIR$/dist/static/js/views/shopping/first.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/shopping/pay.js" afterPath="$PROJECT_DIR$/dist/static/js/views/shopping/pay.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/static/js/views/shopping/second.js" afterPath="$PROJECT_DIR$/dist/static/js/views/shopping/second.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/center/information.html" afterPath="$PROJECT_DIR$/dist/views/center/information.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/center/retrieval.html" afterPath="$PROJECT_DIR$/dist/views/center/retrieval.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/center/router.html" afterPath="$PROJECT_DIR$/dist/views/center/router.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/card.html" afterPath="$PROJECT_DIR$/dist/views/home/card.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/detail.html" afterPath="$PROJECT_DIR$/dist/views/home/detail.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/find.html" afterPath="$PROJECT_DIR$/dist/views/home/find.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/index.html" afterPath="$PROJECT_DIR$/dist/views/home/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/login.html" afterPath="$PROJECT_DIR$/dist/views/home/login.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/register.html" afterPath="$PROJECT_DIR$/dist/views/home/register.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home/supermaket.html" afterPath="$PROJECT_DIR$/dist/views/home/supermaket.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/notice/active.html" afterPath="$PROJECT_DIR$/dist/views/notice/active.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/notice/detail.html" afterPath="$PROJECT_DIR$/dist/views/notice/detail.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/notice/list.html" afterPath="$PROJECT_DIR$/dist/views/notice/list.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/notice/packge.html" afterPath="$PROJECT_DIR$/dist/views/notice/packge.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/shopping/first.html" afterPath="$PROJECT_DIR$/dist/views/shopping/first.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/shopping/pay.html" afterPath="$PROJECT_DIR$/dist/views/shopping/pay.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/shopping/second.html" afterPath="$PROJECT_DIR$/dist/views/shopping/second.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/CarHead.vue" afterPath="$PROJECT_DIR$/src/components/CarHead.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/Countdown.vue" afterPath="$PROJECT_DIR$/src/components/Countdown.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/McHead.vue" afterPath="$PROJECT_DIR$/src/components/McHead.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/McHead2.vue" afterPath="$PROJECT_DIR$/src/components/McHead2.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/McHead3.vue" afterPath="$PROJECT_DIR$/src/components/McHead3.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/center/information/informationApp.vue" afterPath="$PROJECT_DIR$/src/views/center/information/informationApp.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/center/router/components/index.vue" afterPath="$PROJECT_DIR$/src/views/center/router/components/index.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/home/detail/detailApp.vue" afterPath="$PROJECT_DIR$/src/views/home/detail/detailApp.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/center/retrieval/retrievalApp.vue" afterPath="$PROJECT_DIR$/src/views/center/retrieval/retrievalApp.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/home/home/indexApp.vue" afterPath="$PROJECT_DIR$/src/views/home/home/indexApp.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/home/register/registerApp.vue" afterPath="$PROJECT_DIR$/src/views/home/register/registerApp.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/shopping/address/secondApp.vue" afterPath="$PROJECT_DIR$/src/views/shopping/address/secondApp.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/shopping/car/firstApp.vue" afterPath="$PROJECT_DIR$/src/views/shopping/car/firstApp.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/views/shopping/pay/payApp.vue" afterPath="$PROJECT_DIR$/src/views/shopping/pay/payApp.vue" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -90,11 +41,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="informationApp.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="detailApp.vue" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/views/home/detail/detailApp.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="345" column="43" lean-forward="false" selection-start-line="345" selection-start-column="43" selection-end-line="345" selection-end-column="43" />
+              <folding>
+                <element signature="n#style#0;n#p#1;n#h3#0;n#div#1;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+                <element signature="e#3922#3967#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="informationApp.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/views/center/information/informationApp.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="18" column="39" lean-forward="false" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+            <state relative-caret-position="215">
+              <caret line="106" column="42" lean-forward="true" selection-start-line="106" selection-start-column="42" selection-end-line="106" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -110,28 +74,20 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="indexApp.vue" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/views/home/home/indexApp.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="368" column="14" lean-forward="false" selection-start-line="368" selection-start-column="14" selection-end-line="368" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>phone</find>
-      <find>allNum</find>
-      <find>change1</find>
-      <find>checked2</find>
-      <find>/mall/bss/ip/asset</find>
-      <find>integral</find>
-      <find>score</find>
-      <find>rule2</find>
-      <find>balance</find>
-      <find>width: 200px;</find>
-      <find>payPrice</find>
-      <find>freight</find>
-      <find>maxScore</find>
-      <find>balance2</find>
-      <find>console.log</find>
-      <find>sum2</find>
-      <find>allPrice</find>
-      <find>math</find>
       <find>q</find>
       <find>qugouwuc</find>
       <find>去购物村</find>
@@ -140,10 +96,28 @@
       <find>InterValObj</find>
       <find>endTime</find>
       <find>addrPk</find>
-      <find>我的积分</find>
       <find>去购物</find>
       <find>p</find>
       <find>post</find>
+      <find>我的积分</find>
+      <find>&lt;!--&lt;strong&gt;&lt;/strong&gt;</find>
+      <find>&lt;strong&gt;&lt;/strong&gt;</find>
+      <find>返回 &gt;</find>
+      <find>返回</find>
+      <find>返回</find>
+      <find>级别</find>
+      <find>继续购物</find>
+      <find>strong</find>
+      <find>&lt;h2&gt;{{phone}}&lt;em @click=&quot;exit&quot;&gt;退出&lt;/em&gt;&lt;/h2&gt;</find>
+      <find>location.reload()</find>
+      <find>w</find>
+      <find>window</find>
+      <find>exit</find>
+      <find>radio</find>
+      <find>callback(item)</find>
+      <find>callback2</find>
+      <find>callback</find>
+      <find>console.log</find>
     </findStrings>
     <replaceStrings>
       <replace>item.stock</replace>
@@ -195,17 +169,17 @@
         <option value="$PROJECT_DIR$/src/views/center/router/components/member.vue" />
         <option value="$PROJECT_DIR$/src/views/home/find/findApp.vue" />
         <option value="$PROJECT_DIR$/src/components/Countdown.vue" />
-        <option value="$PROJECT_DIR$/src/views/home/home/indexApp.vue" />
         <option value="$PROJECT_DIR$/src/views/home/detail/detailApp.vue" />
-        <option value="$PROJECT_DIR$/src/components/McHead2.vue" />
-        <option value="$PROJECT_DIR$/src/components/McHead.vue" />
-        <option value="$PROJECT_DIR$/src/components/McHead3.vue" />
         <option value="$PROJECT_DIR$/src/views/shopping/car/firstApp.vue" />
-        <option value="$PROJECT_DIR$/src/components/CarHead.vue" />
         <option value="$PROJECT_DIR$/src/views/shopping/address/secondApp.vue" />
         <option value="$PROJECT_DIR$/src/views/center/router/components/index.vue" />
         <option value="$PROJECT_DIR$/src/views/home/register/registerApp.vue" />
         <option value="$PROJECT_DIR$/src/views/center/information/informationApp.vue" />
+        <option value="$PROJECT_DIR$/src/components/McHead.vue" />
+        <option value="$PROJECT_DIR$/src/components/McHead2.vue" />
+        <option value="$PROJECT_DIR$/src/components/McHead3.vue" />
+        <option value="$PROJECT_DIR$/src/components/CarHead.vue" />
+        <option value="$PROJECT_DIR$/src/views/home/home/indexApp.vue" />
       </list>
     </option>
   </component>
@@ -404,12 +378,12 @@
       <workItem from="1510386478851" duration="1535000" />
       <workItem from="1510533449927" duration="18858000" />
       <workItem from="1510620952350" duration="21657000" />
-      <workItem from="1510706178086" duration="20002000" />
+      <workItem from="1510706178086" duration="23132000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="645713000" />
+    <option name="totallyTimeSpent" value="648843000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="399" y="0" width="974" height="735" extended-state="0" />
@@ -418,7 +392,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947807" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852563" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -449,13 +423,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/views/shopping/pay/payApp.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="5" lean-forward="true" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/views/notice/active/active.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -670,6 +637,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="369">
           <caret line="57" column="4" lean-forward="false" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -707,43 +675,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/home/home/indexApp.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1265">
-          <caret line="574" column="89" lean-forward="true" selection-start-line="574" selection-start-column="89" selection-end-line="574" selection-end-column="89" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/McHead3.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="107" column="77" lean-forward="false" selection-start-line="107" selection-start-column="77" selection-end-line="107" selection-end-column="77" />
-          <folding>
-            <element signature="e#5621#5653#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/home/detail/detailApp.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="351" column="34" lean-forward="false" selection-start-line="351" selection-start-column="34" selection-end-line="351" selection-end-column="91" />
-          <folding>
-            <element signature="n#style#0;n#p#1;n#h3#0;n#div#1;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="e#3922#3967#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/McHead.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="778">
-          <caret line="107" column="77" lean-forward="false" selection-start-line="107" selection-start-column="77" selection-end-line="107" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/views/home/login/loginApp.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="22">
@@ -757,16 +688,6 @@
         <state relative-caret-position="303">
           <caret line="84" column="16" lean-forward="false" selection-start-line="84" selection-start-column="16" selection-end-line="84" selection-end-column="16" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CarHead.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="196" column="35" lean-forward="true" selection-start-line="196" selection-start-column="35" selection-end-line="196" selection-end-column="35" />
-          <folding>
-            <element signature="e#2666#2698#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -790,14 +711,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="636">
           <caret line="245" column="31" lean-forward="false" selection-start-line="211" selection-start-column="28" selection-end-line="245" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/McHead2.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="34" column="59" lean-forward="false" selection-start-line="34" selection-start-column="55" selection-end-line="34" selection-end-column="59" />
           <folding />
         </state>
       </provider>
@@ -826,10 +739,77 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/shopping/pay/payApp.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="13" column="61" lean-forward="false" selection-start-line="13" selection-start-column="61" selection-end-line="13" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CarHead.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="120" column="60" lean-forward="false" selection-start-line="120" selection-start-column="60" selection-end-line="120" selection-end-column="60" />
+          <folding>
+            <element signature="n#ul#0;n#a#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/McHead3.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="197" column="60" lean-forward="false" selection-start-line="197" selection-start-column="60" selection-end-line="197" selection-end-column="60" />
+          <folding>
+            <element signature="n#ul#0;n#a#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/McHead2.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="201" column="12" lean-forward="true" selection-start-line="201" selection-start-column="12" selection-end-line="201" selection-end-column="60" />
+          <folding>
+            <element signature="n#ul#0;n#a#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/McHead.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="159" column="33" lean-forward="true" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
+          <folding>
+            <element signature="n#ul#0;n#a#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/views/center/information/informationApp.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="18" column="39" lean-forward="false" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+        <state relative-caret-position="215">
+          <caret line="106" column="42" lean-forward="true" selection-start-line="106" selection-start-column="42" selection-end-line="106" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/home/detail/detailApp.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="345" column="43" lean-forward="false" selection-start-line="345" selection-start-column="43" selection-end-line="345" selection-end-column="43" />
+          <folding>
+            <element signature="n#style#0;n#p#1;n#h3#0;n#div#1;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="e#3922#3967#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/home/home/indexApp.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="368" column="14" lean-forward="false" selection-start-line="368" selection-start-column="14" selection-end-line="368" selection-end-column="14" />
           <folding />
         </state>
       </provider>

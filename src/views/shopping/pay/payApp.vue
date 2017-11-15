@@ -11,7 +11,7 @@
 
   <div class="g-car">
     <div class="g-content">
-    <h2>提交订单 <p><a href="">查看订单</a><a href="">返回首页</a></p></h2>
+    <h2>提交订单 <p><a href="">查看订单</a><a href="../home/index.html">返回首页</a></p></h2>
     <div class="m-info">
       <h3>订单已提交，请在10分钟内完成支付，逾期将自动取消。</h3>
       <p><span>订单编号：235231321</span><span>订单金额：￥62.52</span></p>

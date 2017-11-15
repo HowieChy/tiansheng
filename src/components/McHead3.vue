@@ -12,22 +12,24 @@
             <p :class="{'f-active':lev}"><a href="../center/router.html#/index"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></a></p>
             <div class="u-lev" v-show="lev">
               <h2>{{phone}}<em @click="exit">退出</em></h2>
-              <ul class="clearfix">
-                <li>
-                  <h3>级别</h3>
-                  <h4>{{personInfo.memRankNmCn}}</h4>
-                  <strong></strong>
-                </li>
-                <li>
-                  <h3>积分</h3>
-                  <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
-                  <strong></strong>
-                </li>
-                <li>
-                  <h3>余额</h3>
-                  <h4>{{personInfo.balaAmt|currency('')}}元</h4>
-                </li>
-              </ul>
+              <a href="../center/router.html#/index">
+                <ul class="clearfix">
+                  <li>
+                    <h3>级别</h3>
+                    <h4>{{personInfo.memRankNmCn}}</h4>
+                    <!--<strong></strong>-->
+                  </li>
+                  <li>
+                    <h3>积分</h3>
+                    <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
+                    <!--<strong></strong>-->
+                  </li>
+                  <li>
+                    <h3>余额</h3>
+                    <h4>{{personInfo.balaAmt|currency('')}}元</h4>
+                  </li>
+                </ul>
+              </a>
             </div>
           </div>
 
@@ -193,7 +195,7 @@
             //登出
             exit(){
                 Lib.M.store.set('login', false);
-                location.reload()
+                window.location.href = '../home/index.html';
             },
             //导航
             jOpen1(){

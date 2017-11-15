@@ -30,7 +30,7 @@
         </div>
         <div class="m-all">
           <div class="m-left">
-            <a href="">继续购物</a><i>|</i> <p>共<em>{{carList}}</em>件商品，已选择<em>{{carCheck}}</em>件 </p>
+            <a href="../home/index.html">继续购物</a><i>|</i> <p>共<em>{{carList}}</em>件商品，已选择<em>{{carCheck}}</em>件 </p>
           </div>
           <div class="m-right">
             <p>合计（不含运费）： <strong>{{carPrice|currency}}</strong>元 <span>积分：{{carNum}}分</span><a href="javascript:;" @click="go">去结算</a></p>

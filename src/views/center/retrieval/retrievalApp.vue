@@ -11,7 +11,7 @@
 	<div class="g-content">
 		<div class="g-content">
 
-			<a class="u-back" href="information.html">返回 &gt;</a>
+			<a class="u-back" href="../center/information.html">返回 &gt;</a>
 
 			<ul class="m-info">
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
