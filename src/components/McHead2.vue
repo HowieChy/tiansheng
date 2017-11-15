@@ -67,7 +67,7 @@
                 <p><em>￥</em>{{allPrice |currency('')}}</p>
               </div>
               <div class="right">
-                <a href="">去购物车结算</a>
+                <a href="../shopping/first.html">去购物车结算</a>
               </div>
             </div>
           </div>
@@ -103,8 +103,8 @@
           <!--悬浮导航-->
           <div class="g-float">
             <div  class="j-time">
-              <p>剩余时间</p>
-              <count-down :endTime="cutTime" :callback="callback" endText="0S"></count-down>
+              <p>倒计时</p>
+              <count-down :endTime="cutTime" :callback="callback" endText="结束"></count-down>
             </div>
             <ul>
               <li></li>
@@ -182,7 +182,7 @@
                 allPrice:0,//商品总价
                 allNum:0,//商品总数
 
-                cutTime:'1510635396'
+                cutTime:'-999'
             }
         },
         computed:{
@@ -338,13 +338,14 @@
                 });
 
                 //获取购物车
-                this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+                this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
                     params:{
                         ipPk:this.userId,
                     }
                 })
                     .then(res=>{
                         this.carItems=res.data.data;
+                        this.cutTime=String(res.data.data[0].effectiveTime/1000);
                         this.carItems.map(function (item) {
                             this.allNum=this.carItems.length;
                             this.allPrice+=item.membAmt*item.qty;

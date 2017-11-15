@@ -68,7 +68,7 @@
                   <p><em>￥</em>{{allPrice |currency('')}}</p>
                 </div>
                 <div class="right">
-                  <a href="">去购物车结算</a>
+                  <a href="../shopping/first.html">去购物车结算</a>
                 </div>
               </div>
             </div>
@@ -103,9 +103,9 @@
 
           <!--悬浮导航-->
           <div class="g-float">
-            <div  class="j-time">
-              <p>剩余时间</p>
-              <count-down :endTime="cutTime" :callback="callback" endText="0S"></count-down>
+            <div  class="j-time" v-if="show">
+              <p>倒计时</p>
+              <count-down :endTime="cutTime" :callback="callback" endText="结束"></count-down>
             </div>
             <ul>
               <li></li>
@@ -178,6 +178,7 @@
 
                 open:false,
                 float:false,
+                show:true,
             }
         },
         computed:{
@@ -292,6 +293,7 @@
             },
             //倒计时结束回调
             callback(){
+                //this.show=false;
                 console.log('倒计时结束');
                 this.lists.splice(0);
                 this.$emit('child-shop',{

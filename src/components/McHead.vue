@@ -104,8 +104,8 @@
           <!--悬浮导航-->
           <div class="g-float">
             <div  class="j-time">
-              <p>剩余时间</p>
-              <count-down :endTime="cutTime" :callback="callback" endText="0S"></count-down>
+              <p>倒计时</p>
+              <count-down :endTime="cutTime" :callback="callback" endText="结束"></count-down>
             </div>
             <ul>
               <li></li>

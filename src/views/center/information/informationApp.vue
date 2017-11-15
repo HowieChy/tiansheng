@@ -24,7 +24,7 @@
 					<el-radio class="radio" v-model="radio" label="2">女</el-radio>
 				</div>
 			</li>
-			<li><ins></ins><button>保存</button></li>
+			<li><ins></ins><button @click="save">保存</button></li>
 		</ul>
 
 	</div>
@@ -86,26 +86,40 @@ export default {
 			  console.log(err);
 	  	});
 
-      //修改个人信息
-      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/editUser',{
-          params:{
-              ipPk:this.userId,
-              realNm:4
-          }
-      })
-          .then(res=>{
-              console.log(res.data.data.items)
-              this.shopItem=res.data.data.items;
-          }).catch(err=>{
-          console.log(err);
-      	});
+
 
 
   },
   //相关操作事件
   methods: {
+		save(){
+            //修改个人信息
+            var Qs = require('qs');
+            this.axios.post(Lib.C.url_mc + '/mall/bss/addr/addAddr', Qs.stringify({
+                ipPk:this.userId,
+            }))
+                .then(res => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.$alert(res.data.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
 
+                            }
+                        });
+                    }
+                    if (res.data.status == 400) {
+                        this.$alert(res.data.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
 
+                            }
+                        });
+                    }
+                }).catch(err => {
+                console.log(err);
+            });
+		}
   }
 }
 </script>

@@ -242,6 +242,7 @@ export default {
           if(!this.ruleForm.phone){
               this.$alert('请先输入手机号码！', '提示', {
                   confirmButtonText: '确定',
+
               });
 		  }else{
               this.axios.get(Lib.C.url_mc+'/mall/bss/sms/sendPicVerifyCode',{
@@ -268,7 +269,7 @@ export default {
 
       //验证提交
       submitForm(formName) {
-          console.log(this.ruleForm.yzm2)
+          console.log(this.ruleForm.address2)
 
           this.$refs[formName].validate((valid) => {
               if (valid) {
@@ -286,7 +287,7 @@ export default {
                       receProvCd: this.ruleForm.receProvCd,
                       receCityCd: this.ruleForm.receCityCd,
                       receDistCd: this.ruleForm.receDistCd,
-                      fullAddr: this.ruleForm.address2,
+                      addr: this.ruleForm.address2,
                   }), {
                       headers: {
                           'Content-Type': 'application/x-www-form-urlencoded',
@@ -351,6 +352,11 @@ export default {
               if(!This.ruleForm.phone){
                   This.$alert('请先输入手机号码！', '提示', {
                       confirmButtonText: '确定',
+                      callback: action => {
+                          $(".m-sendm").removeClass('disabled');
+                          window.clearInterval(InterValObj);//停止计时器
+                          $(".m-sendm").html("重新获取");
+                      }
                   });
               }else{
                   This.axios.get(Lib.C.url_mc+'/mall/bss/sms/sendSmsVerifyCode',{
@@ -450,5 +456,7 @@ export default {
 		background: #f7ecf0;
 		color: #666;
 	}
-
+	.disabled{
+		background: #ccc;
+	}
 </style>

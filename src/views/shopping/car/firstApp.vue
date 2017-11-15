@@ -21,7 +21,7 @@
             <td><el-checkbox v-model="item.isCheck"></el-checkbox></td>
             <td><img :src="item.aPic" alt=""><em>{{item.title}}</em></td>
             <td><span>{{ item.price | currency }}</span></td>
-            <td> <el-input-number @change="changeNum(item)"   v-model="item.num1" :min="1" :max="item.stock"></el-input-number></td>
+            <td> <el-input-number @change="changeNum(item)"   v-model="item.num1" :min="1" ></el-input-number></td>
             <td><span>{{ item.price*item.num1 | currency }}</span></td>
             <td><i class="el-icon-close" @click="del(item)"></i></td>
           </tr>
@@ -87,7 +87,7 @@ export default {
         carNum:0,     //积分
         rule:0,       //积分规则
         //倒计时
-        cutTime:'1510635396',
+        cutTime:'-999',
 
         //商品列表
         shopItem:[],
@@ -115,13 +115,13 @@ export default {
 
 
       //获取购物车
-      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
           params:{
               ipPk:this.userId,
           }
       })
           .then(res=>{
-              //console.log(res.data.data)
+              console.log(res.data.data)
               var data=[];
               res.data.data.forEach(function (elem,i) {
                   data.push({
@@ -137,6 +137,7 @@ export default {
               })
               this.cars=data;
               this.carList=this.cars.length;
+              this.cutTime=String(res.data.data[0].effectiveTime/1000);
           }).catch(err=>{
           console.log(err);
       });
@@ -199,7 +200,7 @@ export default {
       //积分计算
       carPrice:function (val) {
           this.carNum=parseInt(val)*this.rule;
-          //this.carNum=String(parseInt(val)).slice(-String(parseInt(val)).length,-1)
+          this.carNum=Math.floor(parseInt(val)/10)
       },
 
       //总价计算
@@ -290,6 +291,40 @@ export default {
                               confirmButtonText: '确定',
                               callback: action => {
 
+                              }
+                          });
+                      }
+                      if (res.data.status == 301) {
+                          loading.close();
+                          This.$alert(res.data.msg, '提示', {
+                              confirmButtonText: '确定',
+                              callback: action => {
+                                  //获取购物车
+                                  This.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
+                                      params:{
+                                          ipPk:This.userId,
+                                      }
+                                  })
+                                      .then(res=>{
+                                          console.log(res.data.data)
+                                          var data=[];
+                                          res.data.data.forEach(function (elem,i) {
+                                              data.push({
+                                                  isCheck:false,
+                                                  id:elem.prodPk,
+                                                  aPic:elem.imgUrl,
+                                                  title:elem.prodNm,
+                                                  price:elem.membAmt,
+                                                  num1:elem.qty,
+                                                  stock:elem.stock,
+                                                  cartPk:elem.cartPk
+                                              })
+                                          })
+                                          This.cars=data;
+                                          This.carList=this.cars.length;
+                                      }).catch(err=>{
+                                      console.log(err);
+                                  });
                               }
                           });
                       }

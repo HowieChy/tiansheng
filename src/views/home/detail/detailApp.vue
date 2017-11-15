@@ -8,6 +8,7 @@
 		</div>
 	</McHead>
 
+
 	<!--微信二维码-->
 	<el-popover
 					ref="popover"
@@ -133,7 +134,7 @@ export default {
         allPrice:0,//商品总价
         allNum:0,//商品总数
 
-        cutTime:'1510140980' ,//倒计时
+        cutTime:'-999' ,//倒计时
 
         title:'',
         newPrice:'',
@@ -155,7 +156,7 @@ export default {
   },  
   //在挂载开始之前被调用
   beforeMount(){
-  	
+
   
   }, 
   //已成功挂载，相当ready()
@@ -169,7 +170,7 @@ export default {
       var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
       console.log(prodId)
       //获取商品详情信息
-      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/detail',{
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/detail?=' + Date.now(),{
           params:{
               prodPk:prodId
 		  }
@@ -189,13 +190,15 @@ export default {
 
 
       //获取购物车
-      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
           params:{
               ipPk:this.userId,
           }
       })
           .then(res=>{
               this.carItems=res.data.data;
+              this.cutTime=String(res.data.data[0].effectiveTime/1000);
+              console.log(String(res.data.data[0].effectiveTime/1000))
               this.carItems.map(function (item) {
                   this.allNum=this.carItems.length;
                   this.allPrice+=item.membAmt*item.qty;
@@ -339,6 +342,18 @@ export default {
                           console.log('第一次添加')
                           add(this)
                           sum(this)
+
+                          this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
+                              params:{
+                                  ipPk:this.userId,
+                              }
+                          })
+                              .then(res=>{
+                                  this.cutTime=String(res.data.data[0].effectiveTime/1000);
+                              }).catch(err=>{
+                              console.log(err);
+                          });
+
                       }
 
 
@@ -371,73 +386,7 @@ export default {
 
 
       }
-//	  //购买商品
-//      addShop(e){
-//	      if( $(e.currentTarget).attr('rel')=='1'){
-//	          alert('库存为0,不能继续购买');
-//	          return false
-//		  }
-//          this.store=this.store-this.numer;
-//          if(this.store<0){
-//              this.store=0;
-//              $(e.currentTarget).attr('rel','1')
-//		  }
-//			if(!this.carItems.length){
-//                console.log('第一次添加')
-//                this.carItems.push({
-//                    price:$(e.currentTarget).attr('price'),
-//                    num:$(e.currentTarget).attr('num'),
-//                    id:$(e.currentTarget).attr('id')
-//                });
-//
-//                this.cutTime=(parseInt(new Date().getTime()/1000)+1802).toString();
-//
-//                this.allNum=0;
-//                this.allPrice=0;
-//                this.carItems.map(function (item) {
-//                    this.allNum=this.allNum+parseInt(item.num);
-//                    this.allPrice+=item.price*item.num
-//                }.bind(this))
-//				return false
-//            }
-//		  for(var i=0;i<this.carItems.length;i++){
-//
-//              if($(e.currentTarget).attr('id')==this.carItems[i].id){
-//                  console.log('已重复添加')
-//                  this.carItems[i].num=parseInt(this.carItems[i].num)+parseInt($(e.currentTarget).attr('num'));
-//
-//
-//                  this.allNum=0;
-//                  this.allPrice=0;
-//                  this.carItems.map(function (item) {
-//                      this.allNum=this.allNum+parseInt(item.num);
-//                      this.allPrice+=item.price*item.num
-//                  }.bind(this))
-//                  return false
-//              };
-//              if(i==this.carItems.length-1){
-//                  console.log('新添加')
-//				  this.carItems.push({
-//					  price:$(e.currentTarget).attr('price'),
-//					  num:$(e.currentTarget).attr('num'),
-//					  id:$(e.currentTarget).attr('id')
-//              		}
-//          		);
-//
-//                  this.allNum=0;
-//                  this.allPrice=0;
-//                  this.carItems.map(function (item) {
-//                      this.allNum=this.allNum+parseInt(item.num);
-//                      this.allPrice+=item.price*item.num
-//                  }.bind(this))
-//                  return false
-//			  }
-//		  }
-//
-//	  }
 
-
-      
   }
 }
 </script>

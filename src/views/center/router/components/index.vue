@@ -46,7 +46,7 @@
 			<div class="info" v-if="info.catCd=='3090.120'">
 				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
 				<p>身份：团长 <span>团员人数：{{info.memberNum }}人</span></p>
-				<p>我的积分：{{info.pointQty*100}}（价值{{info.pointQty |currency}}）<span>推荐码：{{info.referralCode }}</span></p>
+				<p>团员消费总额：{{info.memberCos}}<span>推荐码：{{info.referralCode }}</span></p>
 			</div>
 		</div>
 

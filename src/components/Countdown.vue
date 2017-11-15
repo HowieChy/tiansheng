@@ -44,7 +44,10 @@
                 return false;
             },
             countdowm(timestamp){
-
+                if(timestamp==-999){
+                    this.content='还未开始'
+                    return false
+                }
                 //设置一个全局函数来控制时间
                 window.clearTime=false;
                 if(timestamp=='0'){

@@ -51,33 +51,33 @@
         </div>
 
         <div class="m-bottom">
-          <h3>商品 <a href="">返回购物车&gt; </a></h3>
+          <h3>商品 <a href="first.html">返回购物车&gt; </a></h3>
           <table>
             <tr v-for="(item,index) in cars">
-              <td><a  href=""><img src="" alt=""><em>{{item.title}}</em></a></td>
-              <td><span>{{ item.price | currency }} X {{item.num}}</span></td>
-              <td><span>{{ item.price*item.num | currency }}</span></td>
+              <td><a  href=""><img :src="item.imgUrl" alt=""><em>{{item.prodNm}}</em></a></td>
+              <td><span>{{ item.membAmt | currency }} X {{item.qty}}</span></td>
+              <td><span>{{ item.membAmt*item.qty | currency }}</span></td>
             </tr>
           </table>
 
           <div class="m-info ">
             <div class="clearfix">
               <div class="left ">
-                <p> <el-checkbox v-model="checked1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-checkbox></p>
-                <p><el-checkbox v-model="checked2">使用积分 <input type="number" v-model.lazy="score" @blur="maxScore"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score/10}}元</el-checkbox></p>
-                <p><el-checkbox v-model="checked3">使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
+                <p> <el-checkbox @change="change1" v-model="checked1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-checkbox></p>
+                <p><el-checkbox @change="change2" v-model="checked2">使用积分 <input type="number" v-model.lazy="score"  min="0"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score*rule}}元</el-checkbox></p>
+                <p><el-checkbox @change="change3" v-model="checked3">使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
               </div>
               <div class="right">
-                <p>商品件数： <span>3件</span></p>
-                <p>金额合计： <span>￥3520.00</span></p>
+                <p>商品件数： <span>{{carList}}件</span></p>
+                <p>金额合计： <span>{{allPrice|currency}}</span></p>
                 <p>运费： <span>{{freight|currency}}</span></p>
-                <p>使用积分： <span>4分（抵￥0.4）</span></p>
-                <p>使用余额： <span>3.00</span></p>
-                <p>应付总额： <span><strong>￥31880.00</strong></span></p>
+                <p>使用积分： <span>{{score2}}分（抵{{rule2|currency}}）</span></p>
+                <p>使用余额： <span>{{balance2| currency}}</span></p>
+                <p>应付总额： <span><strong>{{payPrice|currency}}</strong></span></p>
               </div>
             </div>
             <div class="submit">
-              <p>支付成功后可得积分：4分 <button>提交订单</button></p>
+              <p>支付成功后可得积分：{{rPrice}}分 <button @click="pOrder">提交订单</button></p>
             </div>
           </div>
 
@@ -124,30 +124,28 @@ export default {
         value: '',
         //收货地址
         addressOption:[],
+        addrPk:null,//配送地址主键
 
         //购物车列表
-        cars:[{
-            title:'芒果',
-            price:300.30,
-            num:2
-        },{
-            title:'芒果',
-            price:200,
-            num:1,
-        }],
-
+        cars:[],
+        carList:0,//商品件数
+        allPrice:0,//商品总额
+        payPrice:0,//应付总额
         freight:20,     //运费
-
+        rule:0,//抵扣规则
+        rule2:0,//抵扣分
         checked1:false,
         checked2:false,
         checked3:false,
 
-        integral:23,    //可使用积分
-        score:'',       //使用积分
-        balance:3,  //余额
-
+        integral:0,    //可使用积分
+        score:0,       //使用积分
+        score2:0,       //使用积分
+        balance:0,  //余额
+        balance2:0,  //余额
+        rPrice:0,//可得积分
         //dialogVisible:false,
-        cutTime:'1504796400',//倒计时
+        cutTime:'-999',//倒计时
 
 	}
   },
@@ -168,9 +166,73 @@ export default {
   mounted(){
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
-          console.log(this.userId)
+          //console.log(this.userId)
       }
       this.getAddress('1120.10')
+
+
+      //获取购物车
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              //console.log(res.data.data)
+              this.cars=res.data.data;
+              this.cutTime=String(res.data.data[0].effectiveTime/1000);
+              this.cars.map(function (item) {
+                  this.carList=this.cars.length;
+                  this.allPrice+=item.membAmt*item.qty;
+              }.bind(this));
+              this.sum2()
+              this.rPrice=Math.floor(parseInt(this.allPrice+this.freight)/10)
+          }).catch(err=>{
+          //console.log(err);
+      });
+
+      //获取积分
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/asset',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              //console.log(res.data.data.rule)
+              this.integral=res.data.data.point;
+              this.balance=res.data.data.wallet;
+              this.rule=res.data.data.rule;
+          }).catch(err=>{
+          //console.log(err);
+      })
+
+
+
+  },
+
+
+  watch:{
+    score:function () {
+        if(this.score>this.integral){
+            this.score=this.integral
+            this.score2=this.score
+        };
+        if(!String(this.score).match(/^\d+$/)){
+            this.score=''
+        }
+        if(this.checked2){
+            this.score2=this.score
+            this.rule2=this.rule*this.score
+
+        }
+        if(this.checked3){
+            this.sum()
+        }
+        if(this.allPrice+this.freight-this.score2*this.rule<0){
+            this.score=(this.allPrice+this.freight)*100
+        }
+        this.sum2()
+    }
   },
 
   //相关操作事件
@@ -180,35 +242,41 @@ export default {
               this.iScur=index;
           }
 
-        console.log(item,index)
+       // console.log(item,index)
       },
 
-      //积分
-      maxScore(){
-          if(this.score>this.integral){
-              this.score=this.integral
-          };
-          if(!String(this.score).match(/^\d+$/)){
-              this.score=''
+      change1(){
+          if(this.checked1){
+
           }
-      },
 
-      //地址弹窗表单
-      submitForm(formName) {
-          this.$refs[formName].validate((valid) => {
-              if (valid) {
-                  console.log(valid)
-                  alert('submit!');
-              } else {
-                  console.log('error submit!!');
-                  return false;
-              }
-          });
+      },
+      change2(){
+          if(this.checked2){
+              this.score2=this.score
+              this.rule2=this.rule*this.score
+
+          }else{
+              this.score2=0
+              this.rule2=0
+          }
+          if(this.checked3){
+              this.sum()
+          }
+          this.sum2()
+      },
+      change3(){
+          if(this.checked3){
+              this.sum()
+          }else{
+              this.balance2=0
+          }
+          this.sum2()
       },
 
       //倒计时
       callback(){
-          console.log('结束1')
+          //console.log('结束1')
       },
 
 
@@ -228,13 +296,81 @@ export default {
           })
               .then(res=>{
                   if(num=='1120.10'){
-                      console.log(res.data.data.items)
+                      //console.log(res.data.data.items)
                       this.addressOption=res.data.data.items;
+                      this.addrPk=res.data.data.items[0].addrPk;
                   }else{
                       this.addressHide=res.data.data.items;
-                      console.log(res.data.data.items)
+                      //console.log(res.data.data.items)
                   }
               }).catch(err=>{
+              console.log(err);
+          });
+      },
+
+      //计算使用余额
+      sum(){
+          if(this.balance>=this.allPrice+this.freight-this.score2*this.rule){
+              if(this.allPrice+this.freight-this.score2*this.rule>=0){
+                  this.balance2=this.allPrice+this.freight-this.score2*this.rule;
+              }else{
+                  this.balance2=this.allPrice+this.freight;
+                  this.score=(this.allPrice+this.freight)*100
+              }
+          }else{
+              this.balance2=this.balance
+          }
+      },
+
+      //计算应付
+      sum2(){
+          //应付总额
+          this.payPrice=this.allPrice+this.freight-this.score2*this.rule-this.balance2;
+
+      },
+
+      //提交订单
+      pOrder(){
+          //新增收货地址
+          console.log(this.addrPk,this.score2,this.balance2,this.payPrice)
+          var Qs = require('qs');
+          this.axios.post(Lib.C.url_mc + '/mall/bss/ordReqt/add', Qs.stringify({
+              ipPk:this.userId,
+              addrPk:this.addrPk,
+              discountPk:'',
+              usePoint:this.score2,
+              useBalance:this.balance2,
+              totOrdAmt:this.allPrice+this.freight,
+              ordAmt:this.payPrice,
+              rebatePoint:this.rPrice
+          }))
+              .then(res => {
+                  console.log(res.data);
+                  if (res.data.status == 200) {
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
+                  }
+                  if (res.data.status == 400) {
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
+                  }
+                  if (res.data.status == 300) {
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+
+                          }
+                      });
+                  }
+              }).catch(err => {
               console.log(err);
           });
       }
@@ -423,7 +559,7 @@ export default {
           float: right;
           p{
             margin-bottom: 20px;
-            width: 200px;
+            width: 250px;
           }
           span{
             color: #fe3000;

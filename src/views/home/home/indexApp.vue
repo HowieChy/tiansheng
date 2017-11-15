@@ -346,7 +346,7 @@ export default {
 
 		door:false, //模块是否展示
 
-		cutTime:'1510635396' //倒计时
+		cutTime:'-999' //倒计时
     }
   },
     components: {
@@ -388,7 +388,7 @@ export default {
       });
       //专区内容
 
-      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/list')
+      this.axios.get(Lib.C.url_mc+'/mall/bss/prod/list?t='+Date.now())
 
           .then(res=>{
              // console.log(res.data)
@@ -409,7 +409,7 @@ export default {
 
 
       //获取购物车
-      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList',{
+      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
           params:{
               ipPk:this.userId,
           }
@@ -419,6 +419,7 @@ export default {
               this.carItems.map(function (item) {
                   this.allNum=this.carItems.length;
                   this.allPrice+=item.membAmt*item.qty;
+                  this.cutTime=String(res.data.data[0].effectiveTime/1000);
                   console.log(this.allNum,this.allPrice)
               }.bind(this));
           }).catch(err=>{
@@ -563,6 +564,18 @@ export default {
                           console.log('第一次添加')
                           add(this)
                           sum(this)
+
+						  //倒计时
+                          this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
+                              params:{
+                                  ipPk:this.userId,
+                              }
+                          })
+                              .then(res=>{
+                                  this.cutTime=String(res.data.data[0].effectiveTime/1000);
+                              }).catch(err=>{
+                              console.log(err);
+                          });
                       }
 
 

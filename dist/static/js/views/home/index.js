@@ -1,12 +1,12 @@
 webpackJsonp([7],{
 
-/***/ 163:
+/***/ 162:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__indexApp__);
 
 
@@ -21,7 +21,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
 
 /***/ }),
 
-/***/ 177:
+/***/ 176:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -157,7 +157,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log(err);
         });
 
-        this.codeSrc = 'http://192.168.1.160:8083/mall/bss/ip/QRCode?url=https://www.baidu.com/';
+        this.codeSrc = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/ip/QRCode?url=https://www.baidu.com/';
 
         if (__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo')) {
             this.userId = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo').ipPk;
@@ -200,13 +200,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ 196:
+/***/ 195:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(355);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(356);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_McHead__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_components_McFoot__);
@@ -255,7 +255,7 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
 
             door: false,
 
-            cutTime: '1510635396' };
+            cutTime: '-999' };
     },
 
     components: {
@@ -284,7 +284,7 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
         });
 
 
-        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/list').then(function (res) {
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/list?t=' + Date.now()).then(function (res) {
             _this.shopItem = res.data.data;
             _this.door = true;
             var id = window.location.toString().split('#')[1];
@@ -298,7 +298,7 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
             console.log(err);
         });
 
-        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/cartList', {
+        this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/cartList?t=' + Date.now(), {
             params: {
                 ipPk: this.userId
             }
@@ -307,6 +307,7 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
             _this.carItems.map(function (item) {
                 this.allNum = this.carItems.length;
                 this.allPrice += item.membAmt * item.qty;
+                this.cutTime = String(res.data.data[0].effectiveTime / 1000);
                 console.log(this.allNum, this.allPrice);
             }.bind(_this));
         }).catch(function (err) {
@@ -402,6 +403,11 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
                         });
                     };
 
+                    _this2.$alert('加入购物车成功', '提示', {
+                        confirmButtonText: '确定',
+                        callback: function callback(action) {}
+                    });
+
                     ;
 
                     if (_this2.carItems.length) {
@@ -422,6 +428,16 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
                         console.log('第一次添加');
                         add(_this2);
                         sum(_this2);
+
+                        _this2.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/cartList?t=' + Date.now(), {
+                            params: {
+                                ipPk: _this2.userId
+                            }
+                        }).then(function (res) {
+                            _this2.cutTime = String(res.data.data[0].effectiveTime / 1000);
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
                     }
 
                     for (var i = 0; i < _this2.shopItem.length; i++) {
@@ -454,21 +470,21 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
 
 /***/ }),
 
-/***/ 257:
+/***/ 260:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 274:
+/***/ 277:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 322:
+/***/ 323:
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1075,7 +1091,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 
-/***/ 339:
+/***/ 340:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1105,9 +1121,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       'f-active': _vm.lev
     }
+  }, [_c('a', {
+    attrs: {
+      "href": "../center/router.html#/index"
+    }
   }, [_c('span', [_vm._v("您好！" + _vm._s(_vm.phone) + " "), _c('i', {
     staticClass: "el-icon-arrow-down"
-  })])]), _vm._v(" "), _c('div', {
+  })])])]), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1121,7 +1141,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("退出")])]), _vm._v(" "), _c('ul', {
     staticClass: "clearfix"
-  }, [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.memRankNmCn) + "普通会员")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _vm._m(0), _vm._v(" "), _vm._m(1)])])]) : _vm._e(), _vm._v(" "), _c('div', {
+  }, [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.memRankNmCn))]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.pointQty) + "分（" + _vm._s(_vm._f("currency")(_vm.personInfo.pointQty * _vm.personInfo.pointRule, '')) + "元）")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm._f("currency")(_vm.personInfo.balaAmt, '')) + "元")])])])])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "m-address",
     on: {
       "mouseenter": _vm.jAddress1,
@@ -1202,9 +1222,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "bottom clearfix"
   }, [_c('div', {
     staticClass: "left"
-  }, [_c('p', [_vm._v("共 " + _vm._s(_vm.allNum) + " 件商品 ")]), _vm._v(" "), _c('p', [_c('em', [_vm._v("￥")]), _vm._v(_vm._s(_vm._f("currency")(_vm.allPrice, '')))])]), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _c('ul', {
+  }, [_c('p', [_vm._v("共 " + _vm._s(_vm.allNum) + " 件商品 ")]), _vm._v(" "), _c('p', [_c('em', [_vm._v("￥")]), _vm._v(_vm._s(_vm._f("currency")(_vm.allPrice, '')))])]), _vm._v(" "), _vm._m(0)])])]), _vm._v(" "), _c('ul', {
     staticClass: "m-nav"
-  }, [_vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _c('li', {
+  }, [_vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _c('li', {
     staticClass: "m-code",
     class: {
       'f-active': _vm.code
@@ -1242,11 +1262,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "g-float"
   }, [_c('div', {
     staticClass: "j-time"
-  }, [_c('p', [_vm._v("剩余时间")]), _vm._v(" "), _c('count-down', {
+  }, [_c('p', [_vm._v("倒计时")]), _vm._v(" "), _c('count-down', {
     attrs: {
       "endTime": _vm.cutTime,
       "callback": _vm.callback,
-      "endText": "0S"
+      "endText": "结束"
     }
   })], 1), _vm._v(" "), _c('ul', [_c('li'), _vm._v(" "), _c('li'), _vm._v(" "), _c('li', {
     on: {
@@ -1254,15 +1274,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })])])], 2)])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v("45分（4.5元）")]), _vm._v(" "), _c('strong')])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v("500.00元")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "right"
   }, [_c('a', {
     attrs: {
-      "href": ""
+      "href": "../shopping/first.html"
     }
   }, [_vm._v("去购物车结算")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1274,7 +1290,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('li', [_c('a', {
     attrs: {
-      "href": ""
+      "href": "../notice/active.html"
     }
   }, [_vm._v("最新活动")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1287,18 +1303,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 
-/***/ 355:
+/***/ 356:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(274)
+__webpack_require__(277)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(177),
+  __webpack_require__(176),
   /* template */
-  __webpack_require__(339),
+  __webpack_require__(340),
   /* scopeId */
   "data-v-67420d7e",
   /* cssModules */
@@ -1551,18 +1567,18 @@ class VueViewload {
 
 /***/ }),
 
-/***/ 98:
+/***/ 97:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(257)
+__webpack_require__(260)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(196),
+  __webpack_require__(195),
   /* template */
-  __webpack_require__(322),
+  __webpack_require__(323),
   /* scopeId */
   null,
   /* cssModules */
@@ -1574,4 +1590,4 @@ module.exports = Component.exports
 
 /***/ })
 
-},[163]);
+},[162]);
