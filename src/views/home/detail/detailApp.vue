@@ -46,7 +46,7 @@
 					<img id="img" class="cloudzoom" :src="imgSrc[0]"  :data-cloudzoom="'zoomSizeMode:\'image\', startMagnification:2,zoomImage:\''+imgSrc[0]+'\',zoomImage:\''+imgSrc[0]+'\''"/>
 				</div>
 
-                <p class="u-share">分享至： <span><img src="./assets/images/qq.png" alt=""></span><span v-popover:popover><img src="./assets/images/wx.png" alt=""></span></p>
+                <p class="u-share">分享至： <span><a :href="'http://connect.qq.com/widget/shareqq/index.html?url='+host" alt=""><img src="./assets/images/qq.png" alt=""></a></span><span v-popover:popover><img src="./assets/images/wx.png" alt=""></span></p>
 			</div>
 
 			<div class="m-right">
@@ -87,19 +87,20 @@
     <div class="m-margin">
       <a class="f-active" href="#a">商品详情</a>
       <em>|</em>
-      <a href="#b">服务保障</a>
+      <a href="#b" style="margin-right: 200px;">服务保障</a>
+		<span style="font-size: 16px;color: #fe3000;margin-right: 30px">会员价：{{newPrice| currency}}</span><span style="font-size: 16px;color: #fe3000">市场价：{{oldPrice| currency}}</span>
       <button  @click="addShop" :num="number" :price="newPrice" :id="id">加入购物车</button>
     </div>
   </div>
 
   <div class="m-text">
     <h1 id="a">商品详情</h1>
-    <div class="m-first">
-      <img src="./assets/images/pic.png" alt="">
+    <div class="m-first" v-html="prodDtl">
+
     </div>
     <h1 id="b">服务保障</h1>
-    <div class="m-last">
-      <img src="./assets/images/pic.png" alt="">
+    <div class="m-last" v-html="serviceQA">
+
     </div>
   </div>
 
@@ -144,6 +145,9 @@ export default {
         id:"",
         imgSrc:'',
 		code:'',//二维码
+        prodDtl:'',
+        serviceQA:'',
+		host:''
     }
   },
     components: {
@@ -161,7 +165,7 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-
+	  this.host=Lib.C.url_host;
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
           console.log(this.userId)
@@ -176,13 +180,16 @@ export default {
 		  }
 	  })
           .then(res=>{
-              this.id=res.data.data.prod.prodPk;
-              this.title=res.data.data.prod.nm;
-              this.oldPrice=res.data.data.prod.markAmt;
-              this.newPrice=res.data.data.prod.membAmt;
-              this.stock=res.data.data.prod.stock;
-              this.number=res.data.data.prod.number;
-              this.imgSrc=res.data.data.prod.imgUrl.split(',');
+              console.log(res.data.data)
+              this.id=res.data.data.prodDetailRo.prodPk;
+              this.title=res.data.data.prodDetailRo.nm;
+              this.oldPrice=res.data.data.prodDetailRo.markAmt;
+              this.newPrice=res.data.data.prodDetailRo.membAmt;
+              this.stock=res.data.data.prodDetailRo.stock;
+              this.number=res.data.data.prodDetailRo.number;
+              this.imgSrc=res.data.data.prodDetailRo.imgUrl.split(',');
+              this.prodDtl=res.data.data.prodDtl.cont;
+              this.serviceQA=res.data.data.serviceQA.cont;
               CloudZoom.quickStart();
           }).catch(err=>{
           console.log(err);
@@ -234,32 +241,13 @@ export default {
       //二维码
       this.code=Lib.C.url_mc+'/mall/bss/ip/QRCode?url='+Lib.C.url_host;
 
-//      var h={VER:"1.0.0",CDN:"http://pub.idqqimg.com/qconn/widget/loader/"},g={SHARE_QQ:"shareqq.js?t=20121127"};(function(){for(var e,c=/connect\.qq\.com\/widget\/loader\/loader\.js/i,d=document.getElementsByTagName("script"),a=0,f,i=d.length;a<i;a++){f=d[a];if((f.src||"").match(c)){e=f;break}}e=e;c=[];var b;for(d=0;d<e.attributes.length;d++){a=e.attributes[d];a.name!="src"&&a.specified&&c.push([a.name,'"'+a.value+'"'].join("="));if(a.name=="widget"&&a.specified)b=g[a.value]||g.SHARE_QQ}b=
-//          h.CDN+b;c.push("src="+b+"");b=b;if(document.readyState!="complete")document.write("<script "+c.join(" ")+" ><\/script>");else{c=document.createElement("script");c.type="text/javascript";c.src=b;(b=document.getElementsByTagName("head"))&&b[0]&&b[0].appendChild(c)}})()
-//      var p = {
-//          url:location.href, /*获取URL，可加上来自分享到QQ标识，方便统计*/
-//          desc:'', /*分享理由(风格应模拟用户对话),支持多分享语随机展现（使用|分隔）*/
-//          title:'', /*分享标题(可选)*/
-//          summary:'', /*分享摘要(可选)*/
-//          pics:'', /*分享图片(可选)*/
-//          flash: '', /*视频地址(可选)*/
-//          site:'', /*分享来源(可选) 如：QQ分享*/
-//          style:'201',
-//          width:32,
-//          height:32
-//      };
-//      var s = [];
-//      for(var i in p){
-//          s.push(i + '=' + encodeURIComponent(p[i]||''));
-//      }
-//      document.write(['<a class="qcShareQQDiv" href="http://connect.qq.com/widget/shareqq/index.html?',s.join('&'),'" target="_blank">分享到QQ</a>'].join(''));
       
-//      //选择规格
-//      $('.j-size li').on('click',function () {
-//          $('.j-size li').removeClass('f-active');
-//          $(this).addClass('f-active');
-//          $('.j-size em').text($(this).text())
-//      })
+      //选择规格
+      $('.j-size li').on('click',function () {
+          $('.j-size li').removeClass('f-active');
+          $(this).addClass('f-active');
+          $('.j-size em').text($(this).text())
+      })
 
   },
   //相关操作事件
@@ -287,6 +275,18 @@ export default {
       },
       //购买商品
       addShop(item,index){
+
+          if(!Lib.M.store.get('login')){
+
+              this.$alert('请先登录账号', '提示', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+
+                  }
+              });
+              return false
+          }
+
           var Qs = require('qs');
           //this.axios.post('/api/mall/bss/cart/add', Qs.stringify({
           this.axios.post(Lib.C.url_mc+'/mall/bss/cart/add', Qs.stringify({

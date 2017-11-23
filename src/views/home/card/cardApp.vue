@@ -21,11 +21,11 @@
 			<ul class="clearfix">
 				<li v-for="(item,index) in type"  :class="{'f-active':iScur==index}" @click="iScur=index">充{{item.rechAmt}}送{{item.giftAmt}}</li>
 			</ul>
-			<h3><button @click="pay">立即充值</button></h3>
-			<h4>充值页面详情</h4>
+			<h3><button @click="pay">去充值</button></h3>
+			<h4>充值业务详情</h4>
 			<p>用户充值分为实体卡充值和在线购买虚拟卡充值</p>
 			<p>详情请拨打服务热线4008610177</p>
-			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值</p>
+			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值”</p>
 		</div>
 
 		<div class="m-info" v-if="tabs[1]">
@@ -39,11 +39,11 @@
 				</el-form-item>
 
 			</el-form>
-			<h3><button  @click="submitForm('ruleForm')">立即充值</button></h3>
-			<h4>充值页面详情</h4>
+			<h3><button  @click="submitForm('ruleForm')">去充值</button></h3>
+			<h4>充值业务详情</h4>
 			<p>用户充值分为实体卡充值和在线购买虚拟卡充值</p>
 			<p>详情请拨打服务热线4008610177</p>
-			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值</p>
+			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值”</p>
 		</div>
 
 		<div class="m-info" v-if="tabs[2]">
@@ -51,13 +51,15 @@
 				<el-form-item  label="输入兑换码" prop="num">
 					<el-input v-model="ruleForm2.num" placeholder="请输入兑换码" type="text"></el-input>
 				</el-form-item>
-
+				<el-form-item label="密码"  prop="pass">
+					<el-input v-model="ruleForm2.pass" placeholder="请输入密码" type="password"></el-input>
+				</el-form-item>
 			</el-form>
-			<h3><button  @click="submitForm2('ruleForm2')">立即兑换</button></h3>
-			<h4>充值页面详情</h4>
+			<h3><button  @click="submitForm2('ruleForm2')">去兑换</button></h3>
+			<h4>充值业务详情</h4>
 			<p>用户充值分为实体卡充值和在线购买虚拟卡充值</p>
 			<p>详情请拨打服务热线4008610177</p>
-			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值</p>
+			<p>充值卡面值分为500元，1000元，2000元，3000元,5000元，10000元,2000元。详情请浏览会员页面“我要充值”</p>
 		</div>
 
 	</div>
@@ -88,7 +90,7 @@ import countDown from 'components/Countdown';
 export default {
   data() {
     return {
-        radio: '优惠充值',
+        radio: '在线充值',
         //购物车列表
         carItems:[{
             price:'300.00',
@@ -105,7 +107,7 @@ export default {
 		allNum:2,//商品总数
 
 
-        tab:['优惠充值','充值卡','电子卷'],
+        tab:['在线充值','实体卡充值','实体劵兑换'],
 		tabs:[true,false,false],
 		type:[],
 		iScur:0,
@@ -116,6 +118,7 @@ export default {
         },
         ruleForm2: {
             num: '',
+            pass: '',
         },
         rules: {
             name: [
@@ -148,6 +151,16 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
+      //是否登录
+      if(!Lib.M.store.get('login')){
+          this.$alert('请先登录账号', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  window.location.href = '../home/index.html';
+              }
+          });
+      }
+
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
           console.log(this.userId)
@@ -280,9 +293,7 @@ export default {
       },
 
   },
-  updated(){
 
-  }
 }
 </script>
 

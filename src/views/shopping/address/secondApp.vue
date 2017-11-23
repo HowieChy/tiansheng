@@ -37,7 +37,7 @@
         </div>
 
         <div class="m-middle">
-          <h3> <em>配送方式</em><strong>自提</strong></h3>
+          <h3> <em>配送方式</em><strong>快递</strong></h3>
           <h3> <em>运费</em><span v-if="freight">{{freight|currency}}</span><strong v-if="!freight">免费</strong></h3>
           <h3 v-if="false">
             <em>收货时间</em>
@@ -51,29 +51,44 @@
         </div>
 
         <div class="m-bottom">
-          <h3>商品 <a href="first.html">返回购物车&gt; </a></h3>
           <table>
+            <tr class="top">
+              <th>商品</th><th>市场价</th><th>结算价</th><th>小计</th>
+            </tr>
             <tr v-for="(item,index) in cars">
-              <td><a  href=""><img :src="item.imgUrl" alt=""><em>{{item.prodNm}}</em></a></td>
-              <td><span>{{ item.membAmt | currency }} X {{item.qty}}</span></td>
-              <td><span>{{ item.membAmt*item.qty | currency }}</span></td>
+              <td><a  href=""><img :src="item.prodImgUrl" alt=""><em>{{item.nm}} X {{item.prodQty}}</em> </a></td>
+              <td><span>{{ item.prodAmtMemb | currency }} </span></td>
+              <td><span>{{ item.prodAmtMark | currency }} </span></td>
+              <td><span>{{ item.prodAmtMemb*item.prodQty | currency }}</span></td>
             </tr>
           </table>
 
           <div class="m-info ">
+            <div class="clearfix" style="border-bottom: 1px solid #ddd;margin-bottom: 20px">
+              <div class="left ">
+                <p style="margin-left:24px;color: #fe3000 ">新用户首单享五折优惠</p>
+                <p>   <el-radio v-model="checked1" label="1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-radio></p>
+                <p>   <el-radio v-model="checked1" label="2">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-radio></p>
+
+              </div>
+              <div class="right">
+                <p> <span>总计： {{allPrice|currency}}</span></p>
+              </div>
+            </div>
             <div class="clearfix">
               <div class="left ">
-                <p> <el-checkbox @change="change1" v-model="checked1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-checkbox></p>
+
                 <p><el-checkbox @change="change2" v-model="checked2">使用积分 <input type="number" v-model.lazy="score"  min="0"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score*rule}}元</el-checkbox></p>
                 <p><el-checkbox @change="change3" v-model="checked3">使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
               </div>
               <div class="right">
-                <p>商品件数： <span>{{carList}}件</span></p>
-                <p>金额合计： <span>{{allPrice|currency}}</span></p>
+                <p>商品市场价总和： <span>{{allPrice2|currency}}</span></p>
+                <p>商品结算价综合： <span>{{allPrice|currency}}</span></p>
                 <p>运费： <span>{{freight|currency}}</span></p>
-                <p>使用积分： <span>{{score2}}分（抵{{rule2|currency}}）</span></p>
-                <p>使用余额： <span>{{balance2| currency}}</span></p>
-                <p>应付总额： <span><strong>{{payPrice|currency}}</strong></span></p>
+                <p>订单总计： <span>{{allPrice+freight|currency}}</span></p>
+                <p>积分支付： <span>{{score2}}分（抵{{rule2|currency}}）</span></p>
+                <p>余额支付： <span>{{balance2| currency}}</span></p>
+                <p>还需支付： <span><strong>{{payPrice|currency}}</strong></span></p>
               </div>
             </div>
             <div class="submit">
@@ -130,11 +145,12 @@ export default {
         cars:[],
         carList:0,//商品件数
         allPrice:0,//商品总额
+        allPrice2:0,//商品市场总额
         payPrice:0,//应付总额
-        freight:20,     //运费
+        freight:28,     //运费
         rule:0,//抵扣规则
         rule2:0,//抵扣分
-        checked1:false,
+        checked1:1,
         checked2:false,
         checked3:false,
 
@@ -164,6 +180,17 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
+
+      //是否登录
+      if(!Lib.M.store.get('login')){
+          this.$alert('请先登录账号', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  window.location.href = '../home/index.html';
+              }
+          });
+      }
+
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
           //console.log(this.userId)
@@ -171,19 +198,20 @@ export default {
       this.getAddress('1120.10')
 
 
-      //获取购物车
-      this.axios.get(Lib.C.url_mc+'/mall/bss/cart/cartList?t=' + Date.now(),{
+      //获取商品列表
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/ordItm?t=' + Date.now(),{
           params:{
-              ipPk:this.userId,
+              ordReqtPk:Lib.M.store.get('orderInfo').id,
           }
       })
           .then(res=>{
-              //console.log(res.data.data)
-              this.cars=res.data.data;
-              this.cutTime=String(res.data.data[0].effectiveTime/1000);
+              console.log(res.data.data)
+              this.cars=res.data.data.items;
+              this.cutTime=String(Lib.M.store.get('orderInfo').time/1000);
               this.cars.map(function (item) {
                   this.carList=this.cars.length;
-                  this.allPrice+=item.membAmt*item.qty;
+                  this.allPrice+=item.prodAmtMemb*item.prodQty;
+                  this.allPrice2+=item.prodAmtMark*item.prodQty;
               }.bind(this));
               this.sum2()
               this.rPrice=Math.floor(parseInt(this.allPrice+this.freight)/10)
@@ -202,6 +230,7 @@ export default {
               this.integral=res.data.data.point;
               this.balance=res.data.data.wallet;
               this.rule=res.data.data.rule;
+              this.score=this.integral
           }).catch(err=>{
           //console.log(err);
       })
@@ -238,7 +267,7 @@ export default {
   //相关操作事件
   methods: {
       tab(item,index){
-          if(item.through){
+          if(item.auditStatNmCn!='待审核'){
               this.iScur=index;
           }
 
@@ -246,9 +275,6 @@ export default {
       },
 
       change1(){
-          if(this.checked1){
-
-          }
 
       },
       change2(){
@@ -332,25 +358,30 @@ export default {
       //提交订单
       pOrder(){
           //新增收货地址
-          console.log(this.addrPk,this.score2,this.balance2,this.payPrice)
+          console.log(Lib.M.store.get('orderInfo').id,this.userId,this.addrPk,this.score2,this.checked3)
           var Qs = require('qs');
-          this.axios.post(Lib.C.url_mc + '/mall/bss/ordReqt/add', Qs.stringify({
+//          var boll;
+//          this.balance2?boll=true:boll=false;
+//          console.log(boll)
+          //return false;
+          this.axios.post(Lib.C.url_mc + '/mall/bss/ordReqt/subOrd', Qs.stringify({
+              ordPk:Lib.M.store.get('orderInfo').id,
               ipPk:this.userId,
               addrPk:this.addrPk,
               discountPk:'',
+              fDiscountPk:'',
               usePoint:this.score2,
-              useBalance:this.balance2,
-              totOrdAmt:this.allPrice+this.freight,
-              ordAmt:this.payPrice,
-              rebatePoint:this.rPrice
+              useWallet:this.checked3,
           }))
               .then(res => {
                   console.log(res.data);
                   if (res.data.status == 200) {
-                      this.$alert(res.data.msg, '提示', {
+                     // window.location.href = '../shopping/true.html';
+                      this.$alert('订单提交成功', '提示', {
                           confirmButtonText: '确定',
                           callback: action => {
-
+                              window.location.href = '../shopping/true.html';
+                              //window.location.href = '../shopping/true.html';
                           }
                       });
                   }
@@ -362,11 +393,30 @@ export default {
                           }
                       });
                   }
-                  if (res.data.status == 300) {
-                      this.$alert(res.data.msg, '提示', {
+                  if (res.data.status == 308) {
+                      //window.location.href = '../shopping/pay.html';
+                      this.$alert('订单提交成功', '提示', {
                           confirmButtonText: '确定',
                           callback: action => {
+                              window.location.href = '../shopping/pay.html';
+                          }
+                      });
+                  }
+                  if (res.data.status == 302) {
+                      //window.location.href = '../shopping/pay.html';
+                      this.$alert('订单提交成功', '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+                              //window.location.href = '../shopping/pay.html';
+                          }
+                      });
+                  }
 
+                  if (res.data.status == 312) {
+                      this.$alert('订单已取消', '提示', {
+                          confirmButtonText: '确定',
+                          callback: action => {
+//                              window.location.href = '../shopping/pay.html';
                           }
                       });
                   }
@@ -488,6 +538,18 @@ export default {
           a{
             float: right;
             color: #999;
+          }
+        }
+        .top{
+          th{
+            height: 70px;
+            line-height: 70px;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            text-align: center;
+          }
+          th:first-of-type{
+            text-align: left;
           }
         }
         table{
@@ -655,5 +717,13 @@ export default {
         display: inline-block;
         width:50px;
       }
+    }
+
+    .el-radio__input.is-checked .el-radio__inner{
+      border-color: #fe3000!important;
+      background: url("assets/images/true.jpg") no-repeat !important;
+    }
+    .el-radio__inner::after{
+      background-color: transparent!important;
     }
 </style>

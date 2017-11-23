@@ -12,7 +12,9 @@
 
 
 </template>
+
 <script>
+    import Lib from 'assets/js/Lib';
     export default {
         data(){
             return {
@@ -75,7 +77,16 @@
           }
         },
         mounted () {
-
+            //是否登录
+            console.log(Lib.M.store.get('login'))
+            if(!Lib.M.store.get('login')){
+                this.$alert('请先登录账号', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        window.location.href = '../home/index.html';
+                    }
+                });
+            }
         },
         props:['type','info']
     }

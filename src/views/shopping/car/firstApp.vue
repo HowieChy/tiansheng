@@ -16,11 +16,12 @@
       <div class="m-car">
         <h3>配送说明</h3>
         <table>
-          <tr><th><el-checkbox v-model="checked">全选</el-checkbox></th><th>商品名称</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th></tr>
+          <tr><th><el-checkbox v-model="checked">全选</el-checkbox></th><th>商品名称</th><th>会员价</th><th>市场价</th><th>数量</th><th>小计</th><th>操作</th></tr>
           <tr v-for="(item,index) in cars">
             <td><el-checkbox v-model="item.isCheck"></el-checkbox></td>
             <td><img :src="item.aPic" alt=""><em>{{item.title}}</em></td>
             <td><span>{{ item.price | currency }}</span></td>
+            <td><span>{{ item.price2 | currency }}</span></td>
             <td> <el-input-number @change="changeNum(item)"   v-model="item.num1" :min="1" ></el-input-number></td>
             <td><span>{{ item.price*item.num1 | currency }}</span></td>
             <td><i class="el-icon-close" @click="del(item)"></i></td>
@@ -108,7 +109,15 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-
+      //是否登录
+      if(!Lib.M.store.get('login')){
+          this.$alert('请先登录账号', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  window.location.href = '../home/index.html';
+              }
+          });
+      }
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
       }
@@ -121,7 +130,7 @@ export default {
           }
       })
           .then(res=>{
-              console.log(res.data.data)
+              //console.log(res.data.data)
               var data=[];
               res.data.data.forEach(function (elem,i) {
                   data.push({
@@ -130,6 +139,7 @@ export default {
                       aPic:elem.imgUrl,
                       title:elem.prodNm,
                       price:elem.membAmt,
+                      price2:elem.markAmt,
                       num1:elem.qty,
                       stock:elem.stock,
                       cartPk:elem.cartPk
@@ -336,7 +346,35 @@ export default {
 
       //去结算
       go(){
-          window.location.href='second.html';
+          var str='';
+          //console.log( this.cars)
+          this.cars.forEach(function (item) {
+              if(item.isCheck){
+                 str+=item.id+','
+              }
+          })
+          console.log(str)
+          var Qs = require('qs');
+          this.axios.post(Lib.C.url_mc + '/mall/bss/ordReqt/add', Qs.stringify({
+              ipPk:this.userId,
+              pks:str
+          }))
+              .then(res=>{
+                  console.log(res.data)
+                  if(res.data.status==200){
+                      console.log(res.data)
+                      Lib.M.store.set('orderInfo', {id:res.data.data.ordReqtPk,time:res.data.data.paySurplusTm});
+                      window.location.href='second.html';
+                  }
+                  if (res.data.status == 400) {
+                      this.$alert(res.data.msg, '提示', {
+                          confirmButtonText: '确定',
+                      });
+                  }
+              }).catch(err=>{
+              console.log(err);
+          });
+
       }
   }
 }
@@ -400,9 +438,12 @@ export default {
         width: 120px;
       }
     th:nth-of-type(4){
-      width: 220px;
+      width: 120px;
     }
     th:nth-of-type(5){
+      width: 160px;
+    }
+    th:nth-of-type(6){
       width: 130px;
     }
       td{

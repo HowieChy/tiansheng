@@ -49,8 +49,8 @@
           <!--右侧导航-->
           <ul class="m-nav">
             <li><a href="">商城公告</a></li>
-            <li><a href="../notice/active.html">最新活动</a></li>
-            <li><a href="">我的订单</a></li>
+            <li><a href="../notice/active.html">最新促销</a></li>
+            <li><a href="../center/router.html#/order">我的订单</a></li>
             <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
               <a  href="javascript:;">掌上天胜</a>
               <div  v-show="code">
@@ -67,7 +67,7 @@
       <div class="m-bottom">
         <div class="m-content">
           <!--LOGO-->
-          <img src="../assets/images/logo.png" alt="">
+          <a href="../home/index.html">  <img src="../assets/images/logo.png" alt=""></a>
 
           <!--搜索-->
 

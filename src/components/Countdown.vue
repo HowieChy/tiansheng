@@ -44,14 +44,24 @@
                 return false;
             },
             countdowm(timestamp){
+               // console.log( document.getElementsByClassName('j-time'))
                 if(timestamp==-999){
-                    this.content='还未开始'
+                    if(document.getElementsByClassName('j-time').length){
+                        document.getElementsByClassName('j-time')[0].style.display='none'
+                    }
+                    this.content='';
                     return false
+                }
+                if(document.getElementsByClassName('j-time').length){
+                    document.getElementsByClassName('j-time')[0].style.display='block'
                 }
                 //设置一个全局函数来控制时间
                 window.clearTime=false;
                 if(timestamp=='0'){
                     console.log('触发');
+                    if(document.getElementsByClassName('j-time').length){
+                        document.getElementsByClassName('j-time')[0].style.display='none'
+                    }
                     window.clearTime=true;
                 }
                 let self = this;

@@ -5,7 +5,7 @@
 		<div class="m-regiment clearfix">
 			<img :src="info.headImg" alt="">
 			<div class="info">
-				<p>团长名称 : {{info.headNm}}</p>
+				<p>团名称 : {{info.headNm}}</p>
 				<p>团编号 : {{info.headNum}}</p>
 				<p>团长电话 : {{info.headMob}}</p>
 				<p>收货地址 : {{info.headAddr}}</p>

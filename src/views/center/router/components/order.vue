@@ -22,24 +22,24 @@
 
 				<li v-for="(item,index) in orders">
 					<div class="order-info ">
-						<h3><ins>{{item.type}}</ins><template v-if="item.type=='未付款'" >剩余<count-down :endTime="item.cutTime" :callback="callback" endText="0S"></count-down></template> </h3>
-						<h4>2017年08月28日 16:08 <span>王大锤</span> 订单号：531231354531 <ins>订单金额：<strong>58.00</strong>元</ins></h4>
+						<h3><ins>{{item.type}}</ins><template v-if="item.type=='待支付'" >剩余<count-down :endTime="item.cutTime" :callback="callback" endText="0S"></count-down></template> </h3>
+						<h4>{{item.data}}<span>{{item.title}}</span> 订单号：{{item.num}} <ins>订单金额：<strong>{{item.price|currency}}</strong>元</ins></h4>
 					</div>
 					<div class="order-bottom clearfix">
 						<div class="left" >
-							<a href=""> <img src="" alt=""><em>XXXXXXXXXXXXXXXXX</em></a>
+							<a v-for="val in item.aSrc" class="clearfix" href="javascript:;"> <img :src="val.prodImgUrl" alt=""><em>{{val.prodNm}} <ins style="float: right">{{val.prodPice|currency}}  X {{val.prodNum}}</ins></em></a>
 						</div>
 						<div class="right">
-							<button class="f-active" v-if="item.type=='未付款'">立即支付</button>
-							<button @click="goDetail(item.aHref)" v-if="item.type!='已取消'">订单详情</button>
-							<button v-if="item.type=='已取消'" @click='del(item,index)'>删除订单</button>
+							<button class="f-active" v-if="item.type=='待支付'">立即支付</button>
+							<button @click="goDetail(item.aHref)" v-if="item.type!='订单关闭'">订单详情</button>
+							<button v-if="item.type=='订单关闭'" @click='del(item,index)'>删除订单</button>
 						</div>
 					</div>
 				</li>
 
 			</ul>
 
-			<div class="block">
+			<div class="block" v-if="false">
 				<el-pagination
 								@current-change="handleCurrentChange"
 								:page-size="100"
@@ -88,34 +88,7 @@ export default {
         }],
         value: '',
 
-        orders:[{
-		    type:'未付款',     //0:未付款 1：已完成 2：已取消
-            cutTime:'',   //倒计时
-            data:'',       //时间
-            num:2314531432121,   //订单号
-            price:58,     //金额
-            aSrc:'',
-            aHref:'order/detail?id=1',
-            title:'XXXXXXXXXXX',
-        },{
-            type:'已完成',     //0:未付款 1：已完成 2：已取消
-            cutTime:'',   //倒计时
-            data:'',       //时间
-            num:14342134,   //订单号
-            price:58,     //金额
-            aSrc:'',
-            aHref:'order/detail?id=2',
-            title:'XXXXXXXXXXX'
-        },{
-			type:'已取消',     //0:未付款 1：已完成 2：已取消
-			cutTime:'',   //倒计时
-			data:'',       //时间
-			num:2314531432121,   //订单号
-			price:58,     //金额
-			aSrc:'',
-			aHref:'order/detail?id=3',
-			title:'XXXXXXXXXXX',
-        }],
+        orders:[],
 
 
 
@@ -129,10 +102,6 @@ export default {
       document.title = '我的订单';
   },
 
-	created:function(){
-		this.$emit('child-type',this.num);
-        this.$emit('child-text',this.text)
-	},
 
   //在挂载开始之前被调用
   beforeMount(){
@@ -142,17 +111,44 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 
-  },
-   computed:{
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+      //获取个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              switch (res.data.data.catCd){
+                  case '3090.100': //VIP
+                      this.num=0;
+                      break;
+                  case '3090.110':
+                      this.num=2;//团员
+                      break;
+                  case '3090.120': //团长
+                      this.num=1;
+                      break;
+              }
+              this.$emit('child-type',this.num);
+              this.$emit('child-text',this.text)
+          }).catch(err=>{
+          console.log(err);
+      });
 
+      //获取订单
+      this.getOrder();
   },
+
     watch:{
         $route(to,from){
             console.log(to,from)
 			if(from.path=='/order/detail'){
                 this.open=true;
 			}
-
         }
     },
   //相关操作事件
@@ -173,13 +169,43 @@ export default {
 
       //开始倒计时
       callback(){
-		console.log('结束')
+          //获取订单
+          this.getOrder();
       },
 
       goDetail(val){
           console.log(val)
           this.$router.push(val);
 		  this.open=false;
+	  },
+
+	  //获取订单
+	  getOrder(){
+          this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/list',{
+              params:{
+                  ipPk:this.userId,
+              }
+          })
+              .then(res=>{
+                  console.log(res.data.data)
+                  var data=[];
+                  res.data.data.forEach(function (item) {
+                      data.push({
+                          type:item.statNmCn,
+                          cutTime:String(item.remTime/1000),   //倒计时
+                          data:item.ordTm,       //时间
+                          num:item.cd,   //订单号
+                          price:item.totOrdAmt,     //金额
+                          aSrc:item.prodList,
+                          aHref:'order/detail?id='+item.ordReqtPk,
+                          title:item.deliRcvr,
+                      })
+                  })
+                  this.orders=data;
+                  //console.log(this.orders)
+              }).catch(err=>{
+              console.log(err);
+          });
 	  }
   }
 }
@@ -270,6 +296,14 @@ export default {
         position: relative;
         float: left;
       }
+	  a{
+		  display: block;
+		  position: relative;
+		  margin-bottom: 20px;
+	  }
+	  a:last-of-type{
+		  margin-bottom: 0;
+	  }
       img{
         width: 95px;
         height: 95px;
@@ -289,8 +323,6 @@ export default {
       .right{
         position: absolute;
         right: 40px;
-        top: 50%;
-        transform: translateY(-50%);
       }
       button{
         display: block;

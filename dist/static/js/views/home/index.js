@@ -1,12 +1,12 @@
-webpackJsonp([7],{
+webpackJsonp([4],{
 
-/***/ 162:
+/***/ 160:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp__ = __webpack_require__(93);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexApp___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__indexApp__);
 
 
@@ -21,13 +21,13 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
 
 /***/ }),
 
-/***/ 176:
+/***/ 177:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_Countdown__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_Countdown__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_Countdown__);
 
 
@@ -196,26 +196,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         countDown: __WEBPACK_IMPORTED_MODULE_1_components_Countdown___default.a
     }
 });
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
 
 /***/ }),
 
-/***/ 195:
+/***/ 196:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(356);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead__ = __webpack_require__(369);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_components_McHead___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_components_McHead__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_components_McFoot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_components_McFoot__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_components_Countdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_components_Countdown__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_viewload__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_viewload__ = __webpack_require__(47);
 
 
 
@@ -268,7 +268,6 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
 
         if (__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo')) {
             this.userId = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('userInfo').ipPk;
-            console.log(this.userId);
         }
 
         this.axios.get(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/sys/sysCat/tree?methCd=9040').then(function (res) {
@@ -308,7 +307,6 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
                 this.allNum = this.carItems.length;
                 this.allPrice += item.membAmt * item.qty;
                 this.cutTime = String(res.data.data[0].effectiveTime / 1000);
-                console.log(this.allNum, this.allPrice);
             }.bind(_this));
         }).catch(function (err) {
             console.log(err);
@@ -354,11 +352,8 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
         jNav2: function jNav2(e) {
             __WEBPACK_IMPORTED_MODULE_4_jquery___default()('.m-float').hide();
         },
-        callback: function callback() {
-            console.log('结束');
-        },
         look: function look(item) {
-            var Qs = __webpack_require__(9);
+            var Qs = __webpack_require__(7);
             this.axios.post(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/prod/addProdBH', Qs.stringify({
                 ipPk: this.userId,
                 prodPk: item.prodPk
@@ -371,7 +366,17 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
         addShop: function addShop(item, index) {
             var _this2 = this;
 
-            var Qs = __webpack_require__(9);
+            if (!__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('login')) {
+
+                this.$alert('请先登录账号', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
+
+                return false;
+            }
+
+            var Qs = __webpack_require__(7);
 
             this.axios.post(__WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].C.url_mc + '/mall/bss/cart/add', Qs.stringify({
                 ipPk: this.userId,
@@ -470,21 +475,21 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
 
 /***/ }),
 
-/***/ 260:
+/***/ 263:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 277:
+/***/ 283:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 323:
+/***/ 333:
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -589,7 +594,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -613,17 +618,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "g-content"
   }, [(_vm.door) ? _c('div', {
@@ -653,7 +650,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -677,17 +674,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
     staticClass: "g-shops",
     attrs: {
@@ -717,7 +706,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -741,17 +730,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
     staticClass: "g-shops"
   }, [(_vm.shopItem[3].prodRos.length) ? _c('h2', {
@@ -778,7 +759,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -802,17 +783,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
     staticClass: "g-shops",
     attrs: {
@@ -842,7 +815,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -866,17 +839,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
     staticClass: "g-shops"
   }, [(_vm.shopItem[5].prodRos.length) ? _c('h2', {
@@ -903,7 +868,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -927,17 +892,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), (_vm.door) ? _c('div', {
     staticClass: "g-shops",
     attrs: {
@@ -967,7 +924,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "alt": ""
       }
-    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (index == 0 || index == 3 || index == 4 || index == 5) ? _c('div', [_c('el-input-number', {
+    })]), _vm._v(" "), _c('p', [_vm._v(_vm._s(item.nm))]), _vm._v(" "), _c('p', [_vm._v("库存:" + _vm._s(item.stock))]), _vm._v(" "), _c('p', [_vm._v("会员价："), _c('em', [_vm._v(_vm._s(_vm._f("currency")(item.membAmt)))])]), _vm._v(" "), _c('p', [_vm._v("市场价：" + _vm._s(_vm._f("currency")(item.markAmt)))]), _vm._v(" "), (item.stock != 0) ? _c('div', [_c('el-input-number', {
       attrs: {
         "size": "small",
         "min": 1,
@@ -991,17 +948,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.addShop(item, index)
         }
       }
-    })], 1) : _vm._e(), _vm._v(" "), (index == 1) ? _c('button', {
+    })], 1) : _vm._e(), _vm._v(" "), (item.stock == 0) ? _c('button', {
       staticClass: "u-button"
-    }, [_vm._v("已售罄")]) : _vm._e(), _vm._v(" "), (index == 2) ? _c('button', {
-      staticClass: "u-button u-time"
-    }, [_c('em', [_vm._v("离开始还有 "), _c('count-down', {
-      attrs: {
-        "endTime": item.time,
-        "callback": _vm.callback,
-        "endText": "0S"
-      }
-    })], 1)]) : _vm._e()])
+    }, [_vm._v("已售罄")]) : _vm._e()])
   }))]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "g-items"
   }, [_c('h2', {
@@ -1066,7 +1015,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "href": "../notice/packge.html"
     }
-  }, [_vm._v("私人订制")]), _vm._v(" "), _c('a', {
+  }, [_vm._v("宅配套餐")]), _vm._v(" "), _c('a', {
     attrs: {
       "href": "card.html"
     }
@@ -1091,7 +1040,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 
-/***/ 340:
+/***/ 353:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1127,7 +1076,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', [_vm._v("您好！" + _vm._s(_vm.phone) + " "), _c('i', {
     staticClass: "el-icon-arrow-down"
-  })])])]), _vm._v(" "), _c('div', {
+  })])])]), _vm._v(" "), _c('transition', {
+    attrs: {
+      "name": "fade"
+    }
+  }, [_c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1139,9 +1092,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.exit
     }
-  }, [_vm._v("退出")])]), _vm._v(" "), _c('ul', {
+  }, [_vm._v("退出")])]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "../center/router.html#/index"
+    }
+  }, [_c('ul', {
     staticClass: "clearfix"
-  }, [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.memRankNmCn))]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.pointQty) + "分（" + _vm._s(_vm._f("currency")(_vm.personInfo.pointQty * _vm.personInfo.pointRule, '')) + "元）")]), _vm._v(" "), _c('strong')]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm._f("currency")(_vm.personInfo.balaAmt, '')) + "元")])])])])]) : _vm._e(), _vm._v(" "), _c('div', {
+  }, [_c('li', [_c('h3', [_vm._v("级别")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.memRankNmCn))])]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("积分")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm.personInfo.pointQty) + "分（" + _vm._s(_vm._f("currency")(_vm.personInfo.pointQty * _vm.personInfo.pointRule, '')) + "元）")])]), _vm._v(" "), _c('li', [_c('h3', [_vm._v("余额")]), _vm._v(" "), _c('h4', [_vm._v(_vm._s(_vm._f("currency")(_vm.personInfo.balaAmt, '')) + "元")])])])])])])], 1) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "m-address",
     on: {
       "mouseenter": _vm.jAddress1,
@@ -1253,12 +1210,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "m-bottom"
   }, [_c('div', {
     staticClass: "m-content"
-  }, [_c('img', {
-    attrs: {
-      "src": __webpack_require__(16),
-      "alt": ""
-    }
-  }), _vm._v(" "), _vm._t("u-search"), _vm._v(" "), _c('div', {
+  }, [_vm._m(4), _vm._v(" "), _vm._t("u-search"), _vm._v(" "), _c('div', {
     staticClass: "g-float"
   }, [_c('div', {
     staticClass: "j-time"
@@ -1268,7 +1220,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "callback": _vm.callback,
       "endText": "结束"
     }
-  })], 1), _vm._v(" "), _c('ul', [_c('li'), _vm._v(" "), _c('li'), _vm._v(" "), _c('li', {
+  })], 1), _vm._v(" "), _c('ul', [_vm._m(5), _vm._v(" "), _c('li'), _vm._v(" "), _c('li', {
     on: {
       "click": _vm.jTop
     }
@@ -1292,29 +1244,46 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "href": "../notice/active.html"
     }
-  }, [_vm._v("最新活动")])])
+  }, [_vm._v("最新促销")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('li', [_c('a', {
     attrs: {
-      "href": ""
+      "href": "../center/router.html#/order"
     }
   }, [_vm._v("我的订单")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('a', {
+    attrs: {
+      "href": "../home/index.html"
+    }
+  }, [_c('img', {
+    attrs: {
+      "src": __webpack_require__(27),
+      "alt": ""
+    }
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('li', [_c('a', {
+    attrs: {
+      "href": "../shopping/first.html"
+    }
+  })])
 }]}
 
 /***/ }),
 
-/***/ 356:
+/***/ 369:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(277)
+__webpack_require__(283)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(176),
+  __webpack_require__(177),
   /* template */
-  __webpack_require__(340),
+  __webpack_require__(353),
   /* scopeId */
   "data-v-67420d7e",
   /* cssModules */
@@ -1326,7 +1295,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 50:
+/***/ 47:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1567,18 +1536,18 @@ class VueViewload {
 
 /***/ }),
 
-/***/ 97:
+/***/ 93:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(260)
+__webpack_require__(263)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(195),
+  __webpack_require__(196),
   /* template */
-  __webpack_require__(323),
+  __webpack_require__(333),
   /* scopeId */
   null,
   /* cssModules */
@@ -1590,4 +1559,4 @@ module.exports = Component.exports
 
 /***/ })
 
-},[162]);
+},[160]);

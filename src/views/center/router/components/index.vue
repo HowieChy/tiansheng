@@ -21,7 +21,7 @@
 				<!--<router-link :to="/"></router-link>-->
 				<a href="./information.html">修改个人信息 &gt;</a>
 				<p class="u-share">分享至：
-					<!--<span><img src="../assets/images/qq.png" alt=""></span>-->
+					<span><a href="http://connect.qq.com/widget/shareqq/index.html?url=https://www.baidu.com/"><img src="../assets/images/qq.png" alt=""></a></span>
 					<span v-popover:popover><img src="../assets/images/wx.png" alt=""></span>
 				</p>
 			</div>
@@ -30,14 +30,14 @@
 			<div class="info" v-if="info.catCd=='3090.100'">
 				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
 				<p>VIP到期时间：{{info.expirationDate}}<span>账户余额：{{info.balaAmt|currency}}</span></p>
-				<p>我的积分：{{info.pointQty*100}}（价值{{info.pointQty |currency}}）<span>消费总额：{{info.cumConsum|currency }}</span></p>
+				<p>我的积分：{{info.pointQty}}（价值{{info.pointQty/100 |currency}}）<span>消费总额：{{info.cumConsum|currency }}</span></p>
 				<p>推荐码：{{info.referralCode }}</p>
 			</div>
 
 			<!--团员-->
 			<div class="info" v-if="info.catCd=='3090.110'">
 				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
-				<p>身份：团员 <span>账户余额：{{info.balaAmt|currency}}</span></p>
+				<p>身份：团员 <em style="margin-left: 10px">编号:</em> <span>账户余额：{{info.balaAmt|currency}}</span></p>
 				<p>消费总额：{{info.cumConsum|currency }}<span>累计优惠：￥0.00</span></p>
 				<p>推荐码：{{info.referralCode }}</p>
 			</div>
@@ -187,7 +187,7 @@ export default {
 		float: right;
 		background: #fff;
 		margin-bottom: 150px;
-		padding: 40px 15px;
+		padding: 40px 15px 20px 15px;
 		.top{
 			padding: 20px 66px;
 		}
@@ -233,13 +233,13 @@ export default {
 		}
 		.info{
 			float: right;
-			width: 350px;
+			width: 400px;
 			margin-top: 40px;
 			p{
 				margin-bottom: 20px;
 				span{
 					float: right;
-					width: 140px;
+					width: 160px;
 				}
 			}
 		}

@@ -10,28 +10,29 @@
           </div>
           <div class="m-lev" v-if="login"  @mouseenter="jLev1" @mouseleave="jLev2">
             <p :class="{'f-active':lev}"><a href="../center/router.html#/index"><span>您好！{{phone}} <i class="el-icon-arrow-down"></i></span></a></p>
-            <div class="u-lev" v-show="lev">
-              <h2>{{phone}}<em @click="exit">退出</em></h2>
-              <a href="../center/router.html#/index">
-                <ul class="clearfix">
-                  <li>
-                    <h3>级别</h3>
-                    <h4>{{personInfo.memRankNmCn}}</h4>
-                    <!--<strong></strong>-->
-                  </li>
-                  <li>
-                    <h3>积分</h3>
-                    <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
-                    <!--<strong></strong>-->
-                  </li>
-                  <li>
-                    <h3>余额</h3>
-                    <h4>{{personInfo.balaAmt|currency('')}}元</h4>
-                  </li>
-                </ul>
-              </a>
-
-            </div>
+            <transition name="fade">
+              <div class="u-lev" v-show="lev">
+                <h2>{{phone}}<em @click="exit">退出</em></h2>
+                <a href="../center/router.html#/index">
+                  <ul class="clearfix">
+                    <li>
+                      <h3>级别</h3>
+                      <h4>{{personInfo.memRankNmCn}}</h4>
+                      <!--<strong></strong>-->
+                    </li>
+                    <li>
+                      <h3>积分</h3>
+                      <h4>{{personInfo.pointQty }}分（{{personInfo.pointQty*personInfo.pointRule |currency('')}}元）</h4>
+                      <!--<strong></strong>-->
+                    </li>
+                    <li>
+                      <h3>余额</h3>
+                      <h4>{{personInfo.balaAmt|currency('')}}元</h4>
+                    </li>
+                  </ul>
+                </a>
+              </div>
+            </transition>
           </div>
 
           <!--选择地区-->
@@ -80,8 +81,8 @@
           <!--右侧导航-->
           <ul class="m-nav">
             <li><a href="">商城公告</a></li>
-            <li><a href="../notice/active.html">最新活动</a></li>
-            <li><a href="">我的订单</a></li>
+            <li><a href="../notice/active.html">最新促销</a></li>
+            <li><a href="../center/router.html#/order">我的订单</a></li>
             <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
               <a  href="javascript:;">掌上天胜</a>
               <div  v-show="code">
@@ -98,7 +99,7 @@
       <div class="m-bottom">
         <div class="m-content">
           <!--LOGO-->
-          <img src="../assets/images/logo.png" alt="">
+          <a href="../home/index.html">  <img src="../assets/images/logo.png" alt=""></a>
 
           <!--搜索-->
 
@@ -111,7 +112,8 @@
               <count-down :endTime="cutTime" :callback="callback" endText="结束"></count-down>
             </div>
             <ul>
-              <li></li>
+
+              <li><a href="../shopping/first.html"></a></li>
               <li></li>
               <li @click="jTop"></li>
             </ul>
@@ -701,6 +703,11 @@
       width: 76px;
       height: 66px;
       background: url("../assets/images/home1.png") no-repeat ;
+  a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+  }
     }
     li:nth-of-type(2){
       background: url("../assets/images/home2.png") no-repeat ;
@@ -725,4 +732,11 @@
     }
   }
 
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+  .fade-enter, .fade-leave-to  {
+    opacity: 0
+  }
 </style>

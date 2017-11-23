@@ -6,31 +6,31 @@
 						:data="tableData"
 						style="width: 100%">
 			<el-table-column
-							prop="date"
+							prop="tm"
 							label="日期"
 							width="220"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="type"
+							prop="payType"
 							label="类型"
 							width="150"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="num"
+							prop="ordCd"
 							label="单号"
 							width="220"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="price"
+							prop="tradeAmt"
 							label="发生金额"
 							width="150"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="balance"
+							prop="tradeBalaAmt"
 							label="余额"
 							align="center">
 			</el-table-column>
@@ -48,20 +48,7 @@ export default {
     return {
 		num:0, //账号类别
 		text:"余额日志",
-        tableData: [{
-            date: '2016-05-02 13:25:25',
-			type:'充值',
-			num:null,
-			price:'+￥100.00',
-            balance: '￥100.00'
-        },{
-            date: '2016-05-02 13:25:25',
-            type:'支付',
-            num:1231231231,
-            price:'-￥100.00',
-            balance: '￥100.00'
-        }]
-
+        tableData: []
     }
   },
     components: {
@@ -72,11 +59,6 @@ export default {
         document.title = '余额日志';
     },
 
-    created:function(){
-        this.$emit('child-type',this.num);
-        this.$emit('child-text',this.text)
-    },
-
   //在挂载开始之前被调用
   beforeMount(){
   	
@@ -84,7 +66,47 @@ export default {
   }, 
   //已成功挂载，相当ready()
   mounted(){
-		console.log(this.$route.query);
+	  //console.log(this.$route.query);
+
+      if(Lib.M.store.get('userInfo')){
+          this.userId=Lib.M.store.get('userInfo').ipPk;
+          console.log(this.userId)
+      }
+      //获取个人信息
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+              switch (res.data.data.catCd){
+                  case '3090.100': //VIP
+                      this.num=0;
+                      break;
+                  case '3090.110':
+                      this.num=2;//团员
+                      break;
+                  case '3090.120': //团长
+                      this.num=1;
+                      break;
+              }
+              this.$emit('child-type',this.num);
+              this.$emit('child-text',this.text)
+          }).catch(err=>{
+          console.log(err);
+      });
+
+
+      this.axios.get(Lib.C.url_mc+'/mall/bss/walletLog/list',{
+          params:{
+              ipPk:this.userId,
+          }
+      })
+          .then(res=>{
+            	this.tableData=res.data.data.items;
+          }).catch(err=>{
+          console.log(err);
+      });
 
   },
 

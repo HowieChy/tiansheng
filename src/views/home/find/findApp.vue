@@ -24,7 +24,7 @@
 			</el-form-item>
 
 			<el-form-item  prop="pass">
-				<el-input type="password" v-model="ruleForm.pass" auto-complete="off" placeholder="请输入密码" ></el-input>
+				<el-input type="password" v-model="ruleForm.pass" auto-complete="off" placeholder="请确认密码" ></el-input>
 			</el-form-item>
 
 			<el-form-item>

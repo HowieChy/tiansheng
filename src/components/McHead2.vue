@@ -78,8 +78,8 @@
         <!--右侧导航-->
         <ul class="m-nav">
           <li><a href="">商城公告</a></li>
-          <li><a href="../notice/active.html">最新活动</a></li>
-          <li><a href="">我的订单</a></li>
+          <li><a href="../notice/active.html">最新促销</a></li>
+          <li><a href="../center/router.html#/order">我的订单</a></li>
           <li :class="{'f-active':code}"  @mouseenter="jCode1" @mouseleave="jCode2" class="m-code">
             <a  href="javascript:;">掌上天胜</a>
             <div  v-show="code">
@@ -96,7 +96,7 @@
       <div class="m-bottom">
         <div class="m-content">
           <!--LOGO-->
-          <img src="../assets/images/logo.png" alt="">
+          <a href="../home/index.html">  <img src="../assets/images/logo.png" alt=""></a>
 
           <!--搜索-->
 
@@ -109,7 +109,7 @@
               <count-down :endTime="cutTime" :callback="callback" endText="结束"></count-down>
             </div>
             <ul>
-              <li></li>
+              <li><a href="../shopping/first.html"></a></li>
               <li></li>
               <li @click="jTop"></li>
             </ul>
@@ -146,7 +146,7 @@
           <a href="../home/index.html#B">预售专区</a>
           <a href="../home/index.html#C">免耕专区</a>
           <a href="../home/index.html#D">闪送专区</a>
-          <a href="../notice/packge.html">私人订制</a>
+          <a href="../notice/packge.html">宅配套餐</a>
           <a href="../home/card.html">卡卷专区</a>
           <a href="">增值服务</a>
           <a href="">科普体现</a>
@@ -296,6 +296,10 @@
             }
         },
         mounted(){
+
+
+
+
           //左侧导航
             this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9040')
                 .then(res=>{
@@ -333,7 +337,7 @@
                     }
                 })
                     .then(res=>{
-                        // console.log(res.data)
+                         console.log(res.data.data)
                         this.personInfo=res.data.data;
                     }).catch(err=>{
                     console.log(err);
@@ -757,6 +761,11 @@
       width: 76px;
       height: 66px;
       background: url("../assets/images/home1.png") no-repeat ;
+      a{
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+      }
     }
     li:nth-of-type(2){
       background: url("../assets/images/home2.png") no-repeat ;

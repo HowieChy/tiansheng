@@ -19,6 +19,7 @@
 		<div class="m-address">
 			<h3 @click="toggle">隐藏的收货地址 <i :class="[hide?'el-icon-arrow-down':'el-icon-arrow-up']"></i></h3>
 			<ul class="clearfix" v-if="!hide">
+
 				<li v-for="(item,index) in addressHide" :class="{'f-active':iScur2==index}" @click="tab2(item,index)">
 					<h1><span>{{item.rcvr}}</span> <em v-if="item.auditStatNmCn!='待审核'">审核通过可使用</em> <em v-if="item.auditStatNmCn=='待审核'">正在审核</em></h1>
 					<p>{{item.mob}}</p>
@@ -70,7 +71,7 @@
 
 				<el-form-item class="g-button">
 					<el-button  @click="submitForm('ruleForm')">保存</el-button>
-					<el-button>取消</el-button>
+					<el-button  @click="dialogVisible = false">取消</el-button>
 				</el-form-item>
 			</el-form>
 		</el-dialog>
@@ -269,9 +270,12 @@ export default {
                 .then(res=>{
                     this.getAddress('1120.10')
                     this.getAddress('1120.80')
+                    this.iScur=-1;
+                    this.iScur2=-1;
                 }).catch(err=>{
                 console.log(err);
             });
+
         },
         //隐藏收货地址
         hideAddress(item,index){
@@ -284,6 +288,8 @@ export default {
                 .then(res=>{
                     this.getAddress('1120.10')
                     this.getAddress('1120.80')
+                    this.iScur=-1;
+                    this.iScur2=-1;
                 }).catch(err=>{
                 console.log(err);
             });
