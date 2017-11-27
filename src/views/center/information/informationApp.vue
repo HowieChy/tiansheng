@@ -83,8 +83,10 @@ export default {
       })
 		  .then(res=>{
 			  console.log(res.data.data)
-			  this.nmCn=res.data.data.nmCn;
+			  this.nmCn=res.data.data.acctNm;
+              //this.nmCn=res.data.data.nmCn;
 			  this.radio=res.data.data.sex;
+			  this.name=res.data.data.nmCn;
 		  }).catch(err=>{
 			  console.log(err);
 	  	});
@@ -98,6 +100,7 @@ export default {
 		save(){
             //修改个人信息
             var Qs = require('qs');
+            console.log(this.radio,this.name)
             this.axios.post(Lib.C.url_mc + '/mall/bss/addr/addAddr', Qs.stringify({
                 ipPk:this.userId,
                 sex:this.radio,
@@ -106,7 +109,7 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     if (res.data.status == 200) {
-                        this.$alert(res.data.msg, '提示', {
+                        this.$alert('修改成功', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
 

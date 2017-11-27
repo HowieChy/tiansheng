@@ -136,6 +136,7 @@
 
         data () {
             return {
+                num:'',
                 login:false, //登录状态
                 lev:false,
                 address:false,
@@ -285,7 +286,23 @@
                     }
                 })
                     .then(res=>{
-                       // console.log(res.data)
+                        console.log(res.data)
+                        switch (res.data.data.catCd){
+                            case '3090.100': //VIP
+                                this.num=0;
+
+                                break;
+                            case '3090.110':
+                                this.num=2;//团员
+
+                                break;
+                            case '3090.120': //团长
+                                this.num=1;
+
+                                break;
+                        }
+
+                        Lib.M.store.set('buy', this.num);
                         this.personInfo=res.data.data;
                     }).catch(err=>{
                     console.log(err);

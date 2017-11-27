@@ -11,7 +11,7 @@
     export default {
         data(){
             return {
-                content: '',
+                content: '未开始',
             }
         },
         props:{
@@ -49,12 +49,14 @@
                     if(document.getElementsByClassName('j-time').length){
                         document.getElementsByClassName('j-time')[0].style.display='none'
                     }
-                    this.content='';
+                    this.content='未开始';
                     return false
                 }
                 if(document.getElementsByClassName('j-time').length){
                     document.getElementsByClassName('j-time')[0].style.display='block'
                 }
+
+
                 //设置一个全局函数来控制时间
                 window.clearTime=false;
                 if(timestamp=='0'){

@@ -337,7 +337,7 @@
                     }
                 })
                     .then(res=>{
-                         console.log(res.data.data)
+                        // console.log(res.data.data)
                         this.personInfo=res.data.data;
                     }).catch(err=>{
                     console.log(err);

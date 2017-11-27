@@ -171,6 +171,8 @@ export default {
           console.log(this.userId)
       }
 
+
+
       var prodId= Lib.M.getUrlQuery('id',Lib.C.url_host);
       console.log(prodId)
       //获取商品详情信息
@@ -286,6 +288,18 @@ export default {
               });
               return false
           }
+          this.buy= Lib.M.store.get('buy');
+          console.log(this.buy)
+          if(this.buy==1){
+              this.$alert('不能购买', '提示', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+
+                  }
+              });
+              return false
+          }
+
 
           var Qs = require('qs');
           //this.axios.post('/api/mall/bss/cart/add', Qs.stringify({

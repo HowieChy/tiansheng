@@ -353,7 +353,7 @@ export default {
                  str+=item.id+','
               }
           })
-          console.log(str)
+
           var Qs = require('qs');
           this.axios.post(Lib.C.url_mc + '/mall/bss/ordReqt/add', Qs.stringify({
               ipPk:this.userId,
@@ -363,7 +363,7 @@ export default {
                   console.log(res.data)
                   if(res.data.status==200){
                       console.log(res.data)
-                      Lib.M.store.set('orderInfo', {id:res.data.data.ordReqtPk,time:res.data.data.paySurplusTm});
+                      Lib.M.store.set('orderInfo', {id:res.data.data.ordReqtPk,time:res.data.data.paySurplusTm,price:res.data.data.totOrdAmt,cd:res.data.data.cd});
                       window.location.href='second.html';
                   }
                   if (res.data.status == 400) {

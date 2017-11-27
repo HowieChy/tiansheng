@@ -2,7 +2,7 @@
 <div id="app">
 
   <!--公用头部组件-->
-  <CarHead  :cutTime="cutTime">
+  <CarHead >
     <!--步骤-->
     <div style="float: right" slot='u-search'>
       <img src="./assets/images/third.png" alt="">
@@ -13,8 +13,8 @@
     <div class="g-content">
     <h2>提交订单 <p><a href="../center/router.html#/order">查看订单</a><a href="../home/index.html">返回首页</a></p></h2>
     <div class="m-info">
-      <h3>订单已提交，请在10分钟内完成支付，逾期将自动取消。</h3>
-      <p><span>订单编号：235231321</span><span>订单金额：￥62.52</span></p>
+      <h3>订单已提交，请在<count-down :endTime="info.time" :callback="callback" endText="0S"></count-down>内完成支付，逾期将自动取消。</h3>
+      <p><span style="margin-right: 100px">订单编号：{{info.cd}}</span><span>订单金额：{{info.price|currency}}</span></p>
     </div>
     <div class="m-type">
       <h3>请选择以下方式付款</h3>
@@ -47,25 +47,9 @@ export default {
   data() {
 
     return {
-        //购物车列表
-        cars:[{
-            aSrc:'',
-            aPic:'',
-            title:'芒果',
-            price:300.30,
-            price2:300,
-            num1:1
-        },{
-            aSrc:'',
-            aPic:'',
-            title:'芒果',
-            price:200,
-            price2:200,
-            num1:1,
-        }],
-        //倒计时
-        cutTime:'1504796400',
-
+      info:{
+          time:'-999'
+      }
 	}
   },
     components: {
@@ -93,10 +77,12 @@ export default {
               }
           });
       }
-  },
-  computed:{
 
+      this.info=Lib.M.store.get('orderInfo');
+      this.info.time=String(Lib.M.store.get('orderInfo').time/1000)
+      this.info.price=Lib.M.store.get('orderPrice')
   },
+
 
   watch:{
 
@@ -108,7 +94,12 @@ export default {
 
       //倒计时
       callback(){
-          console.log('结束1')
+          this.$alert('订单已取消', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  window.location.href = '../home/index.html';
+              }
+          });
       },
 
 
@@ -145,9 +136,7 @@ export default {
         span{
           color: #999;
         }
-        span:first-child{
-          margin-right: 100px;
-        }
+
       }
       .m-type{
         padding:0 40px;

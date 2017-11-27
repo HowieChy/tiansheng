@@ -159,6 +159,9 @@ export default {
           this.hide=!this.hide
 		},
         tab(item,index){
+            if(this.num!=0){
+                return false
+			}
             if(item.auditStatNmCn!='待审核'){
                 this.iScur=index;
             }
@@ -167,6 +170,9 @@ export default {
         },
 
         tab2(item,index){
+            if(this.num!=0){
+                return false;
+            }
             this.iScur2=index;
 
             //console.log(item,index)
@@ -181,6 +187,7 @@ export default {
 		},
         //地址弹窗
         submitForm(formName) {
+
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     console.log(valid);
@@ -261,6 +268,9 @@ export default {
 
         //显示收货地址
         showAddress(item,index){
+            if(this.num!=0){
+                return false
+            }
             var Qs = require('qs');
             this.axios.post(Lib.C.url_mc + '/mall/bss/addr/editAddr', Qs.stringify({
                 ipPk:this.userId,
@@ -279,6 +289,9 @@ export default {
         },
         //隐藏收货地址
         hideAddress(item,index){
+            if(this.num!=0){
+                return false
+            }
             var Qs = require('qs');
             this.axios.post(Lib.C.url_mc + '/mall/bss/addr/editAddr', Qs.stringify({
                 ipPk:this.userId,
@@ -307,6 +320,9 @@ export default {
 
 		//新增地址
 		jAdd(){
+            if(this.num!=0){
+                return false
+            }
             this.dialogVisible=true;
 		},
 
@@ -319,6 +335,7 @@ export default {
                 }
             })
                 .then(res=>{
+                    console.log(res.data)
                     if(num=='1120.10'){
                         this.addressOption=res.data.data.items;
 					}else{

@@ -1,6 +1,6 @@
 <template>
 	<div class="g-log">
-		<h2>积分日志 <span>推荐码:0525522</span></h2>
+		<h2>积分日志</h2>
 
 		<el-table
 						:data="tableData"
@@ -12,13 +12,13 @@
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="changeEvent"
+							prop="catNmCn"
 							label="类型"
 							width="120"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="num"
+							prop="cd"
 							label="单号"
 							width="160"
 							align="center">
@@ -36,8 +36,8 @@
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="integral2"
-							label="当前总积分"
+							prop="givePointQty"
+							label="当前积分余额"
 							align="center">
 			</el-table-column>
 		</el-table>
@@ -54,28 +54,7 @@ export default {
     return {
 		num:0, //账号类别
 		text:"积分日志",
-        tableData: [{
-            date: '2016-05-02 13:25:25',
-			type:'订单完成',
-			num:768761,
-			name:'用户',
-            integral:'+10分',
-            integral2:'20分'
-        },{
-            date: '2016-05-02 13:25:25',
-            type:'注册',
-            num:null,
-            name:'',
-            integral:'+10分',
-            integral2:'20分'
-        },{
-            date: '2016-05-02 13:25:25',
-            type:'订单完成',
-            num:768761,
-            name:'87987897',
-            integral:'+10分',
-            integral2:'20分'
-        }]
+        tableData: []
 
     }
   },
@@ -104,6 +83,7 @@ export default {
       this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
           params:{
               ipPk:this.userId,
+              pageSize:999999999
           }
       })
           .then(res=>{
@@ -131,7 +111,8 @@ export default {
           }
       })
           .then(res=>{
-              this.tableData=res.data.data.items;
+              console.log(res.data.data)
+              this.tableData=res.data.data;
           }).catch(err=>{
           console.log(err);
       });

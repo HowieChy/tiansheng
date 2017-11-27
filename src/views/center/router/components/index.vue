@@ -13,7 +13,7 @@
 		<div class="top clearfix">
 			<div class="img">
 				<img src="../assets/images/p1.png" alt="">
-				<span :class="{'vip':icon==1,'tuan':icon==2}"></span>
+				<span :class="{'vip':icon==1&&info.memRankNmCn=='VIP会员','tuan':icon==2}"></span>
 			</div>
 			<div class="middle">
 				<h2>{{info.nmCn}}</h2>
@@ -28,7 +28,7 @@
 
 			<!--VIP用户-->
 			<div class="info" v-if="info.catCd=='3090.100'">
-				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
+				<p>会员级别：{{info.memRankNmCn}} <span>账号类型：{{info.memTypeNmCn}}</span></p>
 				<p>VIP到期时间：{{info.expirationDate}}<span>账户余额：{{info.balaAmt|currency}}</span></p>
 				<p>我的积分：{{info.pointQty}}（价值{{info.pointQty/100 |currency}}）<span>消费总额：{{info.cumConsum|currency }}</span></p>
 				<p>推荐码：{{info.referralCode }}</p>
@@ -36,16 +36,16 @@
 
 			<!--团员-->
 			<div class="info" v-if="info.catCd=='3090.110'">
-				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
-				<p>身份：团员 <em style="margin-left: 10px">编号:</em> <span>账户余额：{{info.balaAmt|currency}}</span></p>
+				<p>会员级别：{{info.memRankNmCn}} <span>账号类型：{{info.memTypeNmCn}}</span></p>
+				<p>身份：团员 <em style="margin-left: 10px">编号:{{info.unionId}}</em> <span>账户余额：{{info.balaAmt|currency}}</span></p>
 				<p>消费总额：{{info.cumConsum|currency }}<span>累计优惠：￥0.00</span></p>
-				<p>推荐码：{{info.referralCode }}</p>
+				<!--<p>推荐码：{{info.referralCode }}</p>-->
 			</div>
 
 			<!--团长-->
 			<div class="info" v-if="info.catCd=='3090.120'">
-				<p>会员级别：{{info.memRankNmCn}} <span>会员类别：{{info.memKindNmCn}}</span></p>
-				<p>身份：团长 <span>团员人数：{{info.memberNum }}人</span></p>
+				<p>会员级别：无 <span>账号类型：{{info.memTypeNmCn}}</span></p>
+				<p>身份：团长 <span>团员人数：{{info.memberNum}}人</span></p>
 				<p>团员消费总额：{{info.memberCos}}<span>推荐码：{{info.referralCode }}</span></p>
 			</div>
 		</div>
@@ -239,7 +239,7 @@ export default {
 				margin-bottom: 20px;
 				span{
 					float: right;
-					width: 160px;
+					width: 190px;
 				}
 			}
 		}

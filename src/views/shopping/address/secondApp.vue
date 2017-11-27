@@ -37,7 +37,7 @@
         </div>
 
         <div class="m-middle">
-          <h3> <em>配送方式</em><strong>快递</strong></h3>
+          <h3> <em>配送方式</em><strong>{{exType}}</strong></h3>
           <h3> <em>运费</em><span v-if="freight">{{freight|currency}}</span><strong v-if="!freight">免费</strong></h3>
           <h3 v-if="false">
             <em>收货时间</em>
@@ -57,8 +57,9 @@
             </tr>
             <tr v-for="(item,index) in cars">
               <td><a  href=""><img :src="item.prodImgUrl" alt=""><em>{{item.nm}} X {{item.prodQty}}</em> </a></td>
-              <td><span>{{ item.prodAmtMemb | currency }} </span></td>
               <td><span>{{ item.prodAmtMark | currency }} </span></td>
+              <td><span>{{ item.prodAmtMemb | currency }} </span></td>
+
               <td><span>{{ item.prodAmtMemb*item.prodQty | currency }}</span></td>
             </tr>
           </table>
@@ -66,7 +67,7 @@
           <div class="m-info ">
             <div class="clearfix" style="border-bottom: 1px solid #ddd;margin-bottom: 20px">
               <div class="left ">
-                <p style="margin-left:24px;color: #fe3000 ">新用户首单享五折优惠</p>
+                <p v-if="subFirst" style="margin-left:24px;color: #fe3000 ">{{subFirst.discountDesc}}</p>
                 <p>   <el-radio v-model="checked1" label="1">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-radio></p>
                 <p>   <el-radio v-model="checked1" label="2">订单满￥100.00赠送三斤小黄瓜，折合市场价￥20.00</el-radio></p>
 
@@ -83,7 +84,7 @@
               </div>
               <div class="right">
                 <p>商品市场价总和： <span>{{allPrice2|currency}}</span></p>
-                <p>商品结算价综合： <span>{{allPrice|currency}}</span></p>
+                <p>商品结算价总和： <span>{{allPrice|currency}}</span></p>
                 <p>运费： <span>{{freight|currency}}</span></p>
                 <p>订单总计： <span>{{allPrice+freight|currency}}</span></p>
                 <p>积分支付： <span>{{score2}}分（抵{{rule2|currency}}）</span></p>
@@ -131,6 +132,7 @@ export default {
 
     return {
         iScur:0,
+        exType:'快递',
         pickerOptions0: {
             disabledDate(time) {
                 return time.getTime() < Date.now() - 8.64e7;
@@ -147,7 +149,7 @@ export default {
         allPrice:0,//商品总额
         allPrice2:0,//商品市场总额
         payPrice:0,//应付总额
-        freight:28,     //运费
+        freight:0,     //运费
         rule:0,//抵扣规则
         rule2:0,//抵扣分
         checked1:1,
@@ -162,6 +164,11 @@ export default {
         rPrice:0,//可得积分
         //dialogVisible:false,
         cutTime:'-999',//倒计时
+
+        //满减
+        subList:[],
+        subFirst:{},
+        rebate:1,
 
 	}
   },
@@ -236,6 +243,27 @@ export default {
       })
 
 
+      //满减
+      this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/discount',{
+          params:{
+              ipPk:this.userId,
+              //totAmt:this.allPrice
+              totAmt:300
+          }
+      })
+          .then(res=>{
+              console.log(res.data)
+              this.subList=res.data.data.disList;
+              this.subFirst=res.data.data.isFirst;
+              if(this.subFirst){
+                  this.rebate=this.subFirst.rebate;
+              }else{
+                  this.rebate=1;
+              }
+          }).catch(err=>{
+          //console.log(err);
+      })
+
 
   },
 
@@ -302,7 +330,12 @@ export default {
 
       //倒计时
       callback(){
-          //console.log('结束1')
+          this.$alert('倒计时结束', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                  window.location.href='../home/index.html';
+              }
+          });
       },
 
 
@@ -394,6 +427,7 @@ export default {
                       });
                   }
                   if (res.data.status == 308) {
+                      Lib.M.store.set('orderPrice',this.allPrice+this.freight);
                       //window.location.href = '../shopping/pay.html';
                       this.$alert('订单提交成功', '提示', {
                           confirmButtonText: '确定',

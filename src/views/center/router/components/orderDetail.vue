@@ -10,7 +10,7 @@
 				<!--<ins v-if="type!='未付款'">已完成</ins>-->
 				<template v-if="info.statNmCn=='待支付'"><count-down :endTime="cutTime" :callback="callback" endText="0S"></count-down>后订单将关闭</template>
 			</h5>
-			<a href=""  class="clearfix"> <img src="" alt=""><em>XXXXXXXXXXXXXXXXX <i>￥50 X2</i></em></a>
+			<a v-for="item in info.prodList" :href="'../home/detail.html?id='+item.prodPk"  class="clearfix"> <img :src="item.prodImgUrl" alt=""><em><span style="display: inline-block; width: 280px;">{{item.nm }}</span> <i>市场价：{{item.prodAmtMark|currency}} <ins style="width: 10px;display: inline-block"></ins>  会员价：{{item.prodAmtMemb|currency }}  X{{item.prodQty }} <strong style="font-weight: normal;margin-left: 20px">小计：{{item.ordItmAmt|currency}}</strong></i></em></a>
 
 		</div>
 		<div class="info">
@@ -21,18 +21,19 @@
 		</div>
 		<div class="info info2">
 			<h2>配送信息</h2>
-			<p><span>配送方式 :</span>自提点自提</p>
-			<p><span>自提点联系方式 :</span>0574-7853121</p>
-			<p><span>最早提货时间 :</span>2017-9-15 15：00</p>
-			<p><span>包裹数量 :</span>1包</p>
+			<p><span>配送方式 :</span>{{info.lgsType }}</p>
+			<p><span>联系方式 :</span>{{info.DibAgentMob}}</p>
+			<p><span>最早提货时间 :</span></p>
+			<p><span>包裹数量 :</span></p>
 		</div>
 		<ul class="info price ">
-			<li class="clearfix"><p><span>商品总价 :</span><ins>{{info.ordAmt|currency('')}}元</ins></p></li>
-			<li class="clearfix"><p><span>运费 :</span><ins>0元</ins></p></li>
-			<li class="clearfix"><p><span>订单总价 :</span><ins>140元</ins></p></li>
-			<li class="clearfix"><p><span>使用积分 :</span><ins>4分(抵0.4元)</ins></p></li>
-			<li class="clearfix"><p><span>使用余额 :</span><ins>20</ins></p></li>
-			<li class="clearfix"><h5>应付金额:<strong>2199<em>元</em></strong></h5></li>
+			<li class="clearfix"><p><span>商品市场价总计 :</span><ins>{{info.totOrdMarkAmt  |currency('')}}元</ins></p></li>
+			<li class="clearfix"><p><span>商品结算价总计 :</span><ins>{{info.totOrdMembAmt |currency('')}}元</ins></p></li>
+			<li class="clearfix"><p><span>运费 :</span><ins>{{info.lgsAmt |currency('')}}</ins></p></li>
+			<li class="clearfix"><p><span>订单总计 :</span><ins>{{info.totOrdAmt |currency('')}}元</ins></p></li>
+			<li class="clearfix"><p><span>使用积分 :</span><ins>{{info.payPointAmt }}分(抵{{info.payPointAmt*info.rulePoint|currency('')}}元)</ins></p></li>
+			<li class="clearfix"><p><span>使用余额 :</span><ins>{{info.payWalletAmt  |currency('')}}元</ins></p></li>
+			<li class="clearfix"><h5>实付款:<strong>{{info.realOrdAmt   |currency('')}}<em>元</em></strong></h5></li>
 		</ul>
 
 	</div>
@@ -78,11 +79,11 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 		//console.log(this.$route.query);
-
+      this.$emit('child-open',false);
 
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
-          console.log(this.userId)
+         // console.log(this.userId)
       }
       //获取个人信息
       this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
@@ -123,9 +124,9 @@ export default {
               }
           })
               .then(res=>{
-                  //console.log(res.data.data)
-                  this.info=res.data.ordReqtVo;
-                  this.cutTime=String(new Date(res.data.ordReqtVo.crtTm).getTime()/1000 +60*15)
+                  console.log(res.data.data)
+                  this.info=res.data.data;
+                  this.cutTime=String(res.data.data.paySurplusTm /1000)
               }).catch(err=>{
               console.log(err);
           });
@@ -212,7 +213,7 @@ export default {
 		}
 		em{
 			font-size: 16px;
-			width: 500px;
+			width: 700px;
 			display: inline-block;
 			position: absolute;
 			left: 128px;
@@ -235,7 +236,7 @@ export default {
 		}
 		span{
 			display: inline-block;
-			width: 100px;
+			width: 110px;
 		}
 		}
 		.info2{

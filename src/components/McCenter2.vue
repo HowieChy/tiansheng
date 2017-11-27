@@ -62,6 +62,12 @@
                     },{
                         title:'我的团',
                         aHref:'/regiment'
+                    },{
+                        title:'余额日志',
+                        aHref:'/log'
+                    },{
+                        title:'积分日志',
+                        aHref:'/intergral'
                     }]
                 ]
             }

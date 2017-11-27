@@ -1,13 +1,13 @@
 
 <template>
 	<div>
-		<router-view></router-view>
+		<router-view  @child-open="getOpen" ></router-view>
 		<div class="g-order" v-show="open">
 
 			<h2>{{text}}</h2>
 			<div class="top">
 				<span>全部订单</span>
-				<el-select v-model="value" placeholder="请选择">
+				<el-select v-model="value" placeholder="请选择" @change="change">
 					<el-option
 									v-for="item in options"
 									:key="item.value"
@@ -27,7 +27,7 @@
 					</div>
 					<div class="order-bottom clearfix">
 						<div class="left" >
-							<a v-for="val in item.aSrc" class="clearfix" href="javascript:;"> <img :src="val.prodImgUrl" alt=""><em>{{val.prodNm}} <ins style="float: right">{{val.prodPice|currency}}  X {{val.prodNum}}</ins></em></a>
+							<a v-for="val in item.items" class="clearfix" href="javascript:;"> <img :src="val.prodImgUrl" alt=""><em>{{val.prodNm}} <ins style="float: right"> <i style="margin-right: 100px;font-style: normal">X {{val.prodQty }} </i> {{val.membPice|currency}}  </ins></em></a>
 						</div>
 						<div class="right">
 							<button class="f-active" v-if="item.type=='待支付'">立即支付</button>
@@ -39,17 +39,18 @@
 
 			</ul>
 
-			<div class="block" v-if="false">
+			<div class="block">
 				<el-pagination
 								@current-change="handleCurrentChange"
-								:page-size="100"
+								:page-size="5"
+								:current-page="pageNum"
 								layout="prev, pager, next, jumper"
-								:total="1000">
+								:total="total">
 				</el-pagination>
 			</div>
 		</div>
 
-
+		<div class="j-time1"></div>
 
 
 	</div>
@@ -69,29 +70,29 @@ export default {
     return {
 		num:0, //账号类别
 		text:"我的订单",
-        open:'true',
+        open:true,
         options: [{
-            value: '选项1',
+            value: '7',
             label: '最近一星期'
         }, {
-            value: '选项2',
+            value: '30',
             label: '最近一个月'
         }, {
-            value: '选项3',
+            value: '90',
             label: '最近三个月'
         }, {
-            value: '选项4',
+            value: '180',
             label: '最近半年'
         }, {
-            value: '选项5',
+            value: '365',
             label: '最近一年'
         }],
         value: '',
 
         orders:[],
-
-
-
+		type:'',//最近XXXX
+        total:0,
+        pageNum:1
     }
   },
     components: {
@@ -111,9 +112,10 @@ export default {
   //已成功挂载，相当ready()
   mounted(){
 
+
       if(Lib.M.store.get('userInfo')){
           this.userId=Lib.M.store.get('userInfo').ipPk;
-          console.log(this.userId)
+          //console.log(this.userId)
       }
       //获取个人信息
       this.axios.get(Lib.C.url_mc+'/mall/bss/ip/user',{
@@ -140,8 +142,26 @@ export default {
       });
 
       //获取订单
-      this.getOrder();
+      this.getOrder(1,'');
+
+
+
+	  this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/list',{
+		  params:{
+			  ipPk:this.userId,
+			  pageNo:1,
+			  pageSize:99999,
+			  itm:'',
+		  }
+	  })
+		  .then(res=>{
+		      //console.log(res.data.data)
+			  this.total=res.data.data.length;
+		  }).catch(err=>{
+		  console.log(err);
+	  });
   },
+
 
     watch:{
         $route(to,from){
@@ -154,11 +174,18 @@ export default {
   //相关操作事件
   methods: {
 
-      handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-      },
+      getOpen(msg){
+          this.open=msg;
+	  },
+      change(val){
+          console.log(val);
+          this.type=val;
+          this.getOrder(1,this.type);
+          this.pageNum=1
+	  },
       handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
+          this.pageNum=val;
+          this.getOrder(val,this.type);
       },
 
       //删除订单
@@ -170,16 +197,47 @@ export default {
       //开始倒计时
       callback(){
           //获取订单
-          this.getOrder();
+          this.getOrder(1,this.type);
       },
 
       goDetail(val){
           console.log(val)
           this.$router.push(val);
-		  this.open=false;
 	  },
 
-	  //获取订单
+      //获取列表数据
+      getOrder(num,tab){
+          this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/list',{
+              params:{
+                  ipPk:this.userId,
+                  pageNo:num,
+                  pageSize:5,
+                  itm:tab,
+              }
+          })
+              .then(res=>{
+                  //console.log(res.data)
+                  var data=[];
+                  res.data.data.forEach(function (item) {
+                      data.push({
+                          type:item.statNmCn,
+                          cutTime:String(item.paySurplusTm /1000),   //倒计时
+                          data:item.ordTm,       //时间
+                          num:item.cd,   //订单号
+                          price:item.totOrdAmt,     //金额
+                          //aSrc:item.prodList,
+                          aHref:'order/detail?id='+item.ordReqtPk,
+                          //title:item.deliRcvr,
+						  items:item.prodRoList
+                      })
+                  })
+                  this.orders=data;
+              }).catch(err=>{
+              console.log(err);
+          });
+      },
+
+	 /* //获取订单
 	  getOrder(){
           this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/list',{
               params:{
@@ -206,7 +264,7 @@ export default {
               }).catch(err=>{
               console.log(err);
           });
-	  }
+	  }*/
   }
 }
 </script>

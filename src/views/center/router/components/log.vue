@@ -12,13 +12,13 @@
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="payType"
+							prop="catNmCn"
 							label="类型"
 							width="150"
 							align="center">
 			</el-table-column>
 			<el-table-column
-							prop="ordCd"
+							prop="cd"
 							label="单号"
 							width="220"
 							align="center">
@@ -28,11 +28,17 @@
 							label="发生金额"
 							width="150"
 							align="center">
+				<template scope="scope">
+					{{scope.row.tradeAmt|currency}}
+				</template>
 			</el-table-column>
 			<el-table-column
 							prop="tradeBalaAmt"
 							label="余额"
 							align="center">
+				<template scope="scope">
+					{{scope.row.tradeBalaAmt|currency}}
+				</template>
 			</el-table-column>
 		</el-table>
 	</div>
@@ -103,7 +109,7 @@ export default {
           }
       })
           .then(res=>{
-            	this.tableData=res.data.data.items;
+            	this.tableData=res.data.data;
           }).catch(err=>{
           console.log(err);
       });

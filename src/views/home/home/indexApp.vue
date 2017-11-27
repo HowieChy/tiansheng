@@ -330,6 +330,7 @@ Vue.use(VueViewload, {
 export default {
   data() {
     return {
+        buy:'',
         login:false, //登录状态
         userId:'',//用户ID
 
@@ -368,6 +369,7 @@ export default {
             this.userId=Lib.M.store.get('userInfo').ipPk;
             //console.log(this.userId)
 		}
+
 
 	  //左侧导航
       this.axios.get(Lib.C.url_mc+'/mall/sys/sysCat/tree?methCd=9040')
@@ -518,6 +520,20 @@ export default {
 
               return false
           }
+
+          this.buy= Lib.M.store.get('buy');
+          console.log(this.buy)
+          if(this.buy==1){
+              this.$alert('不能购买', '提示', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+
+                  }
+              });
+              return false
+          }
+
+
 
 
           var Qs = require('qs');
@@ -735,6 +751,8 @@ export default {
 				display: none;
 				width: 770px;
 				min-height: 354px;
+				max-height: 354px;
+				overflow-y: auto;
 				background: #fff;
 				position: absolute;
 				top: 40px;

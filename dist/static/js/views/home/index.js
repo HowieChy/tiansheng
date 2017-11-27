@@ -37,6 +37,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            num: '',
             login: false,
             lev: false,
             address: false,
@@ -170,6 +171,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     ipPk: this.userId
                 }
             }).then(function (res) {
+                console.log(res.data);
+                switch (res.data.data.catCd) {
+                    case '3090.100':
+                        _this2.num = 0;
+
+                        break;
+                    case '3090.110':
+                        _this2.num = 2;
+
+                        break;
+                    case '3090.120':
+                        _this2.num = 1;
+
+                        break;
+                }
+
+                __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.set('buy', _this2.num);
                 _this2.personInfo = res.data.data;
             }).catch(function (err) {
                 console.log(err);
@@ -239,6 +257,7 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            buy: '',
             login: false,
             userId: '',
 
@@ -373,6 +392,16 @@ __WEBPACK_IMPORTED_MODULE_5_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_6_vue
                     callback: function callback(action) {}
                 });
 
+                return false;
+            }
+
+            this.buy = __WEBPACK_IMPORTED_MODULE_0_assets_js_Lib__["a" /* default */].M.store.get('buy');
+            console.log(this.buy);
+            if (this.buy == 1) {
+                this.$alert('不能购买', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
                 return false;
             }
 

@@ -113,6 +113,11 @@ export default {
                   })
                       .then(res=>{
                           console.log(res.data);
+                          if(res.data.status==318){
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                              });
+                          }
                           if(res.data.status==400){
                               this.$alert(res.data.msg, '提示', {
                                   confirmButtonText: '确定',

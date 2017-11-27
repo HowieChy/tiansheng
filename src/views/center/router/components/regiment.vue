@@ -148,7 +148,7 @@ export default {
                       obj.push({
                           userPk:item.userPk,             //团员主键
                           userAcct:item.userAcct,         //团员名称
-                          userCd:item.userCd,           //团员编号
+                          userCd:item.unionId,           //团员编号
                           balaAmt:item.balaAmt,       //账户余额
                           lastOrdTime:item.lastOrdTime,   //最后一次下单时间
                           totalOrdNum:item.totalOrdNum,     //下单总频次

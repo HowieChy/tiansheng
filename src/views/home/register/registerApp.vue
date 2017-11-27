@@ -33,13 +33,13 @@
 			</el-form-item>
 
 			<el-form-item>
-				<el-input v-model="ruleForm.tjm" placeholder="请输入推荐码" type="text"></el-input>
+				<el-input @blur="getInfo" v-model="ruleForm.tjm" placeholder="请输入推荐码" type="text"></el-input>
 			</el-form-item>
 
 			<h3>完善收货信息，地址审核通过才可以进行购买</h3>
 
 			<el-form-item  prop="name">
-				<el-input v-model="ruleForm.name" placeholder="请输入联系人姓名" type="text"></el-input>
+				<el-input  v-model="ruleForm.name" placeholder="请输入联系人姓名" type="text"></el-input>
 			</el-form-item>
 
 			<el-form-item  prop="phone2">
@@ -52,17 +52,18 @@
 								:options="options"
 								v-model="selectedOptions"
 							  	@change="handleChange"
+								:disabled ="isReadOnly"
 				></el-cascader>
 			</el-form-item>
 
 
 			<el-form-item  prop="address2">
-				<el-input v-model="ruleForm.address2" placeholder="请输入详细地址" type="text"></el-input>
+				<el-input :readonly="isReadOnly" v-model="ruleForm.address2" placeholder="请输入详细地址" type="text"></el-input>
 			</el-form-item>
 
 			<el-form-item  prop="type">
 				<el-checkbox-group v-model="ruleForm.type">
-					<el-checkbox checked  label="我已阅读并同意天胜农牧商城用户注册协议" name="type"></el-checkbox>
+					<el-checkbox checked  label="" name="type">我已阅读并同意 <a href="">《天胜农牧商城用户注册协议》</a></el-checkbox>
 				</el-checkbox-group>
 			</el-form-item>
 
@@ -134,6 +135,7 @@ export default {
           }
       }
     return {
+        isReadOnly:false,
         options: [],
         selectedOptions: [],
         ruleForm: {
@@ -313,6 +315,15 @@ export default {
                               });
                               //window.location.href=Lib.C.url_href+'login.html';
                           }
+                          if (res.data.status == 316) {
+                              this.$alert(res.data.msg, '提示', {
+                                  confirmButtonText: '确定',
+                                  callback: action => {
+
+                                  }
+                              });
+
+                          }
                       }).catch(err => {
                       console.log(err);
                   });
@@ -372,6 +383,34 @@ export default {
 			  }
           }
           sendMessage()
+	  },
+
+	  //根据推荐码自动填写
+      getInfo(){
+	      console.log(this.ruleForm.tjm)
+          this.axios.get(Lib.C.url_mc+'/mall/sys/acct/headAddr',{
+              params:{
+                  referralCode:this.ruleForm.tjm
+              }
+          })
+              .then(res=>{
+                  console.log(res.data.data)
+				  if(res.data.status==200){
+                      this.ruleForm.address=123,
+                      this.isReadOnly=true;
+
+                      this.ruleForm.address2=res.data.data.addr;
+                      this.selectedOptions=[res.data.data.provCd,res.data.data.cityCd,res.data.data.distCd ]
+				  }else{
+                      this.ruleForm.address='',
+                      this.isReadOnly=false;
+                      this.ruleForm.address2='';
+                      this.selectedOptions=[]
+				  }
+
+              }).catch(err=>{
+              console.log(err);
+          });
 	  }
   }
 }
