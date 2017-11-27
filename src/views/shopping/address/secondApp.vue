@@ -79,7 +79,7 @@
             <div class="clearfix">
               <div class="left ">
 
-                <p><el-checkbox @change="change2" v-model="checked2">使用积分 <input type="number" v-model.lazy="score"  min="0"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score*rule}}元</el-checkbox></p>
+                <p><el-checkbox @change="change2" v-model="checked2">使用积分 <input type="number" v-model.lazy="score"  min="0"> 分 当前账号总积分为{{integral}}分，最多可用{{integral}}分，抵扣{{score*rule|currency('')}}元</el-checkbox></p>
                 <p><el-checkbox @change="change3" v-model="checked3">使用账户余额 当前账号余额为{{balance | currency}}</el-checkbox></p>
               </div>
               <div class="right">
@@ -142,6 +142,7 @@ export default {
         //收货地址
         addressOption:[],
         addrPk:null,//配送地址主键
+        addID:null,//是否正在审核
 
         //购物车列表
         cars:[],
@@ -220,8 +221,35 @@ export default {
                   this.allPrice+=item.prodAmtMemb*item.prodQty;
                   this.allPrice2+=item.prodAmtMark*item.prodQty;
               }.bind(this));
-              this.sum2()
-              this.rPrice=Math.floor(parseInt(this.allPrice+this.freight)/10)
+
+              this.rPrice=Math.floor(parseInt(this.allPrice+this.freight)/10);
+
+              //满减
+              this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/discount',{
+                        params:{
+                          ipPk:this.userId,
+                          //totAmt:this.allPrice
+                          totAmt:300
+                        }
+                      })
+                      .then(res=>{
+                console.log(res.data)
+              this.subList=res.data.data.disList;
+              this.subFirst=res.data.data.isFirst;
+              if(this.subFirst){
+                this.rebate=this.subFirst.rebate;
+                this.allPrice=this.allPrice*this.rebate;
+                this.sum2()
+              }else{
+                this.rebate=1;
+                this.allPrice=this.allPrice*this.rebate;
+                this.sum2()
+              }
+
+              }).catch(err=>{
+                //console.log(err);
+              })
+
           }).catch(err=>{
           //console.log(err);
       });
@@ -243,26 +271,7 @@ export default {
       })
 
 
-      //满减
-      this.axios.get(Lib.C.url_mc+'/mall/bss/ordReqt/discount',{
-          params:{
-              ipPk:this.userId,
-              //totAmt:this.allPrice
-              totAmt:300
-          }
-      })
-          .then(res=>{
-              console.log(res.data)
-              this.subList=res.data.data.disList;
-              this.subFirst=res.data.data.isFirst;
-              if(this.subFirst){
-                  this.rebate=this.subFirst.rebate;
-              }else{
-                  this.rebate=1;
-              }
-          }).catch(err=>{
-          //console.log(err);
-      })
+
 
 
   },
@@ -270,7 +279,10 @@ export default {
 
   watch:{
     score:function () {
-        if(this.score>this.integral){
+      if(this.score>this.integral){
+        this.score=this.integral
+      };
+        if(this.score>this.integral&&this.checked2){
             this.score=this.integral
             this.score2=this.score
         };
@@ -285,8 +297,9 @@ export default {
         if(this.checked3){
             this.sum()
         }
-        if(this.allPrice+this.freight-this.score2*this.rule<0){
-            this.score=(this.allPrice+this.freight)*100
+        if(this.allPrice+this.freight<=this.score2*this.rule){
+            this.score=Math.floor((this.allPrice+this.freight)/this.rule)
+            this.sum2()
         }
         this.sum2()
     }
@@ -308,7 +321,11 @@ export default {
       change2(){
           if(this.checked2){
               this.score2=this.score
-              this.rule2=this.rule*this.score
+              this.rule2=this.rule*this.score;
+
+            if(this.allPrice+this.freight<=this.score2*this.rule){
+              this.score=Math.floor((this.allPrice+this.freight)/this.rule)
+            }
 
           }else{
               this.score2=0
@@ -317,7 +334,9 @@ export default {
           if(this.checked3){
               this.sum()
           }
-          this.sum2()
+
+        this.sum2()
+
       },
       change3(){
           if(this.checked3){
@@ -357,7 +376,8 @@ export default {
                   if(num=='1120.10'){
                       //console.log(res.data.data.items)
                       this.addressOption=res.data.data.items;
-                      this.addrPk=res.data.data.items[0].addrPk;
+                      this.addrPk=res.data.data.items[0].addrPk
+                      this.addrId=res.data.data.items[0].auditStatNmCn;
                   }else{
                       this.addressHide=res.data.data.items;
                       //console.log(res.data.data.items)
@@ -391,6 +411,13 @@ export default {
       //提交订单
       pOrder(){
           //新增收货地址
+        if(this.addrId=='待审核'){
+            this.$alert('地址需通过审核才能提交订单', '提示', {
+              confirmButtonText: '确定',
+
+          });
+          return false
+        }
           console.log(Lib.M.store.get('orderInfo').id,this.userId,this.addrPk,this.score2,this.checked3)
           var Qs = require('qs');
 //          var boll;
